@@ -1,0 +1,760 @@
+\documentclass[12pt]{article}
+\usepackage{anysize}
+\usepackage[ngerman,english]{babel}
+\marginsize{3.5cm}{2.5cm}{1cm}{2cm}
+
+\input{packages_styles.tex}
+%Page numbering in style 1/3...
+\usepackage{lastpage}  
+\usepackage{hyperref}
+\makeatletter
+\renewcommand{\@oddfoot}{\hfil 
+% Aachen, November $04^{th}$, 2021 \hspace{300pt} 
+Mathe IV $\cdot$ Gue08 $\cdot$ SS22 
+\hspace{280pt} 
+\thepage/\pageref{LastPage}\hfil}
+\makeatother
+%------------------------------------------------------------------------------
+
+\begin{document}
+\begin{center}
+	\section*{Global Exercise - Gue08}
+\end{center}
+\begin{center}
+	Tuan Vo
+\end{center}
+\begin{center}
+	$02^{\text{nd}}$ June, 2022
+\end{center}
+Content covered:
+\begin{itemize}
+	\item[\checkmark] Analysis: Eigenvalues/Eigenfunction of Laplace operators. How to
+	      \begin{itemize}
+		      \item[*] treat the inhomogeneous problem $\partial_{t}u(x,t) = \partial_{xx}u(x,t)$ with $u(L,t) \neq 0$.
+		      \item[*] treat the $\partial_{tt} u(x,t)$ term in $\partial_{tt} u(x,t) =   \partial_{xx}u(x,t) + a$.
+	      \end{itemize}
+	\item[\checkmark] Numerics: FDM consistency order.
+\end{itemize}
+%------------------------------------------------------------------------------
+\section{Analysis}
+\begin{example}
+	Examine the following problem:
+	\begin{align*}
+		\partial_t u & = \partial_x^2 u, \quad \text{for} \ x \in \Omega = (0,L),\text{and}\ t>0,
+	\end{align*}
+	where the boundary conditions (BCs) at the left-most and right-most points
+	for all time $t$
+	with a constant $\alpha \in \mathbb{R}$ are defined, respectively, as follows
+	\begin{align*}
+		u(0,t) & =0,                                                              \\
+		u(L,t) & = \alpha t \exp(-\alpha t),                                     
+	\end{align*}
+	and the initial condition (IC) with a constant $u_{0} \in \mathbb{R}$ is given as 
+	\begin{align*}
+		u(x,0) = u_0 \ x(L-x).
+	\end{align*}
+\end{example}
+\inputfig{floats/nodiscretize}{nodiscretize}
+
+% \inputfig{floats/discretize}{discretize}
+% Approach:
+% Central method for $u''(x)$ is obtained as follows
+% \begin{align}
+% 	u''(x)=\frac{u(x+h)-2u(x)+u(x-h)}{h^2}+{\cal O}(h^2).
+% \end{align}
+% Forward method for $u'(x)$ is obtained as follows
+% \begin{align}
+% 	u'(x)=\frac{u(x+h) -u(x)}{h} + {\cal O}(h).
+% \end{align}
+% which leads to the system $A_h u_h=b_h$ where $A_h$ and $b_h$ are recognized as follows
+% \begin{align}
+% 	A_h & =\frac{1}{h^2}\left(
+% 	\begin{array}{cccccc}
+% 			2+5h & -1-5h  &        &        &        &       \\
+% 			-1   & 2+5h   & -1-5h  &        &        &       \\ 
+% 			     & \ddots & \ddots & \ddots &        &       \\ 
+% 			     &        & \ddots & \ddots & \ddots &       \\ 
+% 			     &        &        & -1     & 2+5h   & -1-5h \\ 
+% 			     &        &        &        & -1     & 2+5h
+% 		\end{array}\right)
+% 	\in\mathbb{R}^{(n-2)\times (n-2)}, \\
+% 	b_h & = 
+% 	\begin{pmatrix}
+% 		\displaystyle
+% 		3+\frac{1}{h^2} \\ 3\\  \vdots \\ 3 \\
+% 		\displaystyle
+% 		3+\frac{1}{h^2}+\frac{5}{h}
+% 	\end{pmatrix}
+% 	\in\mathbb{R}^{(n-2)}.
+% \end{align}
+
+%------------------------------------------------------------------------------
+\newpage
+\inputfig{floats/discretize}{discretize}
+
+%------------------------------------------------------------------------------
+\newpage
+\inputfig{floats/discretize}{discretize}
+
+%------------------------------------------------------------------------------
+\newpage
+\section{Analysis: Spectral theory $\cdot$ Laplace operator application}
+\newpage
+\begin{example}
+	Examine the following problem
+	\begin{align*}
+		\partial_t u(x,t) & =\partial_{xx}u(x,t)+a, &  & x\ \in\ (0,1), t>0, \\
+		u(0,t)            & =0,                     &  & t>0,                \\
+		u(1,t)            & =0,                     &  & t>0,                \\
+		u(x,0)            & = \sin(\pi x),          &  & x\, \in\, (0,1) ,
+	\end{align*}
+	with constant source term $a\in\mathbb{R}$.
+	\begin{enumerate}
+		\item Compute the Eigenvalues and the normalized Eigenfunctions from $\partial_{xx}$.
+		\item Develop the source term $a\in\mathbb{R}$ in these Eigenfunctions.
+		\item Compute the solution of the problem with the Eigenfunction ansatz.
+	\end{enumerate}
+\end{example}
+
+\newpage
+(Example 2 cont.)
+
+\newpage
+(Example 2 cont.)
+
+% \begin{enumerate}
+% 	\item Die zum Problem geh"orenden Eigenfunktionen und Eigenwerte erf"ullen
+% 	      \begin{align*}
+% 		      \varphi^{\prime\prime}(x)+\lambda\varphi(x) & =0, \quad x\in (0,1) \\
+% 		      \varphi(0)=\varphi(1)                       & =0
+% 	      \end{align*}
+% 	      \begin{align*}
+% 		      \Rightarrow \quad \varphi(x) = C_1\sin(\sqrt{\lambda}x) + C_2 \cos(\sqrt{\lambda}x)
+% 	      \end{align*}
+% 	      Mit den Randbedingungen f"ur $\varphi$ erh"alt man 
+% 	      \begin{align*}
+% 		      0 = \varphi(0) & = C_2 \, \Rightarrow \, C_2 = 0                                                       \\
+% 		      0 = \varphi(1) & = C_1\sin(\sqrt{\lambda}x) \, \Rightarrow \, \lambda_k = (k\pi)^2, \, k\in \mathbb{N}
+% 	      \end{align*}
+% 	      \begin{align*}
+% 		      \Rightarrow \varphi_k(x) = C_1\sin(k\pi x) , \, k \in \mathbb{N}
+% 	      \end{align*}
+% 	      $C_1$ erh"alt man durch Normierung
+% 	      \begin{align*}
+% 		      1 & \stackrel{!}{=} \int_0^1 \varphi_k(x)^2\, dx = C_1^2 \int_0^1 \sin^2(k\pi x) \, dx                \\
+% 		        & = C_1^2 \left[ \left. \frac x 2 - \frac{\sin(2k\pi x)}{4k\pi}\right|^1_0 \right] = C_1^2\frac 1 2 \\
+% 		      \Rightarrow C_1 = \sqrt{2}
+% 	      \end{align*}
+% 	      damit lauten die Eigenwerte und normierten Eigenfunktionen 
+% 	      \begin{align*}
+% 		      \varphi_k(x)               & =\sqrt{2}\sin(k\pi x)                  \\
+% 		      \text{und} \quad \lambda_k & =(k\pi)^2 \text{ f"ur } k\in\mathbb{N}
+% 	      \end{align*}
+
+% 	\item Die Entwicklung des konstanten Quellterms $a(x,t)=a$  in Eigenfunktionen lautet
+% 	      \begin{align*}
+% 		      a & = \sum^{\infty}_{k=1}\beta_k\varphi_k(x)         \\
+% 		        & = \sum^{\infty}_{k=1}\beta_k\sqrt{2}\sin(k\pi x)
+% 	      \end{align*}
+% 	      Die Koeffizienten berechnet man durch
+% 	      \begin{align*}
+% 		      \beta_k & =\int^1_0 a\sqrt{2}\sin(k\pi x)dx                                         \\
+% 		              & = a \sqrt{2} \left[ \left. -\frac{\cos(k \pi x)}{k\pi}\right|^1_0 \right] \\
+% 		              & =\frac{a\sqrt{2}}{k\pi}(1-\cos(k\pi))=\begin{cases}\frac{2a\sqrt{2}}{k\pi} & , k\text{ ungerade} \\
+% 			      0                       & , \text{sonst}
+% 		      \end{cases}
+% 	      \end{align*}
+
+% 	\item F"ur die L"osung $u$ wird der Eigenfunktionen-Ansatz
+% 	      \begin{align*}
+% 		      u(x,t)=\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x)
+% 	      \end{align*}
+% 	      gew"ahlt, mit zeitabh"angigen Koeffizienten $\alpha_k(t), \, t>0, k\in \mathbb{N}$. \\
+% 	      Einsetzen der Entwicklungen von $u(x,t)$ und $a$ in die Differentialgleichung liefert
+% 	      \begin{align*}
+% 		                           & (\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x))_t=(\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x))_{xx}+\sum^{\infty}_{k=1}\beta_k\varphi_k(x) \\
+% 		      \Leftrightarrow\quad & \sum^{\infty}_{k=1}\alpha'_k(t)\varphi_k(x)=-\sum^{\infty}_{k=1}\alpha_k(t)\lambda_k\varphi_k(x)+\sum^{\infty}_{k=1}\beta_k\varphi_k(x) \\
+% 		      \Leftrightarrow\quad & \sum^{\infty}_{k=1}(\alpha'_k(t)+\lambda_k\alpha_k(t)-\beta_k)\varphi_k(x)=0
+% 	      \end{align*}
+% 	      Wir erhalten eine gew"ohnliche Differentialgleichung f"ur die Koeffizienten $\alpha_k(t)$
+% 	      \begin{align*}
+% 		      \alpha'_k(t) & =-\lambda_k\alpha_k(t)+\beta_k
+% 	      \end{align*}
+% 	      mit der allgemeinen L"osung 
+% 	      \begin{align*}
+% 		      \alpha_k(t) & =\frac{\beta_k}{\lambda_k}+C_k e^{-\lambda_k t}.
+% 	      \end{align*}
+% 	      Die Konstante $C_k$ wird durch die Anfangsbedingung f"ur $\alpha_k(0)$ bestimmt. Dazu betrachten wir die Anfangsbedingung f"ur $u$:
+% 	      \begin{align*}
+% 		      u(x,0)=\sum^{\infty}_{k=1}\alpha_k(0)\sqrt{2}\sin(k\pi x)\stackrel{!}{=} \sin(\pi x) \\
+% 		      \Rightarrow \alpha_1(0)\stackrel{!}{=}\frac{1}{\sqrt{2}} \,\text{ und } \, \alpha_k(0) = 0 \ \forall\ k > 1
+% 	      \end{align*}
+% 	      Also gilt f"ur $k=1$
+% 	      \begin{align*}
+% 		      \alpha_1(0)     & = \frac{\beta_1}{\lambda_1}+C_1  \stackrel{!}{=}\frac{1}{\sqrt{2}}                                                            \\
+% 		      \Rightarrow C_1 & =\frac{1}{\sqrt{2}} -\frac{\beta_1}{\lambda_1} = \frac{1}{\sqrt{2}}-\frac{2a\sqrt{2}}{\pi^3} = \frac{\pi^3-4a}{\sqrt{2}\pi^3}
+% 	      \end{align*}
+% 	      und f"ur $k>1$
+% 	      \begin{align*}
+% 		      \alpha_k(0)     & =\frac{\beta_k}{\lambda_k}+C_k\stackrel{!}{=}0           \\
+% 		      \Rightarrow C_k & =-\frac{\beta_k}{\lambda_k} = \begin{cases}-\frac{2a\sqrt{2}}{k^3\pi^3} & , k\text{ ungerade} \\
+% 			      0                            & , \text{sonst}
+% 		      \end{cases}
+% 	      \end{align*}
+% 	      Die L"osung $u$ lautet daher insgesamt 
+% 	      \begin{align*}
+% 		      u(x,t) & =\alpha_1(t)\sqrt{2}\sin(\pi x) + \sum^{\infty}_{k=2}(\frac{\beta_k}{\lambda_k} + C_ke^{-\lambda_k t})\sqrt{2}\sin(k\pi x)                                                                                   \\
+% 		             & = \left(\frac{ 4a}{\pi^3} + (1-\frac{4a}{\pi^3})e^{-\pi^2t}\right)\sin(\pi x) +\sum^{\infty}_{k=2 \atop k\text{ ungerade}} \left( \frac{4a}{k^3\pi^3} - \frac{4a}{k^3\pi^3}e^{-k^2\pi^2t}\right)\sin(k\pi x)
+% 	      \end{align*}
+% \end{enumerate}
+
+%------------------------------------------------------------------------------
+\newpage
+\begin{example}
+	Examine the following problem
+	\begin{align*}
+		\partial_t u(x,t) & =\partial_{xx}u(x,t)+\sin(\pi x), &  & x\ \in\ (0,1), t>0, \\
+		u(0,t)            & =0,                               &  & t>0,                \\
+		u(1,t)            & =0,                               &  & t>0,                \\
+		u(x,0)            & = a,                              &  & x\, \in\, (0,1) ,
+	\end{align*}
+	with constant IC $a\in\mathbb{R}$.
+	\begin{enumerate}
+		\item Compute the Eigenvalues and the normalized Eigenfunctions from $\partial_{xx}$.
+		\item Develop the IC and source term in these Eigenfunctions.
+		\item Compute the solution of the problem with the Eigenfunction ansatz.
+	\end{enumerate}
+\end{example}
+
+% \begin{enumerate}
+% 	\item Die zum Problem geh"orenden Eigenfunktionen und Eigenwerte erf"ullen
+% 	      \begin{align*}
+% 		      \varphi^{\prime\prime}(x)+\lambda\varphi(x) & =0, \quad x\in (0,1) \\
+% 		      \varphi(0)=\varphi(1)                       & =0
+% 	      \end{align*}
+% 	      \begin{align*}
+% 		      \Rightarrow \quad \varphi(x) = C_1\sin(\sqrt{\lambda}x) + C_2 \cos(\sqrt{\lambda}x)
+% 	      \end{align*}
+% 	      Mit den Randbedingungen f"ur $\varphi$ erh"alt man 
+% 	      \begin{align*}
+% 		      0 = \varphi(0) & = C_2 \, \Rightarrow \, C_2 = 0                                                      \\
+% 		      0 = \varphi(1) & = C_1\sin(\sqrt{\lambda}) \, \Rightarrow \, \lambda_k = (k\pi)^2, \, k\in \mathbb{N}
+% 	      \end{align*}
+% 	      \begin{align*}
+% 		      \Rightarrow \varphi_k(x) = C_1\sin(k\pi x) , \, k \in \mathbb{N}
+% 	      \end{align*}
+% 	      $C_1$ erh"alt man durch Normierung
+% 	      \begin{align*}
+% 		      1 & \stackrel{!}{=} \int_0^1 \varphi_k(x)^2\, dx = C_1^2 \int_0^1 \sin^2(k\pi x) \, dx                \\
+% 		        & = C_1^2 \left[ \left. \frac x 2 - \frac{\sin(2k\pi x)}{4k\pi}\right|^1_0 \right] = C_1^2\frac 1 2 \\
+% 		      \Rightarrow C_1 = \sqrt{2}
+% 	      \end{align*}
+% 	      damit lauten die Eigenwerte und normierten Eigenfunktionen 
+% 	      \begin{align*}
+% 		      \varphi_k(x)               & =\sqrt{2}\sin(k\pi x)                  \\
+% 		      \text{und} \quad \lambda_k & =(k\pi)^2 \text{ f"ur } k\in\mathbb{N}
+% 	      \end{align*}
+
+% 	\item Die Entwicklung der konstanten Anfangsbedingung $a(x,t)=a$  in Eigenfunktionen lautet
+% 	      \begin{align*}
+% 		      a & = \sum^{\infty}_{k=1}\beta_k\varphi_k(x)         \\
+% 		        & = \sum^{\infty}_{k=1}\beta_k\sqrt{2}\sin(k\pi x)
+% 	      \end{align*}
+% 	      Die Koeffizienten berechnet man durch
+% 	      \begin{align*}
+% 		      \beta_k & =\int^1_0 a\sqrt{2}\sin(k\pi x)dx                                         \\
+% 		              & = a \sqrt{2} \left[ \left. -\frac{\cos(k \pi x)}{k\pi}\right|^1_0 \right] \\
+% 		              & =\frac{a\sqrt{2}}{k\pi}(1-\cos(k\pi))=\begin{cases}\frac{2a\sqrt{2}}{k\pi} & , k\text{ ungerade} \\
+% 			      0                       & , \text{sonst.}
+% 		      \end{cases}
+% 	      \end{align*}
+% 	      Der Quellterm hat offenbar die Entwicklung
+% 	      \begin{align*}
+% 		                         & \sin(\pi x) = \sum_{k=1}^{\infty}\gamma_k \sqrt{2} \sin(k \pi x) \\
+% 		      \mathrm{mit} \quad & \gamma_k = \begin{cases}\frac{1}{\sqrt{2}} & , k = 1         \\
+% 			      0                  & , \text{sonst.}
+% 		      \end{cases}
+% 	      \end{align*}
+
+% 	\item F"ur die L"osung $u$ wird der Eigenfunktionen-Ansatz
+% 	      \begin{align*}
+% 		      u(x,t)=\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x)
+% 	      \end{align*}
+% 	      gew"ahlt, mit zeitabh"angigen Koeffizienten $\alpha_k(t), \, t>0, k\in \mathbb{N}$. \\
+% 	      Einsetzen der Entwicklungen von $u(x,t)$ und $\sin(\pi x)$ in die Differentialgleichung liefert
+% 	      \begin{align*}
+% 		                           & (\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x))_t=(\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x))_{xx}+\sum^{\infty}_{k=1}\gamma_k\varphi_k(x) \\
+% 		      \Leftrightarrow\quad & \sum^{\infty}_{k=1}\alpha'_k(t)\varphi_k(x)=-\sum^{\infty}_{k=1}\alpha_k(t)\lambda_k\varphi_k(x)+\sum^{\infty}_{k=1}\gamma_k\varphi_k(x) \\
+% 		      \Leftrightarrow\quad & \sum^{\infty}_{k=1}(\alpha'_k(t)+\lambda_k\alpha_k(t)-\gamma_k)\varphi_k(x)=0
+% 	      \end{align*}
+% 	      Wir erhalten eine gew"ohnliche Differentialgleichung f"ur die Koeffizienten $\alpha_k(t)$
+% 	      \begin{align*}
+% 		      \alpha'_k(t) & =-\lambda_k\alpha_k(t)+\gamma_k
+% 	      \end{align*}
+% 	      mit der allgemeinen L"osung 
+% 	      \begin{align*}
+% 		      \alpha_k(t) & =\frac{\gamma_k}{\lambda_k}+C_k e^{-\lambda_k t}.
+% 	      \end{align*}
+% 	      Die Konstante $C_k$ wird durch die Anfangsbedingung f"ur $\alpha_k(0)$ bestimmt. Dazu betrachten wir die Anfangsbedingung f"ur $u$:
+% 	      \begin{align*}
+% 		      u(x,0)=\sum^{\infty}_{k=1}\alpha_k(0)\sqrt{2}\sin(k\pi x)\stackrel{!}{=} a = \sum_{k=0}^{\infty}\frac{2\sqrt{2}a}{(2k+1)\pi}\sqrt{2}\sin((2k+1)\pi x) \\
+% 		      \Rightarrow \alpha_{2j}(0) = 0 \quad \mathrm{und} \quad \alpha_{2j+1}(0) = \frac{2\sqrt{2}a}{(2j+1)\pi} \forall\ j 
+% 	      \end{align*}
+% 	      Also gilt f"ur $j=0$
+% 	      \begin{align*}
+% 		      \alpha_1(0)     & = \frac{\gamma_1}{\lambda_1}+C_1  \stackrel{!}{=}\frac{2\sqrt{2}a}{\pi}                               \\
+% 		      \Rightarrow C_1 & =\frac{2\sqrt{2}a}{\pi} -\frac{\gamma_1}{\lambda_1} = \frac{2\sqrt{2}a}{\pi}-\frac{1}{\pi^2 \sqrt{2}}
+% 	      \end{align*}
+% 	      und f"ur $j>0$
+% 	      \begin{align*}
+% 		      \alpha_{2j}(0)       & =\frac{\gamma_{2j}}{\lambda_{2j}}+C_{2j} = C_{2j} \stackrel{!}{=}0                                    \\
+% 		      \Rightarrow C_{2j}   & =0                                                                                                    \\
+% 		      \alpha_{2j+1}(0)     & =\frac{\gamma_{2j+1}}{\lambda_{2j+1}}+C_{2j+1} = C_{2j+1} \stackrel{!}{=}\frac{2\sqrt{2}a}{(2j+1)\pi} \\
+% 		      \Rightarrow C_{2j+1} & =\frac{2\sqrt{2}a}{(2j+1)\pi}
+% 	      \end{align*}
+% 	      Die L"osung $u$ lautet daher insgesamt 
+% 	      \begin{align*}
+% 		      u(x,t) & =\left(\frac{\gamma_1}{\lambda_1} + \left(\frac{2\sqrt{2}a}{\pi}-\frac{1}{\pi^2 \sqrt{2}}\right)e^{-\lambda_1 t}\right)\sqrt{2}\sin(\pi x) + \sum^{\infty}_{k=2} C_ke^{-\lambda_k t}\sqrt{2}\sin(k\pi x) \\
+% 		             & = \left(\frac{4a}{\pi} - \frac{1}{\pi^2}\right)e^{-\pi^2 t} \sin(\pi x) + \frac{1}{\pi^2} \sin(\pi x)                                                                                                    \\
+% 		             & + \sum_{j=1}^{\infty}\frac{4a}{(2j+1)\pi}e^{-(2j+1)^2 \pi^2 t} \sin((2j+1)\pi x)
+% 	      \end{align*}
+% \end{enumerate}
+
+%------------------------------------------------------------------------------
+\newpage
+\begin{example}
+	Examine the following problem
+	\begin{align*}
+		\partial_{tt} u(x,t) & =   \partial_{xx}u(x,t) + a, &  & x\ \in\ (0,1), t>0, \\
+		u(0,t)               & =0,                          &  & t>0,                \\
+		u(1,t)               & =0,                          &  & t>0,                \\
+		u(x,0)               & = x,                         &  & x\, \in\, (0,1),    \\
+		u_t(x,0)             & = 0,                         &  & x\, \in\, (0,1),
+	\end{align*}
+	with constant source term $a\in\mathbb{R}$.
+	\begin{enumerate}
+		\item Compute the Eigenvalues and the normalized Eigenfunctions from $\partial_{xx}$.
+		\item Develop the IC and source term in these Eigenfunctions.
+		\item Compute the solution of the problem with the Eigenfunction ansatz.
+	\end{enumerate}
+\end{example}
+
+\newpage
+(Example 4 cont.)
+
+% Die Gleichung $y''(x) = -cy(x) +b$ besitzt die allg. Lösung 
+% 	\begin{align*}
+% 		y(x) = \frac{b}{c} + k_1 \sin(\sqrt{c} x)+ k_2\cos(\sqrt{c} x), \quad k_1,k_2 \in \mathbb{R}
+% 	\end{align*}
+
+% \begin{enumerate}
+% 	\item Die zum Problem geh"orenden Eigenfunktionen und Eigenwerte erf"ullen
+% 	      \begin{align*}
+% 		      \varphi^{\prime\prime}(x)+\lambda\varphi(x) & =0, \quad x\in (0,1) \\
+% 		      \varphi(0)=\varphi(1)                       & =0
+% 	      \end{align*}
+% 	      \begin{align*}
+% 		      \Rightarrow \quad \varphi(x) = C_1\sin(\sqrt{\lambda}x) + C_2 \cos(\sqrt{\lambda}x)
+% 	      \end{align*}
+% 	      Mit den Randbedingungen f"ur $\varphi$ erh"alt man
+% 	      \begin{align*}
+% 		      0 = \varphi(0) & = C_2 \, \Rightarrow \, C_2 = 0                                                       \\
+% 		      0 = \varphi(1) & = C_1\sin(\sqrt{\lambda}x) \, \Rightarrow \, \lambda_k = (k\pi)^2, \, k\in \mathbb{N}
+% 	      \end{align*}
+% 	      \begin{align*}
+% 		      \Rightarrow \varphi_k(x) = C_1\sin(k\pi x) , \, k \in \mathbb{N}
+% 	      \end{align*}
+% 	      $C_1$ is obtained by taking into the consideration of normalization
+% 	      \begin{align*}
+% 		      1 & \stackrel{!}{=} \int_0^1 \varphi_k(x)^2\, dx = C_1^2 \int_0^1 \sin^2(k\pi x) \, dx                \\
+% 		        & = C_1^2 \left[ \left. \frac x 2 - \frac{\sin(2k\pi x)}{4k\pi}\right|^1_0 \right] = C_1^2\frac 1 2 \\
+% 		      \Rightarrow C_1 = \sqrt{2}
+% 	      \end{align*}
+% 	      \reversemarginpar
+% 	      damit lauten die Eigenwerte und normierten Eigenfunktionen
+% 	      \begin{align*}
+% 		      \varphi_k(x)               & =\sqrt{2}\sin(k\pi x)                  \\
+% 		      \text{und} \quad \lambda_k & =(k\pi)^2 \text{ f"ur } k\in\mathbb{N}
+% 	      \end{align*}
+
+% 	\item Die Entwicklung des konstanten Quellterms $a(x,t)=a$  in Eigenfunktionen lautet
+% 	      \begin{align*}
+% 		      a & = \sum^{\infty}_{k=1}\beta_k\varphi_k(x)         \\
+% 		        & = \sum^{\infty}_{k=1}\beta_k\sqrt{2}\sin(k\pi x)
+% 	      \end{align*}
+% 	      Die Koeffizienten berechnet man durch
+% 	      \begin{align*}
+% 		      \beta_k & =\int^1_0 a\sqrt{2}\sin(k\pi x)dx                                         \\
+% 		              & = a \sqrt{2} \left[ \left. -\frac{\cos(k \pi x)}{k\pi}\right|^1_0 \right] \\
+% 		              & =\frac{a\sqrt{2}}{k\pi}(1-\cos(k\pi))=\begin{cases}\frac{2a\sqrt{2}}{k\pi} & , k\text{ ungerade} \\
+% 			      0                       & , \text{sonst}
+% 		      \end{cases}
+% 	      \end{align*}
+% 	      Für die Entwicklung der Anfangsbedingung $u(x,0) = x$ gilt:
+% 	      \begin{align*}
+% 		      x & = \sum^{\infty}_{k=1}\gamma_k\varphi_k(x)         \\
+% 		        & = \sum^{\infty}_{k=1}\gamma_k\sqrt{2}\sin(k\pi x)
+% 	      \end{align*}
+% 	      mit
+% 	      \begin{align*}
+% 		      \gamma_k & = \int_{0}^{1} x \sqrt{2} \sin(k\pi x)dx                                                                               \\
+% 		               & = \sqrt{2} \left[ - x \cos(k \pi x) \frac{1}{k \pi}  \right]_0^1 + \sqrt{2}  \int_0^1 \frac{1}{k \pi} \cos(k \pi x) dx \\
+% 		               & =\frac{\sqrt{2}}{k \pi}  \cos(k \pi)+ \frac{\sqrt{2}}{k \pi} \left[ \frac{1}{k \pi} \sin(k \pi x) \right]_0^1          \\
+% 		               & = (-1)^k \frac{\sqrt{2}}{k \pi}
+% 	      \end{align*}
+
+% 	\item F"ur die L"osung $u$ wird der Eigenfunktionen-Ansatz
+% 	      \begin{align*}
+% 		      u(x,t)=\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x)
+% 	      \end{align*}
+% 	      gew"ahlt, mit zeitabh"angigen Koeffizienten $\alpha_k(t), \, t>0, k\in \mathbb{N}$. \\
+% 	      Einsetzen der Entwicklungen von $u(x,t)$ und $a$ in die Differentialgleichung liefert
+% 	      \begin{align*}
+% 		                           & (\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x))_{tt}=  (\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x))_{xx}+\sum^{\infty}_{k=1}\beta_k\varphi_k(x) \\
+% 		      \Leftrightarrow\quad & \sum^{\infty}_{k=1}\alpha''_k(t)\varphi_k(x)=-\sum^{\infty}_{k=1}\alpha_k(t)\lambda_k\varphi_k(x)+\sum^{\infty}_{k=1}\beta_k\varphi_k(x)     \\
+% 		      \Leftrightarrow\quad & \sum^{\infty}_{k=1}(\alpha''_k(t)+\lambda_k\alpha_k(t)-\beta_k)\varphi_k(x)=0
+% 	      \end{align*}
+% 	      \normalmarginpar
+% 	      Wir erhalten eine gew"ohnliche Differentialgleichung f"ur die Koeffizienten $\alpha_k(t)$
+% 	      \begin{align*}
+% 		      \alpha''_k(t) & =-\lambda_k\alpha_k(t)+\beta_k
+% 	      \end{align*}
+% 	      mit der allgemeinen L"osung (Hinweis)
+% 	      \begin{align*}
+% 		      \alpha_k(t) & =\frac{\beta_k }{\lambda_k}+ C_{k,1} \sin(\sqrt{\lambda_k} t) + C_{k,2} \cos(\sqrt{\lambda_k} t) .
+% 	      \end{align*}
+% 	      Die Konstanten werden durch die Anfangsbedingungen bestimmt. Dazu gilt zunächst wegen $u_t(x,0) = 0$:
+% 	      \begin{align*}
+% 		      u_t(x,0) = \sum_{k = 1}^{\infty} \alpha'_k(0) \sqrt{2} \sin(k\pi x) \stackrel{!}{=} 0                            \\
+% 		      \Rightarrow \alpha'_k(0) = \sqrt{\lambda_k} C_{k,1} \cos(0) - \sqrt{\lambda_k} C_{k,2} \sin(0) \stackrel{!}{=} 0 \\
+% 		      \Rightarrow C_{k,1} = 0
+% 	      \end{align*}
+% 	      Die Konstante $C_{k,2}$ wird durch die Anfangsbedingung $u(x,0) = x$ bestimmt. Dazu betrachte
+% 	      \begin{align*}
+% 		      u(x,0)=\sum^{\infty}_{k=1}\alpha_k(0)\sqrt{2}\sin(k\pi x)\stackrel{!}{=} \sum^{\infty}_{k=1}\gamma_k\sqrt{2}\sin(k\pi x) \\
+% 		      \Rightarrow \alpha_k(0)\stackrel{!}{=} \gamma_k
+% 	      \end{align*}
+% 	      Also gilt
+% 	      \begin{align*}
+% 		      \alpha_k(0)         & =  \frac{\beta_k}{\lambda_k}+C_{k,2} \stackrel{!}{=} \gamma_k =(-1)^k \frac{\sqrt{2}}{k \pi} \\
+% 		      \Rightarrow C_{k,2} & = \begin{cases} - \frac{2 a \sqrt{2} }{(k \pi)^3} - \frac{\sqrt{2}}{ k \pi}, k \text{ ungerade} \\
+% 			      \frac{\sqrt{2}}{ k \pi},  \text{ sonst}
+% 		      \end{cases}
+% 	      \end{align*}
+% 	      Die L"osung $u$ lautet daher insgesamt
+% 	      \begin{align*}
+% 		      u(x,t) & = \sum_{k=1}^{\infty} \left( \frac{\beta_k }{\lambda_k}+ C_{k,1} \sin(\sqrt{\lambda_k} t) + C_{k,2} \cos(\sqrt{\lambda_k} t) \right) \sqrt{2} \sin(k \pi x)                        \\
+% 		             & = \sum_{k=1 \atop k \text{ gerade}}^{\infty} \left[  \frac{4a }{(k \pi)^3}  +\left( \frac{{2}}{ k \pi} \right)   \cos(k \pi t)  \right]  \sin(k \pi x)                             \\
+% 		             & +  \sum_{k=1 \atop k \text{ ungerade}}^{\infty} \left[  \frac{4a }{(k \pi)^3}  - \left( \frac{{2}a }{(k \pi)^3} + \frac{{2}}{ k \pi} \right) \cos(k \pi t)  \right]  \sin(k \pi x)
+% 	      \end{align*}
+% \end{enumerate}
+
+% \section{Conservation laws - Idea}
+% % Integral form
+% % \begin{equation}
+% % 	\frac{d}{dt}\int_{\Omega}u\,d\Omega 
+% % 	= -\int_{\partial\Omega}f(u)\cdot n\,d\partial\Omega
+% % \end{equation}
+% % Differential form
+% % \begin{equation}
+% % 	u_{t} + \nabla\cdot f(u) = 0 
+% % \end{equation}
+% \emph{Master balance principle}: due to the fact that the mathematical structure of the fundamental balance relations,
+% namely of mass, linear momentum, moment of momentum, energy and entropy, is in principle identical, they can be 
+% formulated within the concise shape of a master balance. To begin with, let $\Psi$ and $\BPsi$ be volume specific
+% scalar and vector value densities of a physical quantity to be balanced, respectively. Then, the general balance relations take 
+% the global \textbf{integral form} as follows 
+% \begin{align}
+% 	\frac{d}{dt}\int_{\Omega} \Psi \,d\Omega  & = 
+% 	-\int_{\partial\Omega}\Bphi\cdot\Bn\,d\partial\Omega 
+% 	+ \int_{\Omega}\sigma\,d\Omega
+% 	+ \int_{\Omega}\hat{\Psi}\,d\Omega             \\
+% 	\frac{d}{dt}\int_{\Omega} \BPsi \,d\Omega & = 
+% 	-\int_{\partial\Omega}\BPhi\cdot\Bn\,d\partial\Omega 
+% 	+ \int_{\Omega}\Bsigma\,d\Omega
+% 	+ \int_{\Omega}\hat{\BPsi}\,d\Omega
+% \end{align}
+% where $(\Bphi\cdot\Bn)$ and $(\BPhi\cdot\Bn)$ describe action at the vicinity; $\sigma$ and 
+% $\Bsigma$ present for action from a distance; and $\hat{\Psi}$ and $\hat{\BPsi}$ for production or nucleation.
+% \begin{example}
+% 	Conservation of mass: A derivation from integral to differential form.
+% \end{example}
+% \inputfig{floats/massx1x2}{massx1x2}
+% Let $x$ represent the distance along the tube and let $\rho(x,t)$ be the mass density of the 
+% fluid at point $x$ and time $t$. Then, the total mass $M$ in the section 
+% $[x_{1},x_{2}]$ at time $t$ is defined as follows
+% \begin{equation}
+% 	M := \int_{x_{1}}^{x_{2}} \rho(x,t)\,dx.
+% \end{equation}
+% Assume that the walls of the tube are impermeable and mass is neither created nor destroyed, 
+% this total mass $M$ in this interval $[x_1,x_2]$ varies over time only due to the fluid flowing
+% across at the boundaries $x=x_{1}$ and $x=x_{2}$. 
+% % Besides, the flow rate (also called \emph{rate of flow}, or \emph{flux}) is denoted as $f(\rho)$.
+% Now let $v(x,t)$ be the measured velocity of flow at point $x$ and time $t$.
+% Then, the flow rate (also called \emph{rate of flow}, or \emph{flux})
+% passing the end points of the interval $[x_{1},x_{2}]$ at time $t$ is given by
+% \begin{equation}
+% 	\rho(x_{1},t)v(x_{1},t)-\rho(x_{2},t)v(x_{2},t).
+% \end{equation}
+% The rate of change of mass in $[x_{1},x_{2}]$ given by the difference of fluxes at 
+% $x_1$ and $x_2$ flow rate has to be equal with the time rate of change of total mass
+% \begin{equation}\label{eq:relation0}
+% 	\boxed{
+% 		\frac{d}{dt}\int_{x_{1}}^{x_{2}} \rho(x,t)\,dx 
+% 		% \stackrel{!}{=} f(\rho(x_{1},t))-f(\rho(x_{2},t))
+% 		= \rho(x_{1},t)v(x_{1},t)-\rho(x_{2},t)v(x_{2},t)
+% 	}
+% \end{equation}
+% which is the \textbf{integral form} of the conservation law. Next, note that the following relation holds
+% \begin{equation}\label{eq:relation1}
+% 	\int_{x_{1}}^{x_{2}} \frac{\partial}{\partial x}f(\rho)\,dx 
+% 	= f(\rho(x_{2},t))-f(\rho(x_{1},t)).
+% \end{equation}
+% Substitution of \eqref{eq:relation1} into \eqref{eq:relation0} leads to
+% \begin{equation}\label{eq:relation2}
+% 	\frac{d}{dt}\int_{x_{1}}^{x_{2}} \rho(x,t)\,dx 
+% 	= -\int_{x_{1}}^{x_{2}}\frac{\partial}{\partial x}f(\rho)\,dx.
+% \end{equation}
+% If $\rho(x,t)$ is sufficiently smooth, time derivative on the LHS of \eqref{eq:relation2}
+% can be brought inside the integral. Then, an arrangement of \eqref{eq:relation2} yields
+% \begin{equation}\label{eq:relation3}
+% 	\int_{x_{1}}^{x_{2}}
+% 	\left(\frac{\partial}{\partial t}\rho(x,t) + \frac{\partial}{\partial x}f(\rho)\right)\,dx 
+% 	= 0.
+% \end{equation}
+% Since \eqref{eq:relation3} holds for any choice of $x_{1}$ and $x_{2}$, the integrant must be vanished
+% everywhere. Therefore, one obtains the \textbf{differential form} of the conservation law
+% \begin{equation}\label{eq:deri}
+% 	\therefore \quad
+% 	\boxed{\rho_{t} + f(\rho)_{x} = 0}
+% \end{equation}
+% % \begin{enumerate}
+% % 	\item gas dynamics
+% % 	\item oil-water mixtures
+% % 	\item plasmas
+% % 	\item shallow water flows
+% % 	\item meteology
+% % 	\item traffic
+% % 	\item ...
+% % \end{enumerate}
+% % \begin{definition}
+% % 	Cauchy problem
+% % \end{definition}
+% % Cauchy problem\\
+% % Riemann problem\\
+% % \begin{equation}
+% % 	u_{t} + f(u)_{x} = 0 
+% % \end{equation}
+% \begin{example}
+% 	Different definitions of flux function yields different applications
+% \end{example}
+% \begin{enumerate}
+% 	\item Advection equation: \eqref{eq:deri} with flux function
+% 	      $\displaystyle  f(\rho) =  a\rho, \ a\in \mathbb{R^+}$, taking form
+% 	      \begin{equation}
+% 		      \boxed{
+% 			      \rho_{t} + a\rho_{x} = 0
+% 		      }
+% 	      \end{equation}
+% 	\item \emph{Inviscid} Burgers' equation: \eqref{eq:deri} with flux function
+% 	      $\displaystyle  f(\rho) =  \frac{1}{2}\rho^2$, yielding
+% 	      \begin{equation}
+% 		      \boxed{
+% 			      \rho_{t} + \rho\rho_{x} = 0
+% 		      }
+% 	      \end{equation}
+% 	      which is used to illustrate the distortion of waveform in simple waves.
+% 	      Meanwhile, \emph{viscous} Burgers' equation is a scalar parabolic PDE, taking the form
+% 	      $$\rho_t + \rho\rho_{x} = \varepsilon\rho_{xx}$$
+% 	      which is the simplest differential model for a fluid flow.
+% 	\item Lighthill-Whitham-Richards (LWR) equation: \eqref{eq:deri} with flux function
+% 	      $$\displaystyle  f(\rho) =  u_{max}\,\rho\left(1-\frac{\rho}{\rho_{max}}\right)$$
+% 	      which is used to model traffic flow; $u_{max}$ is the given maximal speed of vehicle to be allowed, 
+% 	      $\rho_{max}$ the given maximal density of vehicle; taking the form
+% 	      \begin{equation}
+% 		      \rho_{t} + \left(u_{max}-\frac{2u_{max}}{\rho_{max}}\rho\right)\rho_{x} = 0
+% 	      \end{equation}
+% 	\item (Typical) Buckley-Leverett petroleum equation: \eqref{eq:deri} with flux function
+% 	      $$\displaystyle f(\rho) =  \frac{\rho^2}{\rho^2 + (1-\rho)^2\mu_{\text{water}}/\mu_{\text{oil}}}$$
+% 	      which is a one-dimensional model for a two-phase flow; $\rho$ stands for water saturation
+% 	      and takes the value in the interval $[0,1]$.
+% 	\item \emph{Euler} equations of gas dynamics in 1D
+% 	      %   \begin{align}
+% 	      %       \begin{cases}
+% 	      % 	      \begin{aligned}
+% 	      % 		      \rho_{t}     & + (\rho v)_x & = 0 \\
+% 	      % 		      (\rho v)_{t} & + (\rho v^2 + p)_x & = 0 \\
+% 	      % 		      E_{t}        & + (v(E+p))_x & = 0
+% 	      % 	      \end{aligned}
+% 	      %       \end{cases}
+% 	      %   \end{align}
+% 	      \begin{align}
+% 		      \begin{pmatrix} \rho\\\rho v \\ E \end{pmatrix}_{t}
+% 		      +
+% 		      \begin{pmatrix} \rho v\\\rho v^2 + p \\ v(E+p) \end{pmatrix}_{x}
+% 		      =
+% 		      \begin{pmatrix} 0\\ 0 \\ 0 \end{pmatrix}
+% 	      \end{align}
+% 	      $\rightarrow$ The pressure $p$ should be specified as a given function of 
+% 	      mass density $\rho$, linear momentum $\rho v$ and/or energy $E$ in order to 
+% 	      fulfill the \emph{closure} problem.
+% 	      Such additional equation is called \emph{equation of state} (normally in fluid), or 
+% 	      \emph{constitutive equation} (normally in solid). 
+% 	\item \emph{Euler} equations of gas dynamics in 2D
+% 	      \begin{align}
+% 		      \begin{pmatrix} \rho\\ \rho u\\ \rho v \\ E \end{pmatrix}_{t}
+% 		      +
+% 		      \begin{pmatrix} \rho u\\ \rho u^2 + p \\ \rho uv \\ u(E+p) \end{pmatrix}_{x}
+% 		      + 
+% 		      \begin{pmatrix} \rho v\\ \rho uv \\ \rho v^2 + p \\ v(E+p) \end{pmatrix}_{y}
+% 		      =
+% 		      \begin{pmatrix} 0 \\ 0 \\ 0 \\ 0 \end{pmatrix}
+% 	      \end{align}
+% \end{enumerate}
+% % \begin{recall}
+% % 	Convexity
+% % \end{recall}
+% \begin{definition}
+% 	Cauchy problem and Riemann problem
+% \end{definition}
+% Let $u$ be a conserved unknown quantity to be modelled and defined as follows
+% \begin{align}\label{eq:conservedquantity}
+% 	u:
+% 	\begin{cases}
+% 		\mathbb{R}\times\mathbb{R}^+ \rightarrow \mathbb{R}, \\
+% 		(x,t) \mapsto u(x,t).
+% 	\end{cases}
+% \end{align}
+% \emph{Cauchy's problem} is simply the pure initial value problem (IVP), e.g. 
+% find a function $u$ holding \eqref{eq:conservedquantity} that is a solution of
+% $\eqref{eq:cauchy}_1$ satisfying the initial condition $\eqref{eq:cauchy}_2$:
+% \begin{equation}\label{eq:cauchy}
+% 	\boxed{
+% 		\begin{aligned}
+% 			\partial_{t}u + \partial_{x}f(u) & = 0,        \\
+% 			u(x,0)                           & = u_{0}(x).
+% 		\end{aligned}
+% 	}
+% \end{equation}
+% \emph{Riemann's problem} is simply the conservation law together with particular initial data
+% consisting of two constant states separated by a single discontinuity, e.g.
+% find a function $u$ holding \eqref{eq:conservedquantity} that is a solution of
+% $\eqref{eq:riemann}_1$ satisfying the initial condition $\eqref{eq:riemann}_2$:
+% \begin{equation}\label{eq:riemann}
+% 	\boxed{
+% 		\begin{aligned}
+% 			\partial_{t}u + \partial_{x}f(u) & = 0,        \\
+% 			u(x,0)                           & = u_{0}(x)=
+% 			\begin{cases}
+% 				u_{L}, \quad x<0, \\
+% 				u_{R}, \quad x>0.
+% 			\end{cases}
+% 		\end{aligned}
+% 	}
+% \end{equation}
+% % \begin{definition}
+% % 	Hyperbolic
+% % \end{definition}
+% % Let $\Omega$ be 
+% % \inputfig{floats/comparehyperbolic}{comparehyperbolic}
+% %------------------------------------------------------------------------------
+% \section{Characteristics}
+% Let $f:\mathbb{R}\rightarrow\mathbb{R}$ be a $C^1$ function. We consider the \emph{Cauchy} problem
+% \begin{align}\label{eq:charac}
+% 	\frac{\partial u}{\partial t} + \frac{\partial}{\partial x}f(u) & = 0,        \qquad  x\in\mathbb{R}, t>0, \\
+% 	u(x,0)                                                          & = u_{0}(x), \qquad  x\in\mathbb{R}.
+% \end{align}
+% By setting $a(u) = f'(u)$, and letting $u$ be a classical solution of \eqref{eq:charac},
+% one obtains from \eqref{eq:charac} the \emph{non-conservative} form as follows
+% \begin{equation}
+% 	\frac{\partial u}{\partial t} + a(u)\frac{\partial u}{\partial x} = 0.
+% \end{equation}
+% The characteristic curves associated with \eqref{eq:charac} are defined as the integral curves
+% of the differential equation
+% \begin{equation}
+% 	\frac{dx}{dt} = a(u(x(t),t)).
+% \end{equation}
+% \begin{proposition}
+% 	Assume that u is a smooth solution of the Cauchy problem. The characteristic curves 
+% 	are straight lines along which u is constant.
+% \end{proposition}
+% \begin{proof}
+% 	Consider a characteristic curve passing through the point $(x_{0},0)$, i.e.
+% 	a solution of the ordinary differential system
+% 	\begin{align}
+% 		\begin{cases}\displaystyle
+% 			\frac{dx}{dt} & = a(u(x(t),t)), \\
+% 			x(0)          & = x_{0}.
+% 		\end{cases}
+% 	\end{align}
+% 	It exists at least on a small time interval $[0,t_{0})$. 
+% 	Along such a curve, u is constant since
+% 	\begin{align*}
+% 		\frac{d}{dt}u(x(t),t) 
+% 		 & = \frac{\partial u}{\partial t}(x(t),t)
+% 		+ \frac{\partial u}{\partial x}(x(t),t) \frac{dx}{dt}(t)                                    \\
+% 		 & =\left(\frac{\partial u}{\partial t} + a(u)\frac{\partial u}{\partial x}\right)(x(t),t) 
+% 		= 0.
+% 	\end{align*}
+% 	Therefore, the characteristic curves are straight lines whose constant slopes depend
+% 	on the initial data. As a result, the characteristic straight line passing through
+% 	the point $(x_{0},0)$ is defined by the equation
+% 	\begin{equation}
+% 		\boxed{
+% 			x = x_{0} + ta(u_{0}(x_{0}))
+% 		}
+% 	\end{equation}
+% \end{proof}
+% \begin{example}
+% 	Determine characteristics of the inviscid Burgers' equation with initial conditions given as
+% 	\begin{equation}
+% 		u(x,0) = u_{0}(x) =
+% 		\begin{cases}
+% 			\begin{aligned}
+% 				 & 1,   & x\leq 0,        &                        \\
+% 				 & 1-x, & 0\leq x \leq 1, & \quad x\in \mathbb{R}, \\
+% 				 & 0,   & x\geq 1.        & 
+% 			\end{aligned}
+% 		\end{cases}
+% 	\end{equation}
+% \end{example}
+% By using the method of characteristics, the solution can be solved up to the time when
+% those characteristics first intersect with each other, i.e. so-called breaking time or shock.
+% Since the $f'(u) = u$ in the inviscid Burgers' equation, it yields the characteristics 
+% passing through the point $(x_{0},t)$
+% \begin{equation}
+% 	x = x_{0} + t\,u_{0}(x_{0})
+% \end{equation}
+% which leads to
+% \begin{equation}
+% 	x(x_{0},t) = 
+% 	\begin{cases}
+% 		\begin{aligned}
+% 			 & x_{0}+t,          & x_{0}\leq 0,          \\
+% 			 & x_{0}+t(1-x_{0}), & 0\leq x_{0} \leq 1,   \\
+% 			 & x_{0},            & x_{0}\geq 1.         
+% 		\end{aligned}
+% 	\end{cases}
+% \end{equation}
+% (Sketch)
+% %------------------------------------------------------------------------------
+% % \section{General strategy for solving the first-order PDE}
+% % Supposed 
+% %------------------------------------------------------------------------------
+% % \section{Rankine-Hugoniot (RH) jump condition}
+
+% % Characteristic curves
+% % \begin{equation}
+% % 	\dot{x} = f'(u)\\
+% % \end{equation}
+% % \begin{align*}
+% % 	\frac{d}{dt}u(x(t),t) 
+% % 	= \frac{\partial u}{\partial t}(x(t),t)
+% % 	+ \frac{\partial u}{\partial x}(x(t),t) \frac{dx}{dt}(t)
+% % \end{align*}
+
+
+% % \inputfig{floats/multistructures}{multistructures}
+
+\end{document}
+
