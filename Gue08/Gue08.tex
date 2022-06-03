@@ -45,11 +45,11 @@ Content covered:
 	\end{align}
 	where the boundary conditions (BCs) at the left-most and right-most points
 	for all time $t$
-	with a constant $\alpha \in \mathbb{R}$ are defined, respectively, as follows
+	with a constant $\mu \in \mathbb{R}$ are defined, respectively, as follows
 	\begin{align}
 		\begin{cases}
-			u(0,t) & =0,                                                              \\
-			u(L,t) & = \alpha t \exp(-\alpha t),                                     
+			u(0,t) & =0,                                                        \\
+			u(L,t) & = \mu t \exp(-\mu t),                                     
 		\end{cases}
 	\end{align}
 	and the initial condition (IC) with a constant $u_{0} \in \mathbb{R}$ is given as 
@@ -65,23 +65,23 @@ Approach:
 		      \label{eq:uinh}
 		      \partial_{xx}u_{inh} = 0, \quad \text{with BCs:}\ 
 		      \begin{cases}
-			      u_{inh}(0,t) = 0,                        \\
-			      u_{inh}(L,t) = \alpha t \exp(-\alpha t), \\
+			      u_{inh}(0,t) = 0,                  \\
+			      u_{inh}(L,t) = \mu t \exp(-\mu t), \\
 		      \end{cases}
 	      \end{align}
 	      which leads to
 	      \begin{align}
 		      \label{eq:uinhsol}
 		      \boxed{
-			      u_{inh}(x,t) = \frac{x}{L}\alpha t \exp(-\alpha t).
+			      u_{inh}(x,t) = \frac{x}{L}\mu t \exp(-\mu t).
 		      }
 	      \end{align}
 	      Likewise, we also obtain the following expression
 	      \begin{align}
 		      \label{eq:ptuinh}
 		      \partial_{t}u_{inh} 
-		      = \frac{x}{L}\alpha \exp(-\alpha t) - \frac{x}{L}\alpha^{2} t \exp(-\alpha t)
-		      = \frac{x}{L}(1-\alpha t)\alpha \exp(-\alpha t)
+		      = \frac{x}{L}\mu \exp(-\mu t) - \frac{x}{L}\mu^{2} t \exp(-\mu t)
+		      = \frac{x}{L}(1-\mu t)\mu \exp(-\mu t)
 	      \end{align}
 	      Note in passing that we have used $u_{inh}(x,t) = ax+b, \forall a,b \in\mathbb{R}$
 	      to probe the solution mentioned at \eqref{eq:uinh}, since it satisfies $\partial_{xx}(ax+b) = 0$.
@@ -106,7 +106,7 @@ Approach:
 		       & \Leftrightarrow
 		      \partial_t\tilde{u} - \partial_{xx}\tilde{u}
 		      \stackrel{\eqref{eq:ptuinh}}{=}
-		      - \frac{x}{L}(1-\alpha t)\alpha \exp(-\alpha t)
+		      - \frac{x}{L}(1-\mu t)\mu \exp(-\mu t)
 	      \end{align}
 	      Then, the homogenized problem reads
 	      \begin{equation}
@@ -124,7 +124,7 @@ Approach:
 		      }
 	      \end{equation}
 	      where the source term $\tilde{f}(x,t)$ defined as 
-	      $\displaystyle \tilde{f}(x,t) := -\frac{x}{L}(1-\alpha t)\alpha \exp(-\alpha)$.
+	      $\displaystyle \tilde{f}(x,t) := -\frac{x}{L}(1-\mu t)\mu \exp(-\mu)$.
 	      
 	\item We now need to find out the Eigenfunctions $\varphi(x)$ satisfying
 	      \begin{align}
@@ -236,7 +236,7 @@ Approach:
 	\item Expand the source term $\tilde{f}(x,t)$ by using the normalized eigenfunction $\varphi_{k}(x)$.
 	      The source term $\tilde{f}(x,t)$ takes the following form
 	      \begin{align}
-		      \tilde{f}(x,t) = -\frac{x}{L} (1-\alpha t)\alpha \exp(-\alpha t),
+		      \tilde{f}(x,t) = -\frac{x}{L} (1-\mu t)\mu \exp(-\mu t),
 	      \end{align}
 	      which can be written in an expansion of eigenfuctions
 	      \begin{align}
@@ -249,19 +249,20 @@ Approach:
 	      \end{align}
 	      where coefficient $\beta_{k}(t)$ is computed by projecting $\tilde{f}(x,t)$ on eigenfunctions $\varphi_{k}(x)$, 
 	      as follows
-	      \begin{align*}
+	      \begin{align}
+		      \label{eq:betacoefficient}
 		      \beta_k(t)
-		       & = \langle \tilde{f}(x,t),\varphi_{k}(x) \rangle                      \\
+		       & = \langle \tilde{f}(x,t),\varphi_{k}(x) \rangle             \notag \\
 		       & = \int_0^L 
-		      \left(-\frac{x}{L} (1-\alpha t)\alpha \exp(-\alpha t) \right)
-		      \sqrt{\frac{2}{L}} \sin\left(\frac{k \pi}{L} x\right) \ dx              \\
-		       & = \frac{-(1-\alpha t) \alpha \exp(-\alpha t)}{L} \sqrt{\frac{2}{L}}
+		      \left(-\frac{x}{L} (1-\mu t)\mu \exp(-\mu t) \right)
+		      \sqrt{\frac{2}{L}} \sin\left(\frac{k \pi}{L} x\right) \ dx     \notag \\
+		       & = \frac{-(1-\mu t) \mu \exp(-\mu t)}{L} \sqrt{\frac{2}{L}}
 		      \int_0^L x
-		      \sin\left(\frac{k \pi}{L} x\right) \ dx                                 \\  
-		       & = \frac{-(1-\alpha t) \alpha \exp(-\alpha t)}{L} \sqrt{\frac{2}{L}}
-		      \frac{(-1)^k}{k\pi}L^2                                                  \\
-		       & = -(-1)^k \frac{\sqrt{2L}}{k \pi}(1-\alpha t)\alpha \exp(-\alpha t).
-	      \end{align*}
+		      \sin\left(\frac{k \pi}{L} x\right) \ dx                        \notag \\  
+		       & = \frac{-(1-\mu t) \mu \exp(-\mu t)}{L} \sqrt{\frac{2}{L}}
+		      \frac{(-1)^k}{k\pi}L^2                                         \notag \\
+		       & = -(-1)^k \frac{\sqrt{2L}}{k \pi}(1-\mu t)\mu \exp(-\mu t).
+	      \end{align}
 	      
 	\item Ansatz for solution $\tilde{u}(x,t)$ take the following form
 	      \begin{align}
@@ -270,6 +271,7 @@ Approach:
 	      \end{align}
 	      By substituting \eqref{eq:ftilde} and \eqref{eq:ansatzu} into \eqref{eq:utildeeqn} we obtain 
 	      \begin{align}
+		      \label{eq:ODEalpha}
 		       & \Leftrightarrow 
 		      \sum_{k=1}^\infty 
 		      \left(
@@ -292,13 +294,15 @@ Approach:
 		      = 0.
 	      \end{align}
 	      Since the eigenfunctions $\varphi_{k}(x)$ are orthonormal to each other, 
-	      we arrive at the following equality 
+	      we induce from \eqref{eq:ODEalpha} and arrive at the following equality 
 	      \begin{align}
+		      \label{eq:ODEalphafinal}
 		      \boxed{
 			      \alpha_{k}'(t) + \lambda_k \alpha_k(t) - \beta_k(t) = 0.
 		      }
 	      \end{align}
-	      Solution to $\alpha_k(t)$ takes the form
+	      This is the 1st order ODE with unknown $\alpha_{k}(t)$. 
+	      The solution to $\alpha_k(t)$ takes the form
 	      \begin{align*}
 		      \alpha_k(t)
 		      = \alpha_k(0) \exp(-\lambda_k t)
@@ -310,22 +314,57 @@ Approach:
 		            \begin{align}
 			            \alpha_{k}'(t) + \lambda_k \alpha_k(t) = 0 
 			            \Leftrightarrow
-			            \alpha_{k}(t) = \alpha_{k}(0)\exp(-\lambda_k t)
+			            \alpha^{hom}_{k}(t) = \alpha_{k}(0)\exp(-\lambda_k t).
 		            \end{align}
-		      \item Inhomogeneous part: using the method \emph{variation of constant}
+		      \item Inhomogeneous part: By using the method \emph{variation of constant}
+		            we exploit the ansatz 
+		            \begin{align}
+			            \label{eq:ansatzforalpha}
+			            \alpha^{inh}_{k}(t) = \alpha_{k}(t)\exp(-\lambda_k t).
+		            \end{align}
+		            Insertion of \eqref{eq:ansatzforalpha} into \eqref{eq:ODEalphafinal} leads to 
+		            \begin{align*}
+			            \alpha'_{k}(t)\exp(-\lambda_k t)
+			            - \lambda_k \alpha_{k}(t)\exp(-\lambda_k t)
+			            + \lambda_k \alpha_{k}(t)\exp(-\lambda_k t)
+			            - \beta_{k}(t)                   = 0                  
+		            \end{align*}
+		            where the two terms in the middle have been canceled out with each other. 
+		            We then obtain the equality
+		            \begin{align}
+			            \alpha'_{k}(t)\exp(-\lambda_k t)
+			             & = \beta_{k}(t) \notag                                                                              \\
+			            \Leftrightarrow \alpha'_{k}(t)   
+			             & = \exp(\lambda_k t)\beta_{k}(t)                                                      \notag        \\
+			            \Leftrightarrow \alpha_{k}(t)
+			             & = \int_{0}^{t} \exp(\lambda_k \tau)\beta_{k}(\tau)\ d\tau                            \notag        \\
+			            \Leftrightarrow \alpha_{k}(t)
+			             & \stackrel{\eqref{eq:betacoefficient}}{=}
+			            \int_0^t \exp(\lambda_k \tau)
+			            (-1)^k \frac{\sqrt{2 L}}{k \pi} (1- \mu\tau) \mu \exp(-\mu\tau) \ d\tau                       \notag  \\
+			            \Leftrightarrow \alpha_{k}(t)
+			             & = (-1)^k \frac{\sqrt{2L}}{k \pi} \mu \int_0^t 
+			            \exp(\lambda_{k}\tau) ( 1 - \mu\tau) \exp(-\mu\tau) \ d\tau                                    \notag \\
+			            \Leftrightarrow \alpha_{k}(t)
+			             & = (-1)^k \frac{\sqrt{2L}}{k \pi} \mu 
+			            \left(
+			            \int_0^t \exp(\lambda_k \tau - \mu\tau)  \ d\tau
+			            - \mu \int_0^t \tau \exp(\lambda_k \tau -\mu\tau ) \ d\tau 
+			            \right)                                                                                 \notag        \\
+			            \Leftrightarrow \alpha_{k}(t)
+			             & = (-1)^k \frac{\sqrt{2L}}{k \pi} \mu  
+			            \frac{(\lambda_k - (\lambda_k-\mu)\mu t) \exp(\lambda_k -\mu t) - \lambda_k}
+			            {(\lambda_k -\mu)^2}  \notag                                                                          \\
+			            \Leftrightarrow \alpha_{k}(t)
+			             & = (-1)^k \frac{\sqrt{2L}}{k \pi} \mu  
+			            \frac{
+				            (\lambda_k - (\lambda_k-\mu)\mu t) \exp(-\mu t)
+				            - \lambda_k \exp(-\lambda_k t)}
+			            {(\lambda_k -\mu)^2}
+		            \end{align}
 	      \end{itemize}
 \end{enumerate}
 
-Das Integral können wir weiter ausrechnen:
-\begin{align*}
-	\int_0^t e^{-\lambda_k(t-\tau)} \beta_k(\tau) \ d\tau
-	 & = e^{-\lambda_k t} \int_0^t e^{\lambda_k \tau} (-1)^k \frac{\sqrt{2 L}}{k \pi} (1- a \tau) a e^{-a \tau} \ d\tau                           \\
-	 & = e^{-\lambda_k t}(-1)^k \frac{\sqrt{2L}}{k \pi} a \int_0^t e^{\lambda_k \tau} ( 1 - a \tau) e^{-a \tau} \ d\tau                           \\
-	 & = e^{-\lambda_k t}(-1)^k \frac{\sqrt{2L}}{k \pi} a \left( \int_0^t e^{\lambda_k \tau} e^{-a \tau} \ d\tau
-	- a \int_0^t \tau e^{\lambda_k \tau} e^{-a \tau} \ d\tau \right)                                                                              \\
-	 & = e^{-\lambda_k t}(-1)^k \frac{\sqrt{2L}}{k \pi} a  \frac{(\lambda_k - (\lambda_k-a)a t)e^{\lambda_k -a t} - \lambda_k}{(\lambda_k - a)^2} \\
-	 & = (-1)^k \frac{\sqrt{2L}}{k \pi} a  \frac{(\lambda_k - (\lambda_k-a)a t)e^{-a t} - \lambda_k e^{-\lambda_k t}}{(\lambda_k - a)^2}
-\end{align*}
 Es bleibt die Anfangsbedingung für $\alpha_k(0)$ zu bestimmen.
 Dazu muss die Anfangsbedingung für $v$ entwickelt werden:
 \begin{align*}
