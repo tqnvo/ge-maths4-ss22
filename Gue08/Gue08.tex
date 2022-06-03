@@ -54,6 +54,7 @@ Content covered:
 	\end{align}
 	and the initial condition (IC) with a constant $u_{0} \in \mathbb{R}$ is given as 
 	\begin{align}
+		\label{eq:ICcondition}
 		u(x,0) = u_0 \ x(L-x).
 	\end{align}
 \end{example}
@@ -363,36 +364,48 @@ Approach:
 			            {(\lambda_k -\mu)^2}
 		            \end{align}
 	      \end{itemize}
+	\item Find $\alpha_k(0)$ by taking into consideration the IC of $\tilde{u}(x,0)$, as follows
+	      \begin{align}
+		      \tilde{u}(x,0) = \sum_{k=1}^{\infty} \alpha_k(0) \varphi_k(x)
+		      \stackrel{\eqref{eq:utildeeqn}}{\Leftrightarrow}
+		      u_0\ x(L-x) \stackrel{!}{=} \sum_{k=1}^{\infty} \alpha_k(0) \varphi_k(x)
+	      \end{align}
+	      where the coefficient $\alpha_k(0)$ is computed as follows
+	      \begin{align}
+		      \alpha_k(0)
+		       & = \langle \tilde{u}(x,0),\varphi_k(x) \rangle                                           \notag \\
+		       & = \int_0^L u_0\ x (L-x) \sqrt{\frac{2}{L}} \sin\left( \frac{k \pi}{L} x \right) \ dx 
+		      =
+		      \begin{cases}
+			      \displaystyle
+			      u_0 \sqrt{2L} \frac{4 L^2}{(k\pi)^3}, & k \text{ odd}, \\
+			      0,                                    & k\text{ even}.
+		      \end{cases}
+	      \end{align}
+	      The solution to $\tilde{u}(x,t)$ then reads
+	      \begin{equation*}
+		      \boxed{
+			      \begin{aligned}
+				      \tilde{u}(x,t)
+				       & = \sum_{k=1}^\infty \alpha_k(t) \varphi_k(x)           \\
+				       & = \sum_{\substack{k=1                                  \\k \text{ odd}}}^\infty \frac{8 u_0 L^2}{(k\pi)^3}
+				      \exp(-\lambda_k t)
+				      \sin\left( \frac{k \pi}{L} x \right)                      \\
+				       & \quad\quad + \sum_{k=1}^\infty (-1)^k \frac{2a}{k \pi}
+				      \frac{(\lambda_k - (\lambda_k-\mu)\mu t)\exp(-\mu t) - \lambda_k \exp(-\lambda_k t)}
+				      {(\lambda_k - \mu)^2}
+				      \sin\left( \frac{k \pi}{L} x \right).
+			      \end{aligned}
+		      }
+	      \end{equation*}
+	      
+	\item Finally the solution to $u(x,t)$ reads
+	      \begin{align*}
+		      \therefore\quad\boxed{
+			      u(x,t) = \tilde{u}(x,t) + \frac{x}{L} \mu t\exp(-\mu t).
+		      }
+	      \end{align*}
 \end{enumerate}
-
-Es bleibt die Anfangsbedingung für $\alpha_k(0)$ zu bestimmen.
-Dazu muss die Anfangsbedingung für $v$ entwickelt werden:
-\begin{align*}
-	v(x,0) = \sum_{i=1}^k \alpha_k(0) \phi_k(x) \overset{!}{=} u_0\ x(L-x)
-\end{align*}
-mit
-\begin{align*}
-	\alpha_k(0)
-	 & = \int_0^L u_0\ x (L-x) \sqrt{\frac{2}{L}} \sin\left( \frac{k \pi}{L} x \right) \ dx \\
-	 & =
-	\begin{cases}
-		\displaystyle
-		u_0 \sqrt{2L} \frac{4 L^2}{k^3 \pi^3}, & k \text{ ungerade}, \\
-		0,                                     & k\text{ gerade}.
-	\end{cases}
-\end{align*}
-Die Lösung $v$ lautet insgesamt:
-\begin{align*}
-	v(x,t) & = \sum_{k=1}^\infty \alpha_k(t) \phi_k(x)                                                                                                                                         \\
-	       & = \sum_{k=1,k \text{ ungerade}}^\infty \frac{8 u_0 L^2}{k^3 \pi^3} e^{-\lambda_k t} \sin\left( \frac{k \pi}{L} x \right)                                                          \\
-	       & + \sum_{k=1}^\infty (-1)^k \frac{2a}{k \pi}   \frac{(\lambda_k - (\lambda_k-a)a t)e^{-a t} - \lambda_k e^{-\lambda_k t}}{(\lambda_k - a)^2} \sin\left( \frac{k \pi}{L} x \right).
-\end{align*}
-und die Lösung für $u$ folgt aus:
-\begin{align*}
-	\therefore\quad\boxed{
-		u(x,t) = v(x,t) + \frac{x}{L} a\ t\ e^{-a t}.
-	}
-\end{align*}
 
 % \inputfig{floats/discretize}{discretize}
 % Approach:
@@ -426,13 +439,13 @@ und die Lösung für $u$ folgt aus:
 % 	\in\mathbb{R}^{(n-2)}.
 % \end{align}
 
-%------------------------------------------------------------------------------
-\newpage
-\inputfig{floats/discretize}{discretize}
+% %------------------------------------------------------------------------------
+% \newpage
+% \inputfig{floats/discretize}{discretize}
 
-%------------------------------------------------------------------------------
-\newpage
-\inputfig{floats/discretize}{discretize}
+% %------------------------------------------------------------------------------
+% \newpage
+% \inputfig{floats/discretize}{discretize}
 
 %------------------------------------------------------------------------------
 \newpage
