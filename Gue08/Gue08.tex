@@ -38,6 +38,7 @@ Content covered:
 %------------------------------------------------------------------------------
 \section{Analysis}
 \begin{example}
+	\label{ex:example1}
 	Examine the following problem:
 	\begin{align}
 		\label{eq:probleminh}
@@ -262,7 +263,7 @@ Approach:
 		      \sin\left(\frac{k \pi}{L} x\right) \ dx                        \notag \\  
 		       & = \frac{-(1-\mu t) \mu \exp(-\mu t)}{L} \sqrt{\frac{2}{L}}
 		      \frac{(-1)^k}{k\pi}L^2                                         \notag \\
-		       & = -(-1)^k \frac{\sqrt{2L}}{k \pi}(1-\mu t)\mu \exp(-\mu t).
+		       & = (-1)^k \frac{\sqrt{2L}}{k \pi}(1-\mu t)\mu \exp(-\mu t).
 	      \end{align}
 	      
 	\item Ansatz for solution $\tilde{u}(x,t)$ take the following form
@@ -305,9 +306,12 @@ Approach:
 	      This is the 1st order ODE with unknown $\alpha_{k}(t)$. 
 	      The solution to $\alpha_k(t)$ takes the form
 	      \begin{align*}
-		      \alpha_k(t)
-		      = \alpha_k(0) \exp(-\lambda_k t)
-		      + \exp(-\lambda_k t) \int_0^t \exp(\lambda_k \tau) \beta_k(\tau) \ d\tau,
+		      \therefore\quad
+		      \boxed{
+			      \alpha_k(t)
+			      = \alpha_k(0) \exp(-\lambda_k t)
+			      + \exp(-\lambda_k t) \int_0^t \exp(\lambda_k \tau) \beta_k(\tau) \ d\tau,
+		      }
 	      \end{align*}
 	      whose derivation goes as follows
 	      \begin{itemize}
@@ -364,6 +368,7 @@ Approach:
 			            {(\lambda_k -\mu)^2}
 		            \end{align}
 	      \end{itemize}
+	      
 	\item Find $\alpha_k(0)$ by taking into consideration the IC of $\tilde{u}(x,0)$, as follows
 	      \begin{align}
 		      \tilde{u}(x,0) = \sum_{k=1}^{\infty} \alpha_k(0) \varphi_k(x)
@@ -383,23 +388,27 @@ Approach:
 		      \end{cases}
 	      \end{align}
 	      The solution to $\tilde{u}(x,t)$ then reads
-	      \begin{equation*}
+	      \begin{equation}
+		      \label{eq:utildesolution}
+		      %   \therefore\quad
 		      \boxed{
 			      \begin{aligned}
 				      \tilde{u}(x,t)
-				       & = \sum_{k=1}^\infty \alpha_k(t) \varphi_k(x)           \\
-				       & = \sum_{\substack{k=1                                  \\k \text{ odd}}}^\infty \frac{8 u_0 L^2}{(k\pi)^3}
+				       & = \sum_{k=1}^\infty \alpha_k(t) \varphi_k(x)  \\
+				       & = \sum_{\substack{k=1                         \\k \text{ odd}}}^\infty \frac{8 u_0 L^2}{(k\pi)^3}
 				      \exp(-\lambda_k t)
-				      \sin\left( \frac{k \pi}{L} x \right)                      \\
-				       & \quad\quad + \sum_{k=1}^\infty (-1)^k \frac{2a}{k \pi}
+				      \sin\left( \frac{k \pi}{L} x \right)             \\
+				       & \ + \sum_{k=1}^\infty (-1)^k \frac{2a}{k \pi}
 				      \frac{(\lambda_k - (\lambda_k-\mu)\mu t)\exp(-\mu t) - \lambda_k \exp(-\lambda_k t)}
 				      {(\lambda_k - \mu)^2}
-				      \sin\left( \frac{k \pi}{L} x \right).
+				      \sin\left( \frac{k \pi}{L} x \right)
 			      \end{aligned}
 		      }
-	      \end{equation*}
+	      \end{equation}
 	      
-	\item Finally the solution to $u(x,t)$ reads
+	\item Finally, by substituting \eqref{eq:ptuinh} and \eqref{eq:utildesolution}
+	      into  \eqref{eq:utilde}
+	      the solution to $u(x,t)$ reads
 	      \begin{align*}
 		      \therefore\quad\boxed{
 			      u(x,t) = \tilde{u}(x,t) + \frac{x}{L} \mu t\exp(-\mu t).
@@ -407,291 +416,54 @@ Approach:
 	      \end{align*}
 \end{enumerate}
 
-% \inputfig{floats/discretize}{discretize}
-% Approach:
-% Central method for $u''(x)$ is obtained as follows
-% \begin{align}
-% 	u''(x)=\frac{u(x+h)-2u(x)+u(x-h)}{h^2}+{\cal O}(h^2).
-% \end{align}
-% Forward method for $u'(x)$ is obtained as follows
-% \begin{align}
-% 	u'(x)=\frac{u(x+h) -u(x)}{h} + {\cal O}(h).
-% \end{align}
-% which leads to the system $A_h u_h=b_h$ where $A_h$ and $b_h$ are recognized as follows
-% \begin{align}
-% 	A_h & =\frac{1}{h^2}\left(
-% 	\begin{array}{cccccc}
-% 			2+5h & -1-5h  &        &        &        &       \\
-% 			-1   & 2+5h   & -1-5h  &        &        &       \\ 
-% 			     & \ddots & \ddots & \ddots &        &       \\ 
-% 			     &        & \ddots & \ddots & \ddots &       \\ 
-% 			     &        &        & -1     & 2+5h   & -1-5h \\ 
-% 			     &        &        &        & -1     & 2+5h
-% 		\end{array}\right)
-% 	\in\mathbb{R}^{(n-2)\times (n-2)}, \\
-% 	b_h & = 
-% 	\begin{pmatrix}
-% 		\displaystyle
-% 		3+\frac{1}{h^2} \\ 3\\  \vdots \\ 3 \\
-% 		\displaystyle
-% 		3+\frac{1}{h^2}+\frac{5}{h}
-% 	\end{pmatrix}
-% 	\in\mathbb{R}^{(n-2)}.
-% \end{align}
+%------------------------------------------------------------------------------
+\newpage
+\begin{example}
+	Examine the term $\partial_{tt} u(x,t)$ in the following problem
+	\begin{align}
+		\partial_{tt} u(x,t) & =   \partial_{xx}u(x,t) + a, \quad \text{for } x\in\Omega = (0,1),\ t>0.
+		% 	u(0,t)               & =0,                          &  & t>0,                \\
+		% 	u(1,t)               & =0,                          &  & t>0,                \\
+		% 	u(x,0)               & = x,                         &  & x\, \in\, (0,1),    \\
+		% 	u_t(x,0)             & = 0,                         &  & x\, \in\, (0,1),
+	\end{align}
+	% with constant source term $a\in\mathbb{R}$.
+	% \begin{enumerate}
+	% 	\item Compute the Eigenvalues and the normalized Eigenfunctions from $\partial_{xx}$.
+	% 	\item Develop the IC and source term in these Eigenfunctions.
+	% 	\item Compute the solution of the problem with the Eigenfunction ansatz.
+	% \end{enumerate}
+\end{example}
 
-% %------------------------------------------------------------------------------
+Similarly to steps approaching to \eqref{eq:ODEalphafinal}, which is shown in Example \ref{ex:example1}, 
+we obtain a 2nd order ODE, instead of the 1st order ODE, as follows
+\begin{align}
+	\label{eq:2ndODEform}
+	\therefore\quad
+	\boxed{
+		\alpha_{k}''(t) + \lambda_k \alpha_k(t) - \beta_k = 0.
+	}
+\end{align}
+Essentially, the equation \eqref{eq:2ndODEform} has the form 
+\begin{align}
+	y''(x) = -cy(x) + b,\quad\forall \ c,b\in\mathbb{R},
+\end{align}
+whose solution takes the following form
+\begin{align}
+	y(x) = \frac{b}{c}
+	+ C_{1}\sin\left(\sqrt{c}x\right)
+	+ C_{2}\cos\left(\sqrt{c}x\right),\quad\forall \ C_{1},C_{2}\in\mathbb{R}.
+\end{align}
+
+%------------------------------------------------------------------------------
+\newpage
+\section{Numerics: FDM consistency order}
+\begin{example}
+	Examine 
+\end{example}
+
 % \newpage
-% \inputfig{floats/discretize}{discretize}
-
-% %------------------------------------------------------------------------------
-% \newpage
-% \inputfig{floats/discretize}{discretize}
-
-%------------------------------------------------------------------------------
-\newpage
-\section{Analysis: Spectral theory $\cdot$ Laplace operator application}
-\newpage
-\begin{example}
-	Examine the following problem
-	\begin{align*}
-		\partial_t u(x,t) & =\partial_{xx}u(x,t)+a, &  & x\ \in\ (0,1), t>0, \\
-		u(0,t)            & =0,                     &  & t>0,                \\
-		u(1,t)            & =0,                     &  & t>0,                \\
-		u(x,0)            & = \sin(\pi x),          &  & x\, \in\, (0,1) ,
-	\end{align*}
-	with constant source term $a\in\mathbb{R}$.
-	\begin{enumerate}
-		\item Compute the Eigenvalues and the normalized Eigenfunctions from $\partial_{xx}$.
-		\item Develop the source term $a\in\mathbb{R}$ in these Eigenfunctions.
-		\item Compute the solution of the problem with the Eigenfunction ansatz.
-	\end{enumerate}
-\end{example}
-
-\newpage
-(Example 2 cont.)
-
-\newpage
-(Example 2 cont.)
-
-% \begin{enumerate}
-% 	\item Die zum Problem geh"orenden Eigenfunktionen und Eigenwerte erf"ullen
-% 	      \begin{align*}
-% 		      \varphi^{\prime\prime}(x)+\lambda\varphi(x) & =0, \quad x\in (0,1) \\
-% 		      \varphi(0)=\varphi(1)                       & =0
-% 	      \end{align*}
-% 	      \begin{align*}
-% 		      \Rightarrow \quad \varphi(x) = C_1\sin(\sqrt{\lambda}x) + C_2 \cos(\sqrt{\lambda}x)
-% 	      \end{align*}
-% 	      Mit den Randbedingungen f"ur $\varphi$ erh"alt man 
-% 	      \begin{align*}
-% 		      0 = \varphi(0) & = C_2 \, \Rightarrow \, C_2 = 0                                                       \\
-% 		      0 = \varphi(1) & = C_1\sin(\sqrt{\lambda}x) \, \Rightarrow \, \lambda_k = (k\pi)^2, \, k\in \mathbb{N}
-% 	      \end{align*}
-% 	      \begin{align*}
-% 		      \Rightarrow \varphi_k(x) = C_1\sin(k\pi x) , \, k \in \mathbb{N}
-% 	      \end{align*}
-% 	      $C_1$ erh"alt man durch Normierung
-% 	      \begin{align*}
-% 		      1 & \stackrel{!}{=} \int_0^1 \varphi_k(x)^2\, dx = C_1^2 \int_0^1 \sin^2(k\pi x) \, dx                \\
-% 		        & = C_1^2 \left[ \left. \frac x 2 - \frac{\sin(2k\pi x)}{4k\pi}\right|^1_0 \right] = C_1^2\frac 1 2 \\
-% 		      \Rightarrow C_1 = \sqrt{2}
-% 	      \end{align*}
-% 	      damit lauten die Eigenwerte und normierten Eigenfunktionen 
-% 	      \begin{align*}
-% 		      \varphi_k(x)               & =\sqrt{2}\sin(k\pi x)                  \\
-% 		      \text{und} \quad \lambda_k & =(k\pi)^2 \text{ f"ur } k\in\mathbb{N}
-% 	      \end{align*}
-
-% 	\item Die Entwicklung des konstanten Quellterms $a(x,t)=a$  in Eigenfunktionen lautet
-% 	      \begin{align*}
-% 		      a & = \sum^{\infty}_{k=1}\beta_k\varphi_k(x)         \\
-% 		        & = \sum^{\infty}_{k=1}\beta_k\sqrt{2}\sin(k\pi x)
-% 	      \end{align*}
-% 	      Die Koeffizienten berechnet man durch
-% 	      \begin{align*}
-% 		      \beta_k & =\int^1_0 a\sqrt{2}\sin(k\pi x)dx                                         \\
-% 		              & = a \sqrt{2} \left[ \left. -\frac{\cos(k \pi x)}{k\pi}\right|^1_0 \right] \\
-% 		              & =\frac{a\sqrt{2}}{k\pi}(1-\cos(k\pi))=\begin{cases}\frac{2a\sqrt{2}}{k\pi} & , k\text{ ungerade} \\
-% 			      0                       & , \text{sonst}
-% 		      \end{cases}
-% 	      \end{align*}
-
-% 	\item F"ur die L"osung $u$ wird der Eigenfunktionen-Ansatz
-% 	      \begin{align*}
-% 		      u(x,t)=\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x)
-% 	      \end{align*}
-% 	      gew"ahlt, mit zeitabh"angigen Koeffizienten $\alpha_k(t), \, t>0, k\in \mathbb{N}$. \\
-% 	      Einsetzen der Entwicklungen von $u(x,t)$ und $a$ in die Differentialgleichung liefert
-% 	      \begin{align*}
-% 		                           & (\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x))_t=(\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x))_{xx}+\sum^{\infty}_{k=1}\beta_k\varphi_k(x) \\
-% 		      \Leftrightarrow\quad & \sum^{\infty}_{k=1}\alpha'_k(t)\varphi_k(x)=-\sum^{\infty}_{k=1}\alpha_k(t)\lambda_k\varphi_k(x)+\sum^{\infty}_{k=1}\beta_k\varphi_k(x) \\
-% 		      \Leftrightarrow\quad & \sum^{\infty}_{k=1}(\alpha'_k(t)+\lambda_k\alpha_k(t)-\beta_k)\varphi_k(x)=0
-% 	      \end{align*}
-% 	      Wir erhalten eine gew"ohnliche Differentialgleichung f"ur die Koeffizienten $\alpha_k(t)$
-% 	      \begin{align*}
-% 		      \alpha'_k(t) & =-\lambda_k\alpha_k(t)+\beta_k
-% 	      \end{align*}
-% 	      mit der allgemeinen L"osung 
-% 	      \begin{align*}
-% 		      \alpha_k(t) & =\frac{\beta_k}{\lambda_k}+C_k e^{-\lambda_k t}.
-% 	      \end{align*}
-% 	      Die Konstante $C_k$ wird durch die Anfangsbedingung f"ur $\alpha_k(0)$ bestimmt. Dazu betrachten wir die Anfangsbedingung f"ur $u$:
-% 	      \begin{align*}
-% 		      u(x,0)=\sum^{\infty}_{k=1}\alpha_k(0)\sqrt{2}\sin(k\pi x)\stackrel{!}{=} \sin(\pi x) \\
-% 		      \Rightarrow \alpha_1(0)\stackrel{!}{=}\frac{1}{\sqrt{2}} \,\text{ und } \, \alpha_k(0) = 0 \ \forall\ k > 1
-% 	      \end{align*}
-% 	      Also gilt f"ur $k=1$
-% 	      \begin{align*}
-% 		      \alpha_1(0)     & = \frac{\beta_1}{\lambda_1}+C_1  \stackrel{!}{=}\frac{1}{\sqrt{2}}                                                            \\
-% 		      \Rightarrow C_1 & =\frac{1}{\sqrt{2}} -\frac{\beta_1}{\lambda_1} = \frac{1}{\sqrt{2}}-\frac{2a\sqrt{2}}{\pi^3} = \frac{\pi^3-4a}{\sqrt{2}\pi^3}
-% 	      \end{align*}
-% 	      und f"ur $k>1$
-% 	      \begin{align*}
-% 		      \alpha_k(0)     & =\frac{\beta_k}{\lambda_k}+C_k\stackrel{!}{=}0           \\
-% 		      \Rightarrow C_k & =-\frac{\beta_k}{\lambda_k} = \begin{cases}-\frac{2a\sqrt{2}}{k^3\pi^3} & , k\text{ ungerade} \\
-% 			      0                            & , \text{sonst}
-% 		      \end{cases}
-% 	      \end{align*}
-% 	      Die L"osung $u$ lautet daher insgesamt 
-% 	      \begin{align*}
-% 		      u(x,t) & =\alpha_1(t)\sqrt{2}\sin(\pi x) + \sum^{\infty}_{k=2}(\frac{\beta_k}{\lambda_k} + C_ke^{-\lambda_k t})\sqrt{2}\sin(k\pi x)                                                                                   \\
-% 		             & = \left(\frac{ 4a}{\pi^3} + (1-\frac{4a}{\pi^3})e^{-\pi^2t}\right)\sin(\pi x) +\sum^{\infty}_{k=2 \atop k\text{ ungerade}} \left( \frac{4a}{k^3\pi^3} - \frac{4a}{k^3\pi^3}e^{-k^2\pi^2t}\right)\sin(k\pi x)
-% 	      \end{align*}
-% \end{enumerate}
-
-%------------------------------------------------------------------------------
-\newpage
-\begin{example}
-	Examine the following problem
-	\begin{align*}
-		\partial_t u(x,t) & =\partial_{xx}u(x,t)+\sin(\pi x), &  & x\ \in\ (0,1), t>0, \\
-		u(0,t)            & =0,                               &  & t>0,                \\
-		u(1,t)            & =0,                               &  & t>0,                \\
-		u(x,0)            & = a,                              &  & x\, \in\, (0,1) ,
-	\end{align*}
-	with constant IC $a\in\mathbb{R}$.
-	\begin{enumerate}
-		\item Compute the Eigenvalues and the normalized Eigenfunctions from $\partial_{xx}$.
-		\item Develop the IC and source term in these Eigenfunctions.
-		\item Compute the solution of the problem with the Eigenfunction ansatz.
-	\end{enumerate}
-\end{example}
-
-% \begin{enumerate}
-% 	\item Die zum Problem geh"orenden Eigenfunktionen und Eigenwerte erf"ullen
-% 	      \begin{align*}
-% 		      \varphi^{\prime\prime}(x)+\lambda\varphi(x) & =0, \quad x\in (0,1) \\
-% 		      \varphi(0)=\varphi(1)                       & =0
-% 	      \end{align*}
-% 	      \begin{align*}
-% 		      \Rightarrow \quad \varphi(x) = C_1\sin(\sqrt{\lambda}x) + C_2 \cos(\sqrt{\lambda}x)
-% 	      \end{align*}
-% 	      Mit den Randbedingungen f"ur $\varphi$ erh"alt man 
-% 	      \begin{align*}
-% 		      0 = \varphi(0) & = C_2 \, \Rightarrow \, C_2 = 0                                                      \\
-% 		      0 = \varphi(1) & = C_1\sin(\sqrt{\lambda}) \, \Rightarrow \, \lambda_k = (k\pi)^2, \, k\in \mathbb{N}
-% 	      \end{align*}
-% 	      \begin{align*}
-% 		      \Rightarrow \varphi_k(x) = C_1\sin(k\pi x) , \, k \in \mathbb{N}
-% 	      \end{align*}
-% 	      $C_1$ erh"alt man durch Normierung
-% 	      \begin{align*}
-% 		      1 & \stackrel{!}{=} \int_0^1 \varphi_k(x)^2\, dx = C_1^2 \int_0^1 \sin^2(k\pi x) \, dx                \\
-% 		        & = C_1^2 \left[ \left. \frac x 2 - \frac{\sin(2k\pi x)}{4k\pi}\right|^1_0 \right] = C_1^2\frac 1 2 \\
-% 		      \Rightarrow C_1 = \sqrt{2}
-% 	      \end{align*}
-% 	      damit lauten die Eigenwerte und normierten Eigenfunktionen 
-% 	      \begin{align*}
-% 		      \varphi_k(x)               & =\sqrt{2}\sin(k\pi x)                  \\
-% 		      \text{und} \quad \lambda_k & =(k\pi)^2 \text{ f"ur } k\in\mathbb{N}
-% 	      \end{align*}
-
-% 	\item Die Entwicklung der konstanten Anfangsbedingung $a(x,t)=a$  in Eigenfunktionen lautet
-% 	      \begin{align*}
-% 		      a & = \sum^{\infty}_{k=1}\beta_k\varphi_k(x)         \\
-% 		        & = \sum^{\infty}_{k=1}\beta_k\sqrt{2}\sin(k\pi x)
-% 	      \end{align*}
-% 	      Die Koeffizienten berechnet man durch
-% 	      \begin{align*}
-% 		      \beta_k & =\int^1_0 a\sqrt{2}\sin(k\pi x)dx                                         \\
-% 		              & = a \sqrt{2} \left[ \left. -\frac{\cos(k \pi x)}{k\pi}\right|^1_0 \right] \\
-% 		              & =\frac{a\sqrt{2}}{k\pi}(1-\cos(k\pi))=\begin{cases}\frac{2a\sqrt{2}}{k\pi} & , k\text{ ungerade} \\
-% 			      0                       & , \text{sonst.}
-% 		      \end{cases}
-% 	      \end{align*}
-% 	      Der Quellterm hat offenbar die Entwicklung
-% 	      \begin{align*}
-% 		                         & \sin(\pi x) = \sum_{k=1}^{\infty}\gamma_k \sqrt{2} \sin(k \pi x) \\
-% 		      \mathrm{mit} \quad & \gamma_k = \begin{cases}\frac{1}{\sqrt{2}} & , k = 1         \\
-% 			      0                  & , \text{sonst.}
-% 		      \end{cases}
-% 	      \end{align*}
-
-% 	\item F"ur die L"osung $u$ wird der Eigenfunktionen-Ansatz
-% 	      \begin{align*}
-% 		      u(x,t)=\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x)
-% 	      \end{align*}
-% 	      gew"ahlt, mit zeitabh"angigen Koeffizienten $\alpha_k(t), \, t>0, k\in \mathbb{N}$. \\
-% 	      Einsetzen der Entwicklungen von $u(x,t)$ und $\sin(\pi x)$ in die Differentialgleichung liefert
-% 	      \begin{align*}
-% 		                           & (\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x))_t=(\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x))_{xx}+\sum^{\infty}_{k=1}\gamma_k\varphi_k(x) \\
-% 		      \Leftrightarrow\quad & \sum^{\infty}_{k=1}\alpha'_k(t)\varphi_k(x)=-\sum^{\infty}_{k=1}\alpha_k(t)\lambda_k\varphi_k(x)+\sum^{\infty}_{k=1}\gamma_k\varphi_k(x) \\
-% 		      \Leftrightarrow\quad & \sum^{\infty}_{k=1}(\alpha'_k(t)+\lambda_k\alpha_k(t)-\gamma_k)\varphi_k(x)=0
-% 	      \end{align*}
-% 	      Wir erhalten eine gew"ohnliche Differentialgleichung f"ur die Koeffizienten $\alpha_k(t)$
-% 	      \begin{align*}
-% 		      \alpha'_k(t) & =-\lambda_k\alpha_k(t)+\gamma_k
-% 	      \end{align*}
-% 	      mit der allgemeinen L"osung 
-% 	      \begin{align*}
-% 		      \alpha_k(t) & =\frac{\gamma_k}{\lambda_k}+C_k e^{-\lambda_k t}.
-% 	      \end{align*}
-% 	      Die Konstante $C_k$ wird durch die Anfangsbedingung f"ur $\alpha_k(0)$ bestimmt. Dazu betrachten wir die Anfangsbedingung f"ur $u$:
-% 	      \begin{align*}
-% 		      u(x,0)=\sum^{\infty}_{k=1}\alpha_k(0)\sqrt{2}\sin(k\pi x)\stackrel{!}{=} a = \sum_{k=0}^{\infty}\frac{2\sqrt{2}a}{(2k+1)\pi}\sqrt{2}\sin((2k+1)\pi x) \\
-% 		      \Rightarrow \alpha_{2j}(0) = 0 \quad \mathrm{und} \quad \alpha_{2j+1}(0) = \frac{2\sqrt{2}a}{(2j+1)\pi} \forall\ j 
-% 	      \end{align*}
-% 	      Also gilt f"ur $j=0$
-% 	      \begin{align*}
-% 		      \alpha_1(0)     & = \frac{\gamma_1}{\lambda_1}+C_1  \stackrel{!}{=}\frac{2\sqrt{2}a}{\pi}                               \\
-% 		      \Rightarrow C_1 & =\frac{2\sqrt{2}a}{\pi} -\frac{\gamma_1}{\lambda_1} = \frac{2\sqrt{2}a}{\pi}-\frac{1}{\pi^2 \sqrt{2}}
-% 	      \end{align*}
-% 	      und f"ur $j>0$
-% 	      \begin{align*}
-% 		      \alpha_{2j}(0)       & =\frac{\gamma_{2j}}{\lambda_{2j}}+C_{2j} = C_{2j} \stackrel{!}{=}0                                    \\
-% 		      \Rightarrow C_{2j}   & =0                                                                                                    \\
-% 		      \alpha_{2j+1}(0)     & =\frac{\gamma_{2j+1}}{\lambda_{2j+1}}+C_{2j+1} = C_{2j+1} \stackrel{!}{=}\frac{2\sqrt{2}a}{(2j+1)\pi} \\
-% 		      \Rightarrow C_{2j+1} & =\frac{2\sqrt{2}a}{(2j+1)\pi}
-% 	      \end{align*}
-% 	      Die L"osung $u$ lautet daher insgesamt 
-% 	      \begin{align*}
-% 		      u(x,t) & =\left(\frac{\gamma_1}{\lambda_1} + \left(\frac{2\sqrt{2}a}{\pi}-\frac{1}{\pi^2 \sqrt{2}}\right)e^{-\lambda_1 t}\right)\sqrt{2}\sin(\pi x) + \sum^{\infty}_{k=2} C_ke^{-\lambda_k t}\sqrt{2}\sin(k\pi x) \\
-% 		             & = \left(\frac{4a}{\pi} - \frac{1}{\pi^2}\right)e^{-\pi^2 t} \sin(\pi x) + \frac{1}{\pi^2} \sin(\pi x)                                                                                                    \\
-% 		             & + \sum_{j=1}^{\infty}\frac{4a}{(2j+1)\pi}e^{-(2j+1)^2 \pi^2 t} \sin((2j+1)\pi x)
-% 	      \end{align*}
-% \end{enumerate}
-
-%------------------------------------------------------------------------------
-\newpage
-\begin{example}
-	Examine the following problem
-	\begin{align*}
-		\partial_{tt} u(x,t) & =   \partial_{xx}u(x,t) + a, &  & x\ \in\ (0,1), t>0, \\
-		u(0,t)               & =0,                          &  & t>0,                \\
-		u(1,t)               & =0,                          &  & t>0,                \\
-		u(x,0)               & = x,                         &  & x\, \in\, (0,1),    \\
-		u_t(x,0)             & = 0,                         &  & x\, \in\, (0,1),
-	\end{align*}
-	with constant source term $a\in\mathbb{R}$.
-	\begin{enumerate}
-		\item Compute the Eigenvalues and the normalized Eigenfunctions from $\partial_{xx}$.
-		\item Develop the IC and source term in these Eigenfunctions.
-		\item Compute the solution of the problem with the Eigenfunction ansatz.
-	\end{enumerate}
-\end{example}
-
-\newpage
-(Example 4 cont.)
+% (Example 4 cont.)
 
 % Die Gleichung $y''(x) = -cy(x) +b$ besitzt die allg. Lösung 
 % 	\begin{align*}
