@@ -110,6 +110,7 @@ Approach:
 	      \end{align}
 	      Then, the homogenized problem reads
 	      \begin{equation}
+		      \label{eq:utildeeqn}
 		      \boxed{
 			      \begin{aligned}
 				      \partial_t\tilde{u}(x,t) - \partial_{xx}\tilde{u}(x,t) = \tilde{f}(x,t),
@@ -127,7 +128,7 @@ Approach:
 	      
 	\item We now need to find out the Eigenfunctions $\varphi(x)$ satisfying
 	      \begin{align}
-		      \label{eq:eigenfunctionproblem}
+		      \label{eq:eigenfunctionproblemlambda}
 		      -\partial_{xx}\varphi(x) = \lambda\varphi(x),
 		      \quad\text{with}\ \varphi(0)=\varphi(L)=0.
 	      \end{align}
@@ -143,13 +144,13 @@ Approach:
 	      \end{align}
 	      We then obtain the following expressions
 	      \begin{align}
-		      \eqref{eq:eigenfunctionproblem}
+		      \eqref{eq:eigenfunctionproblemlambda}
 		      \stackrel{\eqref{eq:ansatz}}{\Leftrightarrow}
 		      \exp(rx)(r^{2} + \lambda) = 0
 		      \Leftrightarrow
 		      r = \pm i\sqrt{\lambda}
 	      \end{align}
-	      The solution to \eqref{eq:eigenfunctionproblem} $\forall A,B,C_{1},C_{2} \in \mathbb{R}$ takes the following form 
+	      The solution to \eqref{eq:eigenfunctionproblemlambda} $\forall A,B,C_{1},C_{2} \in \mathbb{R}$ takes the following form 
 	      \begin{align}
 		      \label{eq:varphix}
 		      \varphi(x)
@@ -160,7 +161,7 @@ Approach:
 		       & = C_{1}\cos\left(\sqrt{\lambda}x\right) + iC_{2}\sin\left(\sqrt{\lambda}x\right)
 	      \end{align}
 	      Note in passing that Euler's formula $\exp(ix) = \cos(x) +i\sin(x)$ has been used in \eqref{eq:varphix}.
-	      Next, by applying BCs from \label{eq:eigenfunctionproblem}
+	      Next, by applying BCs from \eqref{eq:eigenfunctionproblemlambda}
 	      we obtain the explicit values for $C_{1}$ and eigenvalues $\lambda_{k}$ for \eqref{eq:varphix}, as follows
 	      \begin{align}
 		       & \varphi(0)=0 \stackrel{\eqref{eq:varphix}}{\Leftrightarrow} C_{1} = 0. \label{eq:C1} \\
@@ -238,47 +239,83 @@ Approach:
 		      \tilde{f}(x,t) = -\frac{x}{L} (1-\alpha t)\alpha \exp(-\alpha t),
 	      \end{align}
 	      which can be written in an expansion of eigenfuctions
-	      \begin{align*}
-		      \tilde{f}(x,t)
-		       & = \sum_{k=1}^\infty \beta_k(t) \varphi_{k}(x)                                                        \notag \\ 
-		       & = \sum_{k=1}^\infty \beta_k(t) \sqrt{\frac{2}{L}} \sin\left( \frac{k \pi}{L} x \right)
-	      \end{align*}
+	      \begin{align}
+		      \label{eq:ftilde}
+		      \boxed{
+			      \tilde{f}(x,t)
+			      = \sum_{k=1}^\infty \beta_k(t) \varphi_{k}(x)
+			      = \sum_{k=1}^\infty \beta_k(t) \sqrt{\frac{2}{L}} \sin\left( \frac{k \pi}{L} x \right)
+		      }
+	      \end{align}
 	      where coefficient $\beta_{k}(t)$ is computed by projecting $\tilde{f}(x,t)$ on eigenfunctions $\varphi_{k}(x)$, 
 	      as follows
 	      \begin{align*}
 		      \beta_k(t)
-		       & = \langle \tilde{f}(x,t),\varphi_{k}(x) \rangle                     \\
+		       & = \langle \tilde{f}(x,t),\varphi_{k}(x) \rangle                      \\
 		       & = \int_0^L 
 		      \left(-\frac{x}{L} (1-\alpha t)\alpha \exp(-\alpha t) \right)
-		      \sqrt{\frac{2}{L}} \sin\left(\frac{k \pi}{L} x\right) \ dx                        \\
+		      \sqrt{\frac{2}{L}} \sin\left(\frac{k \pi}{L} x\right) \ dx              \\
 		       & = \frac{-(1-\alpha t) \alpha \exp(-\alpha t)}{L} \sqrt{\frac{2}{L}}
 		      \int_0^L x
-		      \sin\left(\frac{k \pi}{L} x\right) \ dx                                          
-		      %    & = (-1)^k \frac{\sqrt{2L}}{k \pi}(1-\alpha t)\alpha \exp(-\alpha t).
+		      \sin\left(\frac{k \pi}{L} x\right) \ dx                                 \\  
+		       & = \frac{-(1-\alpha t) \alpha \exp(-\alpha t)}{L} \sqrt{\frac{2}{L}}
+		      \frac{(-1)^k}{k\pi}L^2                                                  \\
+		       & = -(-1)^k \frac{\sqrt{2L}}{k \pi}(1-\alpha t)\alpha \exp(-\alpha t).
 	      \end{align*}
+	      
+	\item Ansatz for solution $\tilde{u}(x,t)$ take the following form
+	      \begin{align}
+		      \label{eq:ansatzu}
+		      \tilde{u}(x,t) = \sum_{k=1}^\infty \alpha_k(t) \varphi_k(x).
+	      \end{align}
+	      By substituting \eqref{eq:ftilde} and \eqref{eq:ansatzu} into \eqref{eq:utildeeqn} we obtain 
+	      \begin{align}
+		       & \Leftrightarrow 
+		      \sum_{k=1}^\infty 
+		      \left(
+		      \partial_t \alpha_{k}(t) \varphi_k(x)
+		      - \alpha_k(t) \partial_{xx} \varphi_k(x)
+		      - \beta_k(t) \varphi_k(x)
+		      \right)
+		      = 0             \notag                                               \\
+		       & \stackrel{\eqref{eq:eigenfunctionproblemlambda}}{\Leftrightarrow}
+		      \sum_{k=1}^\infty 
+		      \left( 
+		      \alpha_{k}'(t) \varphi_k(x)
+		      + \alpha_k(t) \lambda_k \varphi_k(x)
+		      - \beta_k(t) \varphi_k(x)
+		      \right)              
+		      = 0             \notag                                               \\
+		       & \Leftrightarrow 
+		      \sum_{k=1}^\infty 
+		      \left( \alpha_{k}'(t)  + \lambda_k\alpha_k(t) - \beta_k(t) \right) \varphi_k(x)
+		      = 0.
+	      \end{align}
+	      Since the eigenfunctions $\varphi_{k}(x)$ are orthonormal to each other, 
+	      we arrive at the following equality 
+	      \begin{align}
+		      \boxed{
+			      \alpha_{k}'(t) + \lambda_k \alpha_k(t) - \beta_k(t) = 0.
+		      }
+	      \end{align}
+	      Solution to $\alpha_k(t)$ takes the form
+	      \begin{align*}
+		      \alpha_k(t)
+		      = \alpha_k(0) \exp(-\lambda_k t)
+		      + \exp(-\lambda_k t) \int_0^t \exp(\lambda_k \tau) \beta_k(\tau) \ d\tau,
+	      \end{align*}
+	      whose derivation goes as follows
+	      \begin{itemize}
+		      \item Solving for homogeneous part:
+		            \begin{align}
+			            \alpha_{k}'(t) + \lambda_k \alpha_k(t) = 0 
+			            \Leftrightarrow
+			            \alpha_{k}(t) = \alpha_{k}(0)\exp(-\lambda_k t)
+		            \end{align}
+		      \item Inhomogeneous part: using the method \emph{variation of constant}
+	      \end{itemize}
 \end{enumerate}
 
-Für die Lösung $v$ wird nun der Ansatz
-\begin{align*}
-	v(x,t) = \sum_{k=1}^\infty \alpha_k(t) \phi_k(x)
-\end{align*}
-gemacht.
-Durch Einsetzen ergibt sich
-\begin{align*}
-	\sum_{k=1}^\infty \left( \partial_t \alpha(t) \phi_k(x) - \alpha_k(t) \partial_x^2 \phi_k(x) - \beta_k(t) \phi_k(x) \right) & = 0  \\
-	\sum_{k=1}^\infty \left( \alpha'(t) \phi_k(x) + \alpha_k(t) \lambda_k \phi_k(x) - \beta_k(t) \phi_k(x) \right)              & = 0  \\
-	\sum_{k=1}^\infty \left( \alpha'(t) + \alpha_k(t) \lambda_k - \beta_k(t) \right) \phi_k(x)                                  & = 0.
-\end{align*}
-Da die Eigenfunktionen orthogonal sind, muss für $k>0$ gelten:
-\begin{align*}
-	\boxed{
-		\alpha'(t) + \alpha_k(t) \lambda_k - \beta_k(t) = 0.
-	}
-\end{align*}
-Die allgemeine Lösung lautet:
-\begin{align*}
-	\alpha_k(t) = \alpha_k(0) e^{-\lambda_k t} + \int_0^1 e^{-\lambda_k(t-\tau)}\beta_k(\tau) \text{d} \tau.
-\end{align*}
 Das Integral können wir weiter ausrechnen:
 \begin{align*}
 	\int_0^t e^{-\lambda_k(t-\tau)} \beta_k(\tau) \ d\tau
