@@ -24,22 +24,42 @@ Mathe IV $\cdot$ Gue09 $\cdot$ SS22
 	Tuan Vo
 \end{center}
 \begin{center}
-	$16^{\text{nd}}$ June, 2022
+	$16^{\text{th}}$ June, 2022
 \end{center}
 Content covered:
 \begin{itemize}
-	\item[\checkmark] Analysis: 
+	\item[\checkmark] Programming exercise 02: Explanation $+$ Hints.
+	\item[\checkmark] Analysis:
 	      \begin{itemize}
-		      \item[*] 
-		      \item[*] 
+		      \item[*] Expansion of $f(x,y)$ in eigenfunctions of Laplace operator (2D).
+		      \item[*] Distribution \& its derivative.
 	      \end{itemize}
-	\item[\checkmark] Numerics: 
+	\item[\checkmark] Numerics: Ghost points in FDM + Neumann BCs.
 \end{itemize}
 %------------------------------------------------------------------------------
-\section{Analysis}
+\section{Programming exercise 02: Explanation $+$ Hints}
+
+%------------------------------------------------------------------------------
+\newpage
+\section{Analysis: 2D Eigenfuctions of Laplace operator}
 \begin{example}
 	\label{ex:example1}
-	Examine the following problem:
+	Examine the following
+\end{example}
+
+%------------------------------------------------------------------------------
+\newpage
+\section{Analysis: Distribution and its derivative}
+\begin{example}
+	\label{ex:example1}
+	Examine the following
+\end{example}
+
+%------------------------------------------------------------------------------
+\newpage
+\section{Numerics: Ghost points in FDM}
+\begin{example}
+	Examine the following
 \end{example}
 % \inputfig{floats/nodiscretize}{nodiscretize}
 % Approach:
@@ -70,7 +90,7 @@ Content covered:
 % 	      Note in passing that we have used $u_{inh}(x,t) = ax+b, \forall a,b \in\mathbb{R}$
 % 	      to probe the solution mentioned at \eqref{eq:uinh}, since it satisfies $\partial_{xx}(ax+b) = 0$.
 % 	      The solution \eqref{eq:uinhsol} is obtained by considering BCs given in \eqref{eq:uinh}.
-	      
+
 % 	\item We define
 % 	      \begin{align}
 % 		      \label{eq:utilde}
@@ -109,7 +129,7 @@ Content covered:
 % 	      \end{equation}
 % 	      where the source term $\tilde{f}(x,t)$ defined as 
 % 	      $\displaystyle \tilde{f}(x,t) := -\frac{x}{L}(1-\mu t)\mu \exp(-\mu)$.
-	      
+
 % 	\item We now need to find out the Eigenfunctions $\varphi(x)$ satisfying
 % 	      \begin{align}
 % 		      \label{eq:eigenfunctionproblemlambda}
@@ -203,7 +223,7 @@ Content covered:
 % 			            \forall\ k\in\mathbb{Z}.
 % 		            $
 % 	      \end{itemize}
-	      
+
 % 	      Therefore, the \textbf{normalized} eigenfunctions $\varphi_k(x)$ and their eigenvalues $\lambda_k$
 % 	      take the following forms
 % 	      \begin{equation*}
@@ -216,7 +236,7 @@ Content covered:
 % 			      \end{aligned}
 % 		      }
 % 	      \end{equation*}
-	      
+
 % 	\item Expand the source term $\tilde{f}(x,t)$ by using the normalized eigenfunction $\varphi_{k}(x)$.
 % 	      The source term $\tilde{f}(x,t)$ takes the following form
 % 	      \begin{align}
@@ -247,7 +267,7 @@ Content covered:
 % 		      \frac{(-1)^k}{k\pi}L^2                                         \notag \\
 % 		       & = (-1)^k \frac{\sqrt{2L}}{k \pi}(1-\mu t)\mu \exp(-\mu t).
 % 	      \end{align}
-	      
+
 % 	\item Ansatz for solution $\tilde{u}(x,t)$ take the following form
 % 	      \begin{align}
 % 		      \label{eq:ansatzu}
@@ -350,7 +370,7 @@ Content covered:
 % 			            {(\lambda_k -\mu)^2}
 % 		            \end{align}
 % 	      \end{itemize}
-	      
+
 % 	\item Find $\alpha_k(0)$ by taking into consideration the IC of $\tilde{u}(x,0)$, as follows
 % 	      \begin{align}
 % 		      \tilde{u}(x,0) = \sum_{k=1}^{\infty} \alpha_k(0) \varphi_k(x)
@@ -387,7 +407,7 @@ Content covered:
 % 			      \end{aligned}
 % 		      }
 % 	      \end{equation}
-	      
+
 % 	\item Finally, by substituting \eqref{eq:ptuinh} and \eqref{eq:utildesolution}
 % 	      into  \eqref{eq:utilde}
 % 	      the solution to $u(x,t)$ reads
@@ -397,12 +417,6 @@ Content covered:
 % 		      }
 % 	      \end{align*}
 % \end{enumerate}
-
-%------------------------------------------------------------------------------
-\newpage
-\begin{example}
-	Examine
-\end{example}
 
 % Similarly to steps approaching to \eqref{eq:ODEalphafinal}, which is shown in Example \ref{ex:example1}, 
 % we obtain a 2nd order ODE, instead of the 1st order ODE, as follows
@@ -424,12 +438,6 @@ Content covered:
 % 	+ C_{2}\cos\left(\sqrt{c}x\right),\quad\forall \ C_{1},C_{2}\in\mathbb{R}.
 % \end{align}
 
-%------------------------------------------------------------------------------
-\newpage
-\section{Numerics:}
-\begin{example}
-	Examine the following
-\end{example}
 
 % Approach: By using Taylor expansion for $f(x+h)$ and $f(x+2h)$
 % we obtain the following expressions
