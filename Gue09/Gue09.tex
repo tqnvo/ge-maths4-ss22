@@ -15,7 +15,6 @@ Mathe IV $\cdot$ Gue09 $\cdot$ SS22
 \thepage/\pageref{LastPage}\hfil}
 \makeatother
 %------------------------------------------------------------------------------
-
 \begin{document}
 \begin{center}
 	\section*{Global Exercise - Gue09}
@@ -28,19 +27,26 @@ Mathe IV $\cdot$ Gue09 $\cdot$ SS22
 \end{center}
 Content covered:
 \begin{itemize}
-	\item[\checkmark] Programming exercise 02: Explanation $+$ Hints.
+	\item[\checkmark] Programming exercise 02: Introduction $+$ Hints.
 	\item[\checkmark] Analysis:
 	      \begin{itemize}
 		      \item[*] Expansion of $f(x,y)$ in eigenfunctions of Laplace operator (2D).
 		      \item[*] Distributional derivative.
 	      \end{itemize}
-	\item[\checkmark] Numerics: Ghost points in FDM + Neumann BCs.
+	\item[\checkmark] Numerics: Ghost points $\mathghost$ in FDM + Neumann BCs.
 \end{itemize}
 
 %------------------------------------------------------------------------------
-\section{Programming exercise 02: Explanation $+$ Hints}
+\section{Programming exercise 02: Introduction $+$ Hints}
 \begin{example}
-	Examine the following
+	Examine the following Convection-diffustion problem
+	\begin{align*}
+		-\varepsilon\Delta u(x,y)
+		+ \cos\beta\;\frac{\partial u}{\partial x}(x,y)
+		+ \sin\beta\;\frac{\partial u}{\partial y}
+		       & = f(x,y), \ (x,y) \in \Omega = (0,1)^2,          \\
+		u(x,y) & = g(x,y), \ (x,y) \ \text{on} \ \partial \Omega,
+	\end{align*}
 \end{example}
 
 \newpage
@@ -55,25 +61,325 @@ Content covered:
 %------------------------------------------------------------------------------
 \newpage
 \section{Analysis: 2D Eigenfuctions of Laplace operator}
+\begin{recall}
+	\hphantom{a}\\
+	\hphantom{a}\\
+	\hphantom{a}\\
+	\hphantom{a}\\
+	\hphantom{a}\\
+	\hphantom{a}\\
+	\hphantom{a}\\
+	\hphantom{a}\\
+	\hphantom{a}\\
+	\hphantom{a}\\
+	\hphantom{a}\\
+	\hphantom{a}\\
+\end{recall}
 \begin{example}
-	\label{ex:example1}
-	Examine the following
+	\label{ex:example2DEigenfcnLaplace}
+	Examine the following problem where the squared unit domain defined as
+	$\Omega = [0,1]^2$ and the function
+	$f(x,y)$ given as follows
+	\begin{align*}
+		f(x,y) = xy (1-x)(1-y).
+	\end{align*}
+	Expand the given function $f(x,y)$ to eigenfunctions derived from  
+	\begin{align*}
+		-\Delta \phi  
+		     & = \lambda \phi, \ \text{in} \ \Omega, \\
+		\phi & = 0, \ \text{on} \ \partial \Omega.
+	\end{align*}
 \end{example}
+Approach: The Eigenfunctions take the form
+\begin{align*}
+	\boxed{
+		\phi_{j,k} (x,y) = C_1 \sin (j \pi x) \sin(k \pi y).
+	}
+\end{align*}
+Normalization of eigenfunctions goes as follows
+\begin{align*}
+	\boxed{
+		\begin{aligned}
+			||\phi_{j,k} (x,y)||^2_{2} 
+			\stackrel{!}{=} 1 
+			 & \Leftrightarrow
+			\int_\Omega \phi_{j,k}^2(x,y) \ d\Omega 
+			\stackrel{!}{=} 1   \\
+			 & \Leftrightarrow 
+			\int_0^1 \int_0^1 C_1^2 \sin^2 (j \pi x) \sin^2(k \pi y) \ dx dy
+			\stackrel{!}{=} 1
+			\Rightarrow C_1=2.
+		\end{aligned}
+	}
+\end{align*}
+\newpage
+Derivation of eigenfunctions $\phi_{j,k} (x,y)$
+
+\newpage
+Derivation of eigenfunctions $\phi_{j,k} (x,y)$ (cont.)
+
+\newpage
+Expansion
+\begin{align*}
+	f(x,y) = xy(1-x)(1-y)
+	\stackrel{!}{=}
+	\sum_{j=1}^\infty  \sum_{k=1}^\infty \alpha_{j,k} \phi_{j,k} (x,y)
+\end{align*}
+where the coefficient $\alpha_{j,k}$ is computed as follows
+\begin{align*}
+	\alpha_{j,k} & = \int_\Omega f(x,y) \phi_{j,k} \ d\Omega                                   \\
+	             & =  \int_0^1 \int_0^1 xy(1-x)(1-y) \ 2 \sin (j \pi x) \sin(k \pi y) \  dx dy \\
+	             & = 2 \int_0^1  x(1-x) \sin(j \pi x) \ dx \int_0^1  y(1-y) \sin(k \pi y) \ dy
+\end{align*}
+which is computed firstly w.r.t. $dx$ step-by-step as follows
+\begin{align*}
+	\int_0^1  x(1-x) \sin(j \pi x) \ dx
+	= \frac{2}{j^3 \pi^3} (1-\cos(j \pi)) - \frac{1}{j^2 \pi^2} \sin(j \pi)
+\end{align*}
+The term goes with sinus function gets vanished, while the term goes with cosinus function takes the form
+$\cos(j \pi) = (-1)^j$. Similarly, it goes the same for $dy$. Finally, we obtain
+\begin{align*}
+	\alpha_{j,k} & = 2 \frac{2}{j^3 \pi^3} \left( 1-(-1)^j  \right)  \frac{2}{k^3 \pi^3} \left( 1-(-1)^k  \right) \\
+	             & =
+	\left\{
+	\begin{matrix}
+		\dfrac{32}{j^3 k^3 \pi^6}, & \text{if } j, k \text{ odd}, \\
+		0,                         & \text{otherwise},
+	\end{matrix}\right.
+\end{align*}
+which leads to the final form of expansion of $f(x,y)$ as follows
+\begin{align*}
+	\therefore\quad\boxed{
+		f(x,y) = \sum_{j,k \ \text{odd}}  \frac{32}{j^3 k^3 \pi^6} 2 \sin(j \pi x ) \sin(k \pi y ).
+	}
+\end{align*}
 
 %------------------------------------------------------------------------------
 \newpage
-\section{Analysis: Distribution and its derivative}
+\section{Analysis: Distributional derivative}
 \begin{example}
-	\label{ex:example1}
-	Examine the following
+	Examine the following problem 
+	\begin{align*}
+		f:
+		\begin{cases}
+			\mathbb{R} \to \mathbb{R}, \\
+			x \mapsto f(x) = |x+1|.
+		\end{cases}
+	\end{align*}
 \end{example}
 
 %------------------------------------------------------------------------------
 \newpage
 \section{Numerics: Ghost points in FDM}
 \begin{example}
-	Examine the following
+	Examine the following FDM problem:
+	\begin{align*}
+		u''(x) - u'(x) + u(x) = -x^2 + 2x - 1,
+		\quad
+		\text{for }\  x\in \Omega =(0,1),
+	\end{align*}
+	\inputfig{floats/discretizeGhost}{discretizeGhost}
+	where the boundary conditions are defined as follows
+	\begin{align*}
+		u(0) = 0, \quad u(1) = 0.
+	\end{align*}
+	Determine the resulting system of linear equations 
+	$A_h u_h = b_h$ by using second order FDM scheme for both $u''(x)$ and $u'(x)$. 
 \end{example}
+Approach: This problem exists no ghost point $\mathghost$\\
+
+The second order FDM scheme for both $u''(x)$ and $u'(x)$ take the following forms
+\begin{align*}
+	\boxed{
+		\begin{aligned}
+			u''(x) & \approx  \frac{u(x+h)-2u(x)+u(x-h)}{h^2}, \\
+			u'(x)  & \approx   \frac{u(x+h)-u(x-h)}{2h},
+		\end{aligned}
+	}
+\end{align*}
+
+%------------------------------------------------------------------------------
+\newpage
+\begin{example}
+	Examine the following FDM problem:
+	\begin{align*}
+		u''(x) - u'(x) + u(x) = -x^2 + 2x - 1,
+		\quad
+		\text{for }\  x\in \Omega =(0,1),
+	\end{align*}
+	\inputfig{floats/discretizeGhostRight}{discretizeGhostRight}
+	where the boundary conditions are defined as follows
+	\begin{align*}
+		u(0) = 0, \quad u'(1) = 0.
+	\end{align*}
+	Determine the resulting system of linear equations 
+	$A_h u_h = b_h$ by using second order FDM scheme for both $u''(x)$ and $u'(x)$. 
+\end{example}
+
+Approach: This problem exists a ghost point $\mathrightghost$
+on the RHS boundary $\partial\Omega_{R}$.\\
+
+The second order FDM scheme for both $u''(x)$ and $u'(x)$ take the following forms
+\begin{align*}
+	\boxed{
+		\begin{aligned}
+			u''(x) & \approx  \frac{u(x+h)-2u(x)+u(x-h)}{h^2}, \\
+			u'(x)  & \approx   \frac{u(x+h)-u(x-h)}{2h},
+		\end{aligned}
+	}
+\end{align*}
+
+%------------------------------------------------------------------------------
+\newpage
+\begin{example}
+	Examine the following FDM problem:
+	\begin{align*}
+		u''(x) - u'(x) + u(x) = -x^2 + 2x - 1,
+		\quad
+		\text{for }\  x\in \Omega =(0,1),
+	\end{align*}
+	\inputfig{floats/discretizeGhostLeft}{discretizeGhostLeft}
+	where the boundary conditions are defined as follows
+	\begin{align*}
+		u'(0) = 0, \quad u(1) = 0.
+	\end{align*}
+	Determine the resulting system of linear equations 
+	$A_h u_h = b_h$ by using second order FDM scheme for both $u''(x)$ and $u'(x)$. 
+\end{example}
+
+Approach: This problem exists a ghost point $\mathleftghost$
+on the LHS boundary $\partial\Omega_{L}$\\
+
+The second order FDM scheme for both $u''(x)$ and $u'(x)$ take the following forms
+\begin{align*}
+	\boxed{
+		\begin{aligned}
+			u''(x) & \approx  \frac{u(x+h)-2u(x)+u(x-h)}{h^2}, \\
+			u'(x)  & \approx   \frac{u(x+h)-u(x-h)}{2h},
+		\end{aligned}
+	}
+\end{align*}
+\begin{enumerate}
+	\item Discretization for $n = 1,..,N-1$
+	      \begin{align*}
+		      \frac{u_{n+1} - 2u_n + u_{n-1}}{h^2} -
+		      \frac{u_{n+1}-u_{n-1}}{2h} + u_n 
+		      = 2x_n - 1 - x_n^2,
+	      \end{align*}
+	      which leads to the following grouped form
+	      \begin{align*}
+		      \boxed{
+			      (2+h)u_{n-1} + (2h^2-4)u_n + (2-h)u_{n+1}
+			      = 2h^2 \left( 2nh - 1 - (nh)^2 \right).
+		      }
+	      \end{align*}
+	      
+	      Left boundary exists \textbf{ghost} point $u_{-1}$ taking the following expression
+	      \begin{align*}
+		      u'(0) 
+		      = 0~~\Rightarrow~~\frac{u_1-u_{-1}}{2h} 
+		      = 0~~\Rightarrow~~u_1 
+		      = u_{-1}
+	      \end{align*}
+	      which yields the first equation for the case $n=0$ as follows
+	      \begin{align*}
+		      \boxed{
+			      (2h^2-4)u_0 + 4 u_{1} = -2h^2.
+		      }
+	      \end{align*}
+	      
+	      The right boundary where $u(1)=0$, meaning $u_N=0$, 
+	      is for the case of $n=N-1$
+	      \begin{align*}
+		      \boxed{
+			      (2+h)u_{N-2} + (2h^2-4)u_{N-1} = 2h^2(2(1-h)-1-(1-h)^2).
+		      }
+	      \end{align*}
+	      
+	      The final system of equations takes the following form
+	      \begin{align*}
+		      \therefore\quad\boxed{
+		      A_h=
+		      \begin{pmatrix}
+			      2h^2-4 & 4      &        &        &        \\
+			      2+h    & 2h^2-4 & 2-h    &        &        \\
+			             & 2+h    & 2h^2-4 & 2-h    &        \\
+			             &        & \ddots & \ddots & \ddots \\
+			             &        &        & 2+h    & 2h^2-4
+		      \end{pmatrix}_{N\times N},
+		      }
+	      \end{align*}
+	      
+	      \begin{align*}
+		      \therefore\quad\boxed{
+		      u_h =
+		      \begin{pmatrix}
+			      u_0    \\
+			      u_1    \\
+			      u_2    \\
+			      \vdots \\
+			      u_{N-1}
+		      \end{pmatrix}_{N \times 1},
+		      \quad
+		      \quad
+		      b_h=2h^2
+		      \begin{pmatrix}
+			      -1          \\
+			      2h-1-h^2    \\
+			      4h-1-(2h)^2 \\
+			      \vdots      \\
+			      2 (N-1)h-1 - \left( (N-1)h \right)^2
+		      \end{pmatrix}_{N \times 1}.
+		      }
+	      \end{align*}
+	      
+	      % \item Da für die ersten beiden Ableitungen gem\"{a}{\ss}
+	      %       Taylorentwicklung-Formel gilt, dass
+	      %       \begin{align*}
+	      % 	      u''_h(x) & =  \frac{u(x+h)-2u(x)+u(x-h)}{h^2} + \mathcal{O}(h^2)\cdot u^{(4)}(x), \\
+	      % 	      %   u''_h(x) & = \frac{u(x+h)-2u(x)+u(x-h)}{h^2} + \mathcal{O}(h^2), \\
+	      % 	      u'_h(x)  & =   \frac{u(x+h)-u(x-h)}{2h} + \mathcal{O}(h^2)\cdot u^{(3)}(x),       \\
+	      % 	      %   u'_h(x)  & = \frac{u(x+h)-u(x-h)}{2h} + \mathcal{O}(h^2),        \\
+	      % 	      u_h(x)   & = u(x),
+	      %       \end{align*}
+	      
+	      %       und weiterhin die exakte L\"{o}sung unendlich oft differenzierbar ist mit
+	      %       \begin{align*}
+	      % 	      u^{(n)} = 0,\ \forall\ n\in\mathbb{R},\ n>2,
+	      %       \end{align*}
+	      %       wird die L\"{o}sung mit diesem Finite Differenzen Schema exakt
+	      %       approximiert, das hei{\ss}t die Differenz zwischen $u_h$ und $u$
+	      %       ist $0$ in jedem Punkt. Sei
+	      %       \begin{align*}
+	      % 	      f(x)=u''(x) - u'(x) + u(x),
+	      % 	      \text{ also }
+	      % 	      f(x) := 2x-1-x^2.
+	      %       \end{align*}
+	      
+	      %       Für den Konsistenzfehler erhalten wir somit
+	      %       \begin{align*}
+	      % 	      \| \left(A_h u\right)|_{\Omega_h} - f|_{\Omega_h} \|_\infty
+	      % 	       & = \max_{x\in\Omega_h}
+	      % 	      \left|
+	      % 	      \left( u''_h(x) - u'_h(x) + u_h(x) \right)
+	      % 	      - \left( u''(x) - u'(x) + u(x)  \right)
+	      % 	      \right|                                                     \\
+	      % 	       & \leq \max_{x\in \Omega_h} \left| u''_h(x)-u''(x) \right|
+	      % 	      + \max_{x \in \Omega_h} \left| u'_h(x)-u'(x) \right|
+	      % 	      + \max_{x \in \Omega_h} \left| u_h(x)-u(x) \right|          \\
+	      % 	       & \leq \mathcal{O}(h^2) \left| u^{(4)}(x) \right|_\infty
+	      % 	      + \mathcal{O}(h^2) \left| u^{(3)}(x) \right|_\infty
+	      % 	      + 0                                                         \\
+	      % 	       & \leq 0.
+	      %       \end{align*}
+	      
+	      %       Jede Norm ist nicht negative und damit erhalten wir den Konsistenzfehler
+	      %       \begin{align*}
+	      % 	      \therefore\quad\boxed{
+	      % 	      \| \left(A_h u\right)|_{\Omega_h} - f|_{\Omega_h} \|_\infty = 0.
+	      % 	      }
+	      %       \end{align*}
+\end{enumerate}
 
 %------------------------------------------------------------------------------
 \newpage
