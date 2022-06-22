@@ -48,6 +48,138 @@ Content covered:
 	\end{align*}
 \end{example}
 
+%------------------------------------------------------------------------------
+\newpage
+\section{Review Example 3 $\cdot$ Gue08}
+Approach: 
+\begin{enumerate}
+	\item Let's expand $f(x+h)$ and $f(x+2h)$
+	      by using Taylor expansion till $\mathcal{O}(h^3)$
+	      \begin{align}
+		      \label{eq:firstfhreeTaylor}
+		      \begin{cases}
+			      \begin{aligned}
+				      f(x)    & = f(x)                \\
+				      f(x+ h) & = f(x) 
+				      + \frac{h^1}{1!} f'(x)  
+				      + \frac{h^2}{2!} f''(x)  
+				      + \mathcal{O}\left( h^3 \right) \\
+				      f(x+2h) & = f(x) 
+				      + \frac{(2h)^1}{1!} f'(x) 
+				      + \frac{(2h)^2}{2!} f''(x) 
+				      + \mathcal{O}\left( (2h)^3 \right)
+			      \end{aligned}
+		      \end{cases}
+	      \end{align}
+	      which leads to 
+	      \begin{align}
+		      \alpha f(x)    & = \alpha f(x)  \label{eq:alphafx}                    \\
+		      \beta f(x+ h)  & = \beta f(x) 
+		      + \beta h f'(x)  
+		      + \frac{\beta h^2}{2} f''(x)
+		      + \beta \mathcal{O}\left( h^3 \right)              \label{eq:betafxh} \\
+		      \gamma f(x+2h) & = \gamma f(x) 
+		      + 2\gamma h f'(x)  
+		      + 2\gamma h^2 f''(x)
+		      + \gamma \mathcal{O}\left( (2h)^3 \right) \label{eq:gammafx2h}
+	      \end{align}
+	      Summation of \eqref{eq:alphafx}, \eqref{eq:betafxh} and \eqref{eq:gammafx2h} leads to
+	      \begin{align}
+		      \label{eq:summationall}
+		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) 
+		       & = (\alpha + \beta + \gamma)f(x) \notag                                \\
+		       & \quad + (\beta h + 2 \gamma h)f'(x) \notag                            \\
+		       & \quad + \left( \frac{\beta h^2}{2} + 2\gamma h^2 \right)f''(x) \notag \\
+		       & \quad + \beta \mathcal{O}\left( h^3 \right)                    \notag \\
+		       & \quad + \gamma \mathcal{O}\left( (2h)^3 \right)
+	      \end{align}
+	      % Comparison of \eqref{eq:summationall} with \eqref{eq:givenproblemfxprime}
+	      Since we would like to approximate $f'(x)$ by the following expression
+	      \begin{align}
+		      \label{eq:wewouldliketoapprox}
+		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) \approx f'(x)
+	      \end{align}
+	      Comparison \eqref{eq:wewouldliketoapprox} with \eqref{eq:summationall} leads to the following 3 conditions
+	      \begin{align}
+		      \label{eq:alphabetagamma}
+		      \begin{cases}
+			      \alpha + \beta + \gamma \stackrel{!}{=} 0 \\
+			      \beta h + 2 \gamma h \stackrel{!}{=}  1   \\
+			      \displaystyle \frac{\beta h^2}{2} + 2\gamma h^2 \stackrel{!}{=} 0
+		      \end{cases}
+		      \Leftrightarrow
+		      \begin{pmatrix}
+			      1 & 1   & 1 \\
+			      0 & 1   & 2 \\
+			      0 & 1/2 & 2
+		      \end{pmatrix}
+		      \begin{pmatrix}
+			      \alpha \\ \beta \\ \gamma
+		      \end{pmatrix}
+		      =
+		      \begin{pmatrix}
+			      0 \\ 1/h \\ 0
+		      \end{pmatrix}
+		      \Leftrightarrow
+		      \begin{pmatrix}
+			      \alpha \\ \beta \\ \gamma
+		      \end{pmatrix}
+		      =
+		      \begin{pmatrix}
+			      -3/(2h) \\ 2/h \\ -1/(2h)
+		      \end{pmatrix}
+	      \end{align}
+	      which leads the expression \eqref{eq:summationall} to the following equality
+	      \begin{align}
+		      \label{eq:finalsum}
+		      \alpha (x) + \beta f(x+h) + \gamma f(x+2h) 
+		       & =
+		      f'(x)
+		      + \beta \mathcal{O}\left( h^3 \right) + \gamma \mathcal{O}\left( (2h)^3 \right) \notag \\
+		       & = f'(x)
+		      + \frac{2}{h} \mathcal{O}\left( h^3 \right)
+		      + \frac{-1}{2h} \mathcal{O}\left( (2h)^3 \right)                                \notag \\
+		       & = f'(x) + \mathcal{O}\left( h^2 \right).
+	      \end{align}
+	      Therefore, $f'(x)$ can be approximated by $\alpha f(x) + \beta f(x+h) + \gamma f(x+2h)$,
+	      where the values of $\left\{ \alpha, \beta, \gamma \right\}$ taken from \eqref{eq:alphabetagamma}, 
+	      with a consistency order of at least order 2, as shown in \eqref{eq:finalsum}.
+	      
+	\item Let's expand $f(x+h)$ and $f(x+2h)$
+	      by using Taylor expansion till $\mathcal{O}(h^4)$.
+	      The approach is the same as the above approach  
+	      from $\mathcal{O}(h^3)$.
+	      However, this will lead to contradictory conditions,  
+	      i.e. 3 unknowns for 4 equations. 
+	      Therefore, the highest consistency order we may obtain is of order 2.
+\end{enumerate}
+
+
+% Since the term $-h^2/3$ from \eqref{eq:finalsum} is nonzero,
+% we only need to expand those two Taylor expansions from \eqref{eq:firstfhreeTaylor}
+% till $\mathcal{O}(h^3)$. Therefore, the consistency order, 
+% due to the factor $h$ coming along with $f'(x)$, i.e. $\mathcal{O}(h^3)/h$, 
+% is guaranteed till at least order 2.
+
+% \begin{align}
+% 	\label{eq:firstfhreeTaylororder4}
+% 	\begin{cases}
+% 		\begin{aligned}
+% 			f(x)    & = f(x)   \\
+% 			f(x+ h) & = f(x) 
+% 			+ \frac{h^1}{1!} f'(x)  
+% 			+ \frac{h^2}{2!} f''(x)  
+% 			+ \frac{h^3}{3!} f'''(x) 
+% 			+ \mathcal{O}(h^4) \\
+% 			f(x+2h) & = f(x) 
+% 			+ \frac{(2h)^1}{1!} f'(x) 
+% 			+ \frac{(2h)^2}{2!} f''(x) 
+% 			+ \frac{(2h)^3}{3!} f'''(x) 
+% 			+ \mathcal{O}(h^4)
+% 		\end{aligned}
+% 	\end{cases}
+% \end{align}
+
 % \newpage
 % \inputfig{floats/fixedUpwind_variatedEpsilon}{fixedUpwind_variatedEpsilon}
 
@@ -249,7 +381,7 @@ Content covered:
 % 			      = 2h^2 \left( 2nh - 1 - (nh)^2 \right).
 % 		      }
 % 	      \end{align*}
-	      
+
 % 	\item Left boundary exists \textbf{ghost} point $u_{-1}$ taking the following expression
 % 	      \begin{align*}
 % 		      u'(0) 
@@ -263,7 +395,7 @@ Content covered:
 % 			      (2h^2-4)u_0 + 4 u_{1} = -2h^2.
 % 		      }
 % 	      \end{align*}
-	      
+
 % 	\item The right boundary where $u(1)=0$, meaning $u_N=0$,
 % 	      is for the case of $n=N-1$
 % 	      \begin{align*}
@@ -271,7 +403,7 @@ Content covered:
 % 			      (2+h)u_{N-2} + (2h^2-4)u_{N-1} = 2h^2(2(1-h)-1-(1-h)^2).
 % 		      }
 % 	      \end{align*}
-	      
+
 % 	\item The final system of equations takes the following form
 % 	      \begin{align*}
 % 		      \therefore\quad\boxed{
@@ -285,7 +417,7 @@ Content covered:
 % 		      \end{pmatrix}_{N\times N},
 % 		      }
 % 	      \end{align*}
-	      
+
 % 	      \begin{align*}
 % 		      \therefore\quad\boxed{
 % 		      u_h =
@@ -308,7 +440,7 @@ Content covered:
 % 		      \end{pmatrix}_{N \times 1}.
 % 		      }
 % 	      \end{align*}
-	      
+
 % 	      % \item Da für die ersten beiden Ableitungen gem\"{a}{\ss}
 % 	      %       Taylorentwicklung-Formel gilt, dass
 % 	      %       \begin{align*}
@@ -318,7 +450,7 @@ Content covered:
 % 	      % 	      %   u'_h(x)  & = \frac{u(x+h)-u(x-h)}{2h} + \mathcal{O}(h^2),        \\
 % 	      % 	      u_h(x)   & = u(x),
 % 	      %       \end{align*}
-	      
+
 % 	      %       und weiterhin die exakte L\"{o}sung unendlich oft differenzierbar ist mit
 % 	      %       \begin{align*}
 % 	      % 	      u^{(n)} = 0,\ \forall\ n\in\mathbb{R},\ n>2,
@@ -331,7 +463,7 @@ Content covered:
 % 	      % 	      \text{ also }
 % 	      % 	      f(x) := 2x-1-x^2.
 % 	      %       \end{align*}
-	      
+
 % 	      %       Für den Konsistenzfehler erhalten wir somit
 % 	      %       \begin{align*}
 % 	      % 	      \| \left(A_h u\right)|_{\Omega_h} - f|_{\Omega_h} \|_\infty
@@ -348,7 +480,7 @@ Content covered:
 % 	      % 	      + 0                                                         \\
 % 	      % 	       & \leq 0.
 % 	      %       \end{align*}
-	      
+
 % 	      %       Jede Norm ist nicht negative und damit erhalten wir den Konsistenzfehler
 % 	      %       \begin{align*}
 % 	      % 	      \therefore\quad\boxed{
