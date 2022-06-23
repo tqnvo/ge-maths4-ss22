@@ -321,11 +321,80 @@ Approach: The procedure goes as same as Example \ref{ex:example2consistencyorder
 \newpage
 \section{Euler scheme $\cdot$ Crank-Nicolson scheme}
 \begin{example}
-	Examine the following problem
-	\begin{align*}
-		abc
-	\end{align*}
+	Examine the following problem for $\alpha>0$
+	\begin{align}
+		\label{eq:diffusion}
+		\partial_t u(x,t) = \alpha \;\partial_{xx} u(x,t)+q(x,t), \quad t>0, \; x\in[0,1],
+	\end{align}
+	with IC $u(x,0) = u_0(x),$ and BC $u(0,t) = u(1,t) = 0.$
 \end{example}
+Approach: Vertical line method, i.e. we first discretize space $x$, 
+we then obtain a system of ODEs w.r.t. time $t$.
+\begin{enumerate}
+	\item Second order discretization in space
+	      \begin{align*}
+		      \partial_{xx} u(x_j,t)
+		      \approx \frac{u(x_{j+1},t) - 2u(x_j,t) + u(x_{j-1},t)}{h^2}
+	      \end{align*}
+	      Assume $y_j(t) \approx u(x_j,t)$ yields
+	      \begin{align*}
+		      y'_j(t) =
+		      \frac{\alpha}{h^2}
+		      (y_{j+1}(t) - 2y_j(t) + y_{j-1}(t)) + q(x_{j},t).
+	      \end{align*}
+	      General form $y' = Ay + b(t)$ with
+	      \begin{align*}
+		      A & = -\frac{\alpha}{h_x^2}
+		      \begin{pmatrix}
+			      2  & -1     &        &        & 0  \\
+			      -1 & 2      & -1     &        &    \\
+			         & \ddots & \ddots & \ddots &    \\
+			         &        & -1     & 2      & -1 \\
+			      0  &        &        & -1     & 2
+		      \end{pmatrix}  \\
+		      \text{and}                  \\
+		      b & =
+		      \begin{pmatrix}
+			      q(x_1,t) \\
+			      \vdots   \\
+			      q(x_{n-1},t)
+		      \end{pmatrix}.
+	      \end{align*}
+	      where the IC reads
+	      \begin{align*}
+		      y_i(0)= u_0(x_i),\quad i=1,\ldots,n-1
+	      \end{align*}
+	      
+	\item
+	      \begin{enumerate}
+		      \item Explicit Euler
+		            \begin{align*}
+			            \therefore\quad
+			            \boxed{
+				            y^{i+1} = y^i + h_t \left( Ay^{i}+b^i \right).
+			            }
+		            \end{align*}
+		            
+		      \item Implicit Euler
+		            \begin{align*}
+			            \therefore\quad
+			            \boxed{
+				            y^{i+1} = y^i + h_t \left( Ay^{i+1}+b^{i+1} \right).
+			            }
+		            \end{align*}
+		            
+		      \item Averaging explicit Euler and implicit Euler leads to Crank-Nicolson
+		            \begin{align*}
+			            \therefore\quad\boxed{
+				            \begin{aligned}
+					            y^{i+1}
+					             & = y^i + \frac{h_t}{2} \left( Ay^i+Ay^{i+1}+b^i+b^{i+1} \right)                  \\
+					             & = y^i + \frac{h_t}{2} A (y^i+y^{i+1})+\frac{h_t}{2} \left( b^i+b^{i+1} \right).
+				            \end{aligned}
+			            }
+		            \end{align*}
+	      \end{enumerate}
+\end{enumerate}
 
 %------------------------------------------------------------------------------
 \newpage
