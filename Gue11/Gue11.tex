@@ -10,543 +10,56 @@
 \makeatletter
 \renewcommand{\@oddfoot}{\hfil 
 % Aachen, November $04^{th}$, 2021 \hspace{300pt} 
-Mathe IV $\cdot$ Gue10 $\cdot$ SS22 
+Mathe IV $\cdot$ Gue11 $\cdot$ SS22 
 \hspace{280pt} 
 \thepage/\pageref{LastPage}\hfil}
 \makeatother
 %------------------------------------------------------------------------------
 \begin{document}
 \begin{center}
-	\section*{Global Exercise - Gue10}
+	\section*{Global Exercise - Gue11}
 \end{center}
 \begin{center}
 	Tuan Vo
 \end{center}
 \begin{center}
-	$23^{\text{rd}}$ June, 2022
+	$30^{\text{th}}$ June, 2022
 \end{center}
 Content covered:
 \begin{itemize}
-	\item[\checkmark] Programming exercise 02: Explanation.
+	\item[\checkmark] Analysis:
+	      % \item[\checkmark] Programming exercise 02: Explanation.
 	      % \item[\checkmark] Analysis:
 	      %       \begin{itemize}
 	      % 	      \item[*] Distributional derivative.
 	      %   \end{itemize}
-	\item[\checkmark] [Q\&A] Insight review: Example 3 $\cdot$ Gue08
-	\item[\checkmark] Euler scheme
-	      $\begin{cases}
-			      \text{Explicit} \\
-			      \text{Implicit}
-		      \end{cases}
-		      :
-		      \sum
-		      \longrightarrow
-		      \text{Crank-Nicolson scheme}
-	      $
-	\item[\checkmark] Iterative solution method
-	\item[\checkmark] [Review HW10] Consistency error
+	      % \item[\checkmark] [Q\&A] Insight review: Example 3 $\cdot$ Gue08
+	      % \item[\checkmark] Euler scheme
+	      %       $\begin{cases}
+	      % 		      \text{Explicit} \\
+	      % 		      \text{Implicit}
+	      % 	      \end{cases}
+	      % 	      :
+	      % 	      \sum
+	      % 	      \longrightarrow
+	      % 	      \text{Crank-Nicolson scheme}
+	      %       $
+	      % \item[\checkmark] Iterative solution method
+	\item[\checkmark] [Review HW10] Consistency error (cont.)
 \end{itemize}
 
 %------------------------------------------------------------------------------
-\section{Programming exercise 02: Explanation}
+\section{Analysis}
 \begin{example}
-	Examine the following Convection-diffustion problem
+	Examine the following problem
 	\begin{align*}
-		-\varepsilon\Delta u(x,y)
-		+ \cos\beta\;\frac{\partial u}{\partial x}(x,y)
-		+ \sin\beta\;\frac{\partial u}{\partial y}
-		       & = f(x,y), \ (x,y) \in \Omega = (0,1)^2,          \\
-		u(x,y) & = g(x,y), \ (x,y) \ \text{on} \ \partial \Omega,
-	\end{align*}
-\end{example}
-Main points of discretization:
-\begin{align*}
-	-\varepsilon\,  \partial_{xx} u(x,y)
-	-\varepsilon\,  \partial_{yy} u(x,y)
-	+\cos\beta\, \partial_{x} u(x,y)
-	+\sin\beta\, \partial_{y} u(x,y) = 1
-\end{align*}
-Since $\beta = 5\pi/6$, it goes with $\cos\beta < 0$ and $\sin\beta > 0$.
-Therefore, we need 
-Upwind for $\partial_{x} u(x,y)$ and 
-Downwind for $\partial_{y} u(x,y)$, 
-as follows
-\begin{enumerate}
-	\item Central difference method applied for $\partial_{xx} u(x,y)$,
-	\item Central difference method applied for $\partial_{yy} u(x,y)$,
-	\item Upwind method applied for $\partial_{x} u(x,y)$,
-	\item Downwind method applied for $\partial_{y} u(x,y)$.
-\end{enumerate}
-\begin{align*}
-	-\varepsilon\,\frac{u_{i+1,j}-2u_{i,j}+u_{i-1,j}}{h^2}
-	 & -\varepsilon\,\frac{u_{i,j+1}-2u_{i,j}+u_{i,j-1}}{h^2} \\
-	 & +\cos\beta\,\frac{u_{i+1,j}-u_{i,j}}{h}
-	+\sin\beta\,\frac{u_{i,j}-u_{i,j-1}}{h}
-	=1
-\end{align*}
-\begin{align*}
-	\dots
-	[\text{further steps is followed by Problem 2.41 in the lecture note.}]
-\end{align*}
-%------------------------------------------------------------------------------
-\newpage
-\section{[Q\&A] Insight review: Example 3 $\cdot$ Gue08}
-\begin{example}
-	\label{ex:example2consistencyorder}
-	Examine the consistency order of the following problem
-	\begin{align*}
-		f'(x) \approx f(x) + f(x+h) + f(x+2h).
-	\end{align*}
-	(the consistency order is aimed as high as possible)
-\end{example}
-Approach: 
-\begin{enumerate}
-	\item Let's expand $f(x+h)$ and $f(x+2h)$
-	      by using Taylor expansion till $\mathcal{O}(h^3)$
-	      \begin{align}
-		      \label{eq:firstfhreeTaylor}
-		      \begin{cases}
-			      \begin{aligned}
-				      f(x)    & = f(x)                \\
-				      f(x+ h) & = f(x) 
-				      + \frac{h^1}{1!} f'(x)  
-				      + \frac{h^2}{2!} f''(x)  
-				      + \mathcal{O}\left( h^3 \right) \\
-				      f(x+2h) & = f(x) 
-				      + \frac{(2h)^1}{1!} f'(x) 
-				      + \frac{(2h)^2}{2!} f''(x) 
-				      + \mathcal{O}\left( (2h)^3 \right)
-			      \end{aligned}
-		      \end{cases}
-	      \end{align}
-	      which leads to 
-	      \begin{align}
-		      \alpha f(x)    & = \alpha f(x)  \label{eq:alphafx}                    \\
-		      \beta f(x+ h)  & = \beta f(x) 
-		      + \beta h f'(x)  
-		      + \frac{\beta h^2}{2} f''(x)
-		      + \beta \mathcal{O}\left( h^3 \right)              \label{eq:betafxh} \\
-		      \gamma f(x+2h) & = \gamma f(x) 
-		      + 2\gamma h f'(x)  
-		      + 2\gamma h^2 f''(x)
-		      + \gamma \mathcal{O}\left( (2h)^3 \right) \label{eq:gammafx2h}
-	      \end{align}
-	      Summation of \eqref{eq:alphafx}, \eqref{eq:betafxh} and \eqref{eq:gammafx2h} leads to
-	      \begin{align}
-		      \label{eq:summationall}
-		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) 
-		       & = (\alpha + \beta + \gamma)f(x) \notag                                \\
-		       & \quad + (\beta h + 2 \gamma h)f'(x) \notag                            \\
-		       & \quad + \left( \frac{\beta h^2}{2} + 2\gamma h^2 \right)f''(x) \notag \\
-		       & \quad + \beta \mathcal{O}\left( h^3 \right)                    \notag \\
-		       & \quad + \gamma \mathcal{O}\left( (2h)^3 \right)
-	      \end{align}
-	      % Comparison of \eqref{eq:summationall} with \eqref{eq:givenproblemfxprime}
-	      Since we would like to approximate $f'(x)$ by the following expression
-	      \begin{align}
-		      \label{eq:wewouldliketoapprox}
-		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) \approx f'(x)
-	      \end{align}
-	      Comparison \eqref{eq:wewouldliketoapprox} with \eqref{eq:summationall} leads to the following 3 conditions
-	      \begin{align}
-		      \label{eq:alphabetagamma}
-		      \begin{cases}
-			      \alpha + \beta + \gamma \stackrel{!}{=} 0 \\
-			      \beta h + 2 \gamma h \stackrel{!}{=}  1   \\
-			      \displaystyle \frac{\beta h^2}{2} + 2\gamma h^2 \stackrel{!}{=} 0
-		      \end{cases}
-		       & \Leftrightarrow
-		      \begin{pmatrix}
-			      1 & 1   & 1 \\
-			      0 & 1   & 2 \\
-			      0 & 1/2 & 2
-		      \end{pmatrix}
-		      \begin{pmatrix}
-			      \alpha \\ \beta \\ \gamma
-		      \end{pmatrix}
-		      =
-		      \begin{pmatrix}
-			      0 \\ 1/h \\ 0
-		      \end{pmatrix} \\
-		       & \Leftrightarrow
-		      \begin{pmatrix}
-			      \alpha \\ \beta \\ \gamma
-		      \end{pmatrix}
-		      =
-		      \begin{pmatrix}
-			      -3/(2h) \\ 2/h \\ -1/(2h)
-		      \end{pmatrix}
-	      \end{align}
-	      which leads the expression \eqref{eq:summationall} to the following equality
-	      \begin{align}
-		      \label{eq:finalsum}
-		      \alpha (x) + \beta f(x+h) + \gamma f(x+2h) 
-		       & =
-		      f'(x)
-		      + \beta \mathcal{O}\left( h^3 \right) + \gamma \mathcal{O}\left( (2h)^3 \right) \notag \\
-		       & = f'(x)
-		      + \frac{2}{h} \mathcal{O}\left( h^3 \right)
-		      + \frac{-1}{2h} \mathcal{O}\left( (2h)^3 \right)                                \notag \\
-		       & = f'(x) + \mathcal{O}\left( h^2 \right).
-	      \end{align}
-	      Therefore, $f'(x)$ can be approximated by $\alpha f(x) + \beta f(x+h) + \gamma f(x+2h)$,
-	      where the values of $\left\{ \alpha, \beta, \gamma \right\}$ taken from \eqref{eq:alphabetagamma}, 
-	      with a consistency order of at least order 2, as shown in \eqref{eq:finalsum}.
-	      
-	\item Let's now expand $f(x+h)$ and $f(x+2h)$
-	      by using Taylor expansion till $\mathcal{O}(h^4)$.
-	      The approach is the same as the above approach  
-	      for $\mathcal{O}(h^3)$.
-	      However, this will lead to contradictory conditions,  
-	      i.e. 3 unknowns $\left\{ \alpha, \beta, \gamma \right\}$  for 4 equations. 
-	      
-	\item Therefore, the highest consistency order we may obtain is of order 2.
-\end{enumerate}
-
-%------------------------------------------------------------------------------
-\newpage
-\begin{example}
-	Examine the consistency order of the following problem
-	\begin{align*}
-		f''(x) \approx f(x) + f(x+h) + f(x+2h).
-	\end{align*}
-	(the consistency order is aimed as high as possible)
-\end{example}
-Approach: The procedure goes as same as Example \ref{ex:example2consistencyorder}
-\begin{enumerate}
-	\item Let's expand $f(x+h)$ and $f(x+2h)$
-	      by using Taylor expansion till $\mathcal{O}(h^3)$
-	      \begin{align}
-		      \label{eq:firstfhreeTaylor}
-		      \begin{cases}
-			      \begin{aligned}
-				      f(x)    & = f(x)                \\
-				      f(x+ h) & = f(x) 
-				      + \frac{h^1}{1!} f'(x)  
-				      + \frac{h^2}{2!} f''(x)  
-				      + \mathcal{O}\left( h^3 \right) \\
-				      f(x+2h) & = f(x) 
-				      + \frac{(2h)^1}{1!} f'(x) 
-				      + \frac{(2h)^2}{2!} f''(x) 
-				      + \mathcal{O}\left( (2h)^3 \right)
-			      \end{aligned}
-		      \end{cases}
-	      \end{align}
-	      which leads to 
-	      \begin{align}
-		      \alpha f(x)    & = \alpha f(x)  \label{eq:alphafx}                    \\
-		      \beta f(x+ h)  & = \beta f(x) 
-		      + \beta h f'(x)  
-		      + \frac{\beta h^2}{2} f''(x)
-		      + \beta \mathcal{O}\left( h^3 \right)              \label{eq:betafxh} \\
-		      \gamma f(x+2h) & = \gamma f(x) 
-		      + 2\gamma h f'(x)  
-		      + 2\gamma h^2 f''(x)
-		      + \gamma \mathcal{O}\left( (2h)^3 \right) \label{eq:gammafx2h}
-	      \end{align}
-	      Summation of \eqref{eq:alphafx}, \eqref{eq:betafxh} and \eqref{eq:gammafx2h} leads to
-	      \begin{align}
-		      \label{eq:summationall}
-		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) 
-		       & = (\alpha + \beta + \gamma)f(x) \notag                                \\
-		       & \quad + (\beta h + 2 \gamma h)f'(x) \notag                            \\
-		       & \quad + \left( \frac{\beta h^2}{2} + 2\gamma h^2 \right)f''(x) \notag \\
-		       & \quad + \beta \mathcal{O}\left( h^3 \right)                    \notag \\
-		       & \quad + \gamma \mathcal{O}\left( (2h)^3 \right)
-	      \end{align}
-	      % Comparison of \eqref{eq:summationall} with \eqref{eq:givenproblemfxprime}
-	      Since we would like to approximate $f''(x)$ by the following expression
-	      \begin{align}
-		      \label{eq:wewouldliketoapprox}
-		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) \approx f''(x)
-	      \end{align}
-	      Comparison \eqref{eq:wewouldliketoapprox} with \eqref{eq:summationall} leads to the following 3 conditions
-	      \begin{align}
-		      \label{eq:alphabetagamma}
-		      \begin{cases}
-			      \alpha + \beta + \gamma \stackrel{!}{=} 0 \\
-			      \beta h + 2 \gamma h \stackrel{!}{=}  0   \\
-			      \displaystyle \frac{\beta h^2}{2} + 2\gamma h^2 \stackrel{!}{=} 1
-		      \end{cases}
-		       & \Leftrightarrow
-		      \begin{pmatrix}
-			      1 & 1   & 1 \\
-			      0 & 1   & 2 \\
-			      0 & 1/2 & 2
-		      \end{pmatrix}
-		      \begin{pmatrix}
-			      \alpha \\ \beta \\ \gamma
-		      \end{pmatrix}
-		      =
-		      \begin{pmatrix}
-			      0 \\ 0 \\ 1/h^2
-		      \end{pmatrix} \\
-		       & \Leftrightarrow
-		      \begin{pmatrix}
-			      \alpha \\ \beta \\ \gamma
-		      \end{pmatrix}
-		      =
-		      \begin{pmatrix}
-			      ?/h^2 \\ ??/h^2 \\ ???/h^2
-		      \end{pmatrix}
-	      \end{align}
-	      which leads the expression \eqref{eq:summationall} to the following equality
-	      \begin{align}
-		      \label{eq:finalsum}
-		      \alpha (x) + \beta f(x+h) + \gamma f(x+2h) 
-		       & =
-		      f''(x)
-		      + \beta \mathcal{O}\left( h^3 \right)
-		      + \gamma \mathcal{O}\left( (2h)^3 \right) \notag                                         \\
-		       & = f''(x)
-		      + \frac{??}{h^2} \mathcal{O}\left( h^3 \right)
-		      + \frac{???}{h^2} \mathcal{O}\left( (2h)^3 \right)                                \notag \\
-		       & = f''(x) + \mathcal{O}\left( h \right).
-	      \end{align}
-	      Therefore, $f''(x)$ can be approximated by $\alpha f(x) + \beta f(x+h) + \gamma f(x+2h)$,
-	      where the values of $\left\{ \alpha, \beta, \gamma \right\}$ taken from \eqref{eq:alphabetagamma}, 
-	      with a consistency order of at least order 1, as shown in \eqref{eq:finalsum}.
-	      
-	\item Let's now expand $f(x+h)$ and $f(x+2h)$
-	      by using Taylor expansion till $\mathcal{O}(h^4)$.
-	      The approach is the same as the above approach  
-	      for $\mathcal{O}(h^3)$.
-	      However, this will lead to contradictory conditions,  
-	      i.e. 3 unknowns $\left\{ \alpha, \beta, \gamma \right\}$  for 4 equations. 
-	      
-	\item Therefore, the highest consistency order we may obtain is of order 1.
-\end{enumerate}
-
-%------------------------------------------------------------------------------
-\newpage
-\section{Euler scheme $\cdot$ Crank-Nicolson scheme}
-\begin{example}
-	Examine the following problem for $\alpha>0$
-	\begin{align}
-		\label{eq:diffusion}
-		\partial_t u(x,t) = \alpha \;\partial_{xx} u(x,t)+q(x,t), \quad t>0, \; x\in[0,1],
-	\end{align}
-	with IC $u(x,0) = u_0(x),$ and BC $u(0,t) = u(1,t) = 0.$
-\end{example}
-Approach: Vertical line method, i.e. we first discretize space $x$, 
-we then obtain a system of ODEs w.r.t. time $t$.
-\begin{enumerate}
-	\item Second order discretization in space
-	      \begin{align*}
-		      \partial_{xx} u(x_j,t)
-		      \approx \frac{u(x_{j+1},t) - 2u(x_j,t) + u(x_{j-1},t)}{h^2}
-	      \end{align*}
-	      Assume $y_j(t) \approx u(x_j,t)$ yields
-	      \begin{align*}
-		      y'_j(t) =
-		      \frac{\alpha}{h^2}
-		      (y_{j+1}(t) - 2y_j(t) + y_{j-1}(t)) + q(x_{j},t).
-	      \end{align*}
-	      General form $y' = Ay + b(t)$ with
-	      \begin{align*}
-		      A & = -\frac{\alpha}{h_x^2}
-		      \begin{pmatrix}
-			      2  & -1     &        &        & 0  \\
-			      -1 & 2      & -1     &        &    \\
-			         & \ddots & \ddots & \ddots &    \\
-			         &        & -1     & 2      & -1 \\
-			      0  &        &        & -1     & 2
-		      \end{pmatrix}  \\
-		      \text{and}                  \\
-		      b & =
-		      \begin{pmatrix}
-			      q(x_1,t) \\
-			      \vdots   \\
-			      q(x_{n-1},t)
-		      \end{pmatrix}.
-	      \end{align*}
-	      where the IC reads
-	      \begin{align*}
-		      y_i(0)= u_0(x_i),\quad i=1,\ldots,n-1
-	      \end{align*}
-	      
-	\item
-	      \begin{enumerate}
-		      \item Explicit Euler
-		            \begin{align*}
-			            \therefore\quad
-			            \boxed{
-				            y^{i+1} = y^i + h_t \left( Ay^{i}+b^i \right).
-			            }
-		            \end{align*}
-		            
-		      \item Implicit Euler
-		            \begin{align*}
-			            \therefore\quad
-			            \boxed{
-				            y^{i+1} = y^i + h_t \left( Ay^{i+1}+b^{i+1} \right).
-			            }
-		            \end{align*}
-		            
-		      \item Averaging explicit Euler and implicit Euler leads to Crank-Nicolson
-		            \begin{align*}
-			            \therefore\quad\boxed{
-				            \begin{aligned}
-					            y^{i+1}
-					             & = y^i + \frac{h_t}{2} \left( Ay^i+Ay^{i+1}+b^i+b^{i+1} \right)                  \\
-					             & = y^i + \frac{h_t}{2} A (y^i+y^{i+1})+\frac{h_t}{2} \left( b^i+b^{i+1} \right).
-				            \end{aligned}
-			            }
-		            \end{align*}
-	      \end{enumerate}
-\end{enumerate}
-
-%------------------------------------------------------------------------------
-\newpage
-\section{Iterative solution method}
-\begin{example}
-	Examine the following problem: The iteration scheme
-	\begin{align*}
-		\begin{pmatrix}
-			1         & 0 \\
-			-\delta a & 1
-		\end{pmatrix}
-		x^{k+1} =
-		\begin{pmatrix}
-			1-\delta & \delta a \\
-			0        & 1-\delta
-		\end{pmatrix}
-		x^{k} + \delta b, \quad \delta \in \mathbb{R}.
-	\end{align*}
-	is used to solve the following problem 
-	\begin{align*}
-		\begin{pmatrix}
-			1  & -a \\
-			-a & 1
-		\end{pmatrix}
-		x = b, \quad x,b\ \in \mathbb{R}^2,
+		abc
 	\end{align*}
 \end{example}
 
-\begin{enumerate}
-	\item Determine the matrix $C$ from the iteration matrix $I-CA$
-	\item Which value of $a \in \mathbb{R}$ can help this method to be converged
-	      in case of $\delta=1$?
-\end{enumerate}
-Approach: Followed by Bemerkung 3.3. from lecture note.
-\begin{enumerate}
-	\item The iteration scheme takes the form
-	      \begin{align*}
-		      \boxed{
-			      x^{k+1} = (I-CA) x^{k} + Cb.
-		      }
-	      \end{align*}
-	      which is derived directly from the following iteration setting function 
-	      \begin{align}
-		      \Phi :
-		      \begin{cases}
-			      \mathbb{R}^n \rightarrow \mathbb{R}^n, \\
-			      x \mapsto \Phi(x):= x + C(b-Ax).
-		      \end{cases}
-	      \end{align}
-	      Moreover, when $x^{*}$ is the solution of the system $Ax=b$,
-	      we should obtain the following expression
-	      \begin{align*}
-		      \Phi(x^{*})
-		       & = x^{*} + C\underbrace{(b-Ax^{*})}_{=0} \\
-		       & = x^{*}.
-	      \end{align*}
-	      Back to the main problem, we now examine the following derivation
-	      \begin{align}
-		      \label{eq:iterationphix}
-		      x^{k+1} & =
-		      \begin{pmatrix}
-			      1         & 0 \\
-			      -\delta a & 1
-		      \end{pmatrix}^{-1}
-		      \begin{pmatrix}
-			      1-\delta & \delta a \\
-			      0        & 1-\delta
-		      \end{pmatrix}
-		      x^{k}
-		      + \delta \begin{pmatrix}
-			      1         & 0 \\
-			      -\delta a & 1
-		      \end{pmatrix}^{-1}b \\
-		              & =
-		      \begin{pmatrix}
-			      1        & 0 \\
-			      \delta a & 1
-		      \end{pmatrix}
-		      \begin{pmatrix}
-			      1-\delta & \delta a \\
-			      0        & 1-\delta
-		      \end{pmatrix}
-		      x^{k}
-		      + \delta \begin{pmatrix}
-			      1        & 0 \\
-			      \delta a & 1
-		      \end{pmatrix}b      \\
-		              & =
-		      \begin{pmatrix}
-			      1 -\delta              & \delta a              \\
-			      \delta a -  \delta^2 a & \delta^2 a^2+1-\delta
-		      \end{pmatrix}
-		      x^{k}
-		      +  \begin{pmatrix}
-			      \delta     & 0      \\
-			      \delta^2 a & \delta
-		      \end{pmatrix}b
-	      \end{align}
-	      Moreover, we also expect
-	      \begin{align}
-		      \label{eq:iterationphi}
-		      x^{k+1} = (I-CA) x^{k} + Cb.
-	      \end{align}
-	      Comparison of \eqref{eq:iterationphi} with \eqref{eq:iterationphix} yields
-	      the matrix $C$ as follows
-	      \begin{align}
-		      \therefore\quad
-		      \boxed{
-			      C =
-			      \begin{pmatrix}
-				      \delta     & 0      \\
-				      \delta^2 a & \delta
-			      \end{pmatrix}
-		      }
-	      \end{align}
-	      
-	\item For the case $\delta=1$ we obtain the following iteration matrix $(I-CA)$
-	      \begin{align}
-		      I-CA & =
-		      \begin{pmatrix}
-			      0 & a   \\
-			      0 & a^2
-		      \end{pmatrix},
-	      \end{align}
-	      Observation: This matrix is of upper triangle. 
-	      Hence, its eigenvalues are those on the main diagonal, 
-	      i.e. we can recognize immediately the eigenvalues 
-	      \begin{align}
-		      \begin{cases}
-			      \lambda_{1} = 0, \\
-			      \lambda_{2} = a^2.
-		      \end{cases}
-	      \end{align}
-	      The iteration method is expected to be converged when
-	      the spectral radius of the iteration matrix $(I-CA)$ smaller than 1,
-	      i.e. we should have the following condition
-	      \begin{align*}
-		      \rho(I-CA) < 1 
-		      \Leftrightarrow a^2 <1 
-	      \end{align*}
-	      which leads to
-	      \begin{align}
-		      \therefore\quad
-		      \boxed{
-			      -1 < a < 1
-		      }
-	      \end{align}
-\end{enumerate}
-
 %------------------------------------------------------------------------------
 \newpage
-\section{[Review HW10] Consistency error}
+\section{[Review HW10] Consistency error (cont.)}
 \begin{example}
 	Examine the consistency error of the following problem
 	\begin{align*}
@@ -581,17 +94,551 @@ and define it on grid point, together
 with known matrix $A$ and known $f$,
 and then compute the consistency error \eqref{eq:consistencyerror11} accordingly.
 
-%------------------------------------------------------------------------------
-\newpage
-\section{Evaluation}
+% %------------------------------------------------------------------------------
+% \section{Programming exercise 02: Explanation}
+% \begin{example}
+% 	Examine the following Convection-diffustion problem
+% 	\begin{align*}
+% 		-\varepsilon\Delta u(x,y)
+% 		+ \cos\beta\;\frac{\partial u}{\partial x}(x,y)
+% 		+ \sin\beta\;\frac{\partial u}{\partial y}
+% 		       & = f(x,y), \ (x,y) \in \Omega = (0,1)^2,          \\
+% 		u(x,y) & = g(x,y), \ (x,y) \ \text{on} \ \partial \Omega,
+% 	\end{align*}
+% \end{example}
+% Main points of discretization:
+% \begin{align*}
+% 	-\varepsilon\,  \partial_{xx} u(x,y)
+% 	-\varepsilon\,  \partial_{yy} u(x,y)
+% 	+\cos\beta\, \partial_{x} u(x,y)
+% 	+\sin\beta\, \partial_{y} u(x,y) = 1
+% \end{align*}
+% Since $\beta = 5\pi/6$, it goes with $\cos\beta < 0$ and $\sin\beta > 0$.
+% Therefore, we need 
+% Upwind for $\partial_{x} u(x,y)$ and 
+% Downwind for $\partial_{y} u(x,y)$, 
+% as follows
+% \begin{enumerate}
+% 	\item Central difference method applied for $\partial_{xx} u(x,y)$,
+% 	\item Central difference method applied for $\partial_{yy} u(x,y)$,
+% 	\item Upwind method applied for $\partial_{x} u(x,y)$,
+% 	\item Downwind method applied for $\partial_{y} u(x,y)$.
+% \end{enumerate}
+% \begin{align*}
+% 	-\varepsilon\,\frac{u_{i+1,j}-2u_{i,j}+u_{i-1,j}}{h^2}
+% 	 & -\varepsilon\,\frac{u_{i,j+1}-2u_{i,j}+u_{i,j-1}}{h^2} \\
+% 	 & +\cos\beta\,\frac{u_{i+1,j}-u_{i,j}}{h}
+% 	+\sin\beta\,\frac{u_{i,j}-u_{i,j-1}}{h}
+% 	=1
+% \end{align*}
+% \begin{align*}
+% 	\dots
+% 	[\text{further steps is followed by Problem 2.41 in the lecture note.}]
+% \end{align*}
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{[Q\&A] Insight review: Example 3 $\cdot$ Gue08}
+% \begin{example}
+% 	\label{ex:example2consistencyorder}
+% 	Examine the consistency order of the following problem
+% 	\begin{align*}
+% 		f'(x) \approx f(x) + f(x+h) + f(x+2h).
+% 	\end{align*}
+% 	(the consistency order is aimed as high as possible)
+% \end{example}
+% Approach: 
+% \begin{enumerate}
+% 	\item Let's expand $f(x+h)$ and $f(x+2h)$
+% 	      by using Taylor expansion till $\mathcal{O}(h^3)$
+% 	      \begin{align}
+% 		      \label{eq:firstfhreeTaylor}
+% 		      \begin{cases}
+% 			      \begin{aligned}
+% 				      f(x)    & = f(x)                \\
+% 				      f(x+ h) & = f(x) 
+% 				      + \frac{h^1}{1!} f'(x)  
+% 				      + \frac{h^2}{2!} f''(x)  
+% 				      + \mathcal{O}\left( h^3 \right) \\
+% 				      f(x+2h) & = f(x) 
+% 				      + \frac{(2h)^1}{1!} f'(x) 
+% 				      + \frac{(2h)^2}{2!} f''(x) 
+% 				      + \mathcal{O}\left( (2h)^3 \right)
+% 			      \end{aligned}
+% 		      \end{cases}
+% 	      \end{align}
+% 	      which leads to 
+% 	      \begin{align}
+% 		      \alpha f(x)    & = \alpha f(x)  \label{eq:alphafx}                    \\
+% 		      \beta f(x+ h)  & = \beta f(x) 
+% 		      + \beta h f'(x)  
+% 		      + \frac{\beta h^2}{2} f''(x)
+% 		      + \beta \mathcal{O}\left( h^3 \right)              \label{eq:betafxh} \\
+% 		      \gamma f(x+2h) & = \gamma f(x) 
+% 		      + 2\gamma h f'(x)  
+% 		      + 2\gamma h^2 f''(x)
+% 		      + \gamma \mathcal{O}\left( (2h)^3 \right) \label{eq:gammafx2h}
+% 	      \end{align}
+% 	      Summation of \eqref{eq:alphafx}, \eqref{eq:betafxh} and \eqref{eq:gammafx2h} leads to
+% 	      \begin{align}
+% 		      \label{eq:summationall}
+% 		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) 
+% 		       & = (\alpha + \beta + \gamma)f(x) \notag                                \\
+% 		       & \quad + (\beta h + 2 \gamma h)f'(x) \notag                            \\
+% 		       & \quad + \left( \frac{\beta h^2}{2} + 2\gamma h^2 \right)f''(x) \notag \\
+% 		       & \quad + \beta \mathcal{O}\left( h^3 \right)                    \notag \\
+% 		       & \quad + \gamma \mathcal{O}\left( (2h)^3 \right)
+% 	      \end{align}
+% 	      % Comparison of \eqref{eq:summationall} with \eqref{eq:givenproblemfxprime}
+% 	      Since we would like to approximate $f'(x)$ by the following expression
+% 	      \begin{align}
+% 		      \label{eq:wewouldliketoapprox}
+% 		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) \approx f'(x)
+% 	      \end{align}
+% 	      Comparison \eqref{eq:wewouldliketoapprox} with \eqref{eq:summationall} leads to the following 3 conditions
+% 	      \begin{align}
+% 		      \label{eq:alphabetagamma}
+% 		      \begin{cases}
+% 			      \alpha + \beta + \gamma \stackrel{!}{=} 0 \\
+% 			      \beta h + 2 \gamma h \stackrel{!}{=}  1   \\
+% 			      \displaystyle \frac{\beta h^2}{2} + 2\gamma h^2 \stackrel{!}{=} 0
+% 		      \end{cases}
+% 		       & \Leftrightarrow
+% 		      \begin{pmatrix}
+% 			      1 & 1   & 1 \\
+% 			      0 & 1   & 2 \\
+% 			      0 & 1/2 & 2
+% 		      \end{pmatrix}
+% 		      \begin{pmatrix}
+% 			      \alpha \\ \beta \\ \gamma
+% 		      \end{pmatrix}
+% 		      =
+% 		      \begin{pmatrix}
+% 			      0 \\ 1/h \\ 0
+% 		      \end{pmatrix} \\
+% 		       & \Leftrightarrow
+% 		      \begin{pmatrix}
+% 			      \alpha \\ \beta \\ \gamma
+% 		      \end{pmatrix}
+% 		      =
+% 		      \begin{pmatrix}
+% 			      -3/(2h) \\ 2/h \\ -1/(2h)
+% 		      \end{pmatrix}
+% 	      \end{align}
+% 	      which leads the expression \eqref{eq:summationall} to the following equality
+% 	      \begin{align}
+% 		      \label{eq:finalsum}
+% 		      \alpha (x) + \beta f(x+h) + \gamma f(x+2h) 
+% 		       & =
+% 		      f'(x)
+% 		      + \beta \mathcal{O}\left( h^3 \right) + \gamma \mathcal{O}\left( (2h)^3 \right) \notag \\
+% 		       & = f'(x)
+% 		      + \frac{2}{h} \mathcal{O}\left( h^3 \right)
+% 		      + \frac{-1}{2h} \mathcal{O}\left( (2h)^3 \right)                                \notag \\
+% 		       & = f'(x) + \mathcal{O}\left( h^2 \right).
+% 	      \end{align}
+% 	      Therefore, $f'(x)$ can be approximated by $\alpha f(x) + \beta f(x+h) + \gamma f(x+2h)$,
+% 	      where the values of $\left\{ \alpha, \beta, \gamma \right\}$ taken from \eqref{eq:alphabetagamma}, 
+% 	      with a consistency order of at least order 2, as shown in \eqref{eq:finalsum}.
 
-Closing time: \textbf{Sunday, 26.06.2022, 23:59:00}
+% 	\item Let's now expand $f(x+h)$ and $f(x+2h)$
+% 	      by using Taylor expansion till $\mathcal{O}(h^4)$.
+% 	      The approach is the same as the above approach  
+% 	      for $\mathcal{O}(h^3)$.
+% 	      However, this will lead to contradictory conditions,  
+% 	      i.e. 3 unknowns $\left\{ \alpha, \beta, \gamma \right\}$  for 4 equations. 
 
-\inputfig{floats/evaluationQR}{evaluationQR}
+% 	\item Therefore, the highest consistency order we may obtain is of order 2.
+% \end{enumerate}
 
-Alternative link:\\
-\url{https://www.campus.rwth-aachen.de/evasys/online.php?pswd=5F6HTY8K3C}
-% \href{https://www.campus.rwth-aachen.de/evasys/online.php?pswd=5F6HTY8K3C}{here}
+% %------------------------------------------------------------------------------
+% \newpage
+% \begin{example}
+% 	Examine the consistency order of the following problem
+% 	\begin{align*}
+% 		f''(x) \approx f(x) + f(x+h) + f(x+2h).
+% 	\end{align*}
+% 	(the consistency order is aimed as high as possible)
+% \end{example}
+% Approach: The procedure goes as same as Example \ref{ex:example2consistencyorder}
+% \begin{enumerate}
+% 	\item Let's expand $f(x+h)$ and $f(x+2h)$
+% 	      by using Taylor expansion till $\mathcal{O}(h^3)$
+% 	      \begin{align}
+% 		      \label{eq:firstfhreeTaylor}
+% 		      \begin{cases}
+% 			      \begin{aligned}
+% 				      f(x)    & = f(x)                \\
+% 				      f(x+ h) & = f(x) 
+% 				      + \frac{h^1}{1!} f'(x)  
+% 				      + \frac{h^2}{2!} f''(x)  
+% 				      + \mathcal{O}\left( h^3 \right) \\
+% 				      f(x+2h) & = f(x) 
+% 				      + \frac{(2h)^1}{1!} f'(x) 
+% 				      + \frac{(2h)^2}{2!} f''(x) 
+% 				      + \mathcal{O}\left( (2h)^3 \right)
+% 			      \end{aligned}
+% 		      \end{cases}
+% 	      \end{align}
+% 	      which leads to 
+% 	      \begin{align}
+% 		      \alpha f(x)    & = \alpha f(x)  \label{eq:alphafx}                    \\
+% 		      \beta f(x+ h)  & = \beta f(x) 
+% 		      + \beta h f'(x)  
+% 		      + \frac{\beta h^2}{2} f''(x)
+% 		      + \beta \mathcal{O}\left( h^3 \right)              \label{eq:betafxh} \\
+% 		      \gamma f(x+2h) & = \gamma f(x) 
+% 		      + 2\gamma h f'(x)  
+% 		      + 2\gamma h^2 f''(x)
+% 		      + \gamma \mathcal{O}\left( (2h)^3 \right) \label{eq:gammafx2h}
+% 	      \end{align}
+% 	      Summation of \eqref{eq:alphafx}, \eqref{eq:betafxh} and \eqref{eq:gammafx2h} leads to
+% 	      \begin{align}
+% 		      \label{eq:summationall}
+% 		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) 
+% 		       & = (\alpha + \beta + \gamma)f(x) \notag                                \\
+% 		       & \quad + (\beta h + 2 \gamma h)f'(x) \notag                            \\
+% 		       & \quad + \left( \frac{\beta h^2}{2} + 2\gamma h^2 \right)f''(x) \notag \\
+% 		       & \quad + \beta \mathcal{O}\left( h^3 \right)                    \notag \\
+% 		       & \quad + \gamma \mathcal{O}\left( (2h)^3 \right)
+% 	      \end{align}
+% 	      % Comparison of \eqref{eq:summationall} with \eqref{eq:givenproblemfxprime}
+% 	      Since we would like to approximate $f''(x)$ by the following expression
+% 	      \begin{align}
+% 		      \label{eq:wewouldliketoapprox}
+% 		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) \approx f''(x)
+% 	      \end{align}
+% 	      Comparison \eqref{eq:wewouldliketoapprox} with \eqref{eq:summationall} leads to the following 3 conditions
+% 	      \begin{align}
+% 		      \label{eq:alphabetagamma}
+% 		      \begin{cases}
+% 			      \alpha + \beta + \gamma \stackrel{!}{=} 0 \\
+% 			      \beta h + 2 \gamma h \stackrel{!}{=}  0   \\
+% 			      \displaystyle \frac{\beta h^2}{2} + 2\gamma h^2 \stackrel{!}{=} 1
+% 		      \end{cases}
+% 		       & \Leftrightarrow
+% 		      \begin{pmatrix}
+% 			      1 & 1   & 1 \\
+% 			      0 & 1   & 2 \\
+% 			      0 & 1/2 & 2
+% 		      \end{pmatrix}
+% 		      \begin{pmatrix}
+% 			      \alpha \\ \beta \\ \gamma
+% 		      \end{pmatrix}
+% 		      =
+% 		      \begin{pmatrix}
+% 			      0 \\ 0 \\ 1/h^2
+% 		      \end{pmatrix} \\
+% 		       & \Leftrightarrow
+% 		      \begin{pmatrix}
+% 			      \alpha \\ \beta \\ \gamma
+% 		      \end{pmatrix}
+% 		      =
+% 		      \begin{pmatrix}
+% 			      ?/h^2 \\ ??/h^2 \\ ???/h^2
+% 		      \end{pmatrix}
+% 	      \end{align}
+% 	      which leads the expression \eqref{eq:summationall} to the following equality
+% 	      \begin{align}
+% 		      \label{eq:finalsum}
+% 		      \alpha (x) + \beta f(x+h) + \gamma f(x+2h) 
+% 		       & =
+% 		      f''(x)
+% 		      + \beta \mathcal{O}\left( h^3 \right)
+% 		      + \gamma \mathcal{O}\left( (2h)^3 \right) \notag                                         \\
+% 		       & = f''(x)
+% 		      + \frac{??}{h^2} \mathcal{O}\left( h^3 \right)
+% 		      + \frac{???}{h^2} \mathcal{O}\left( (2h)^3 \right)                                \notag \\
+% 		       & = f''(x) + \mathcal{O}\left( h \right).
+% 	      \end{align}
+% 	      Therefore, $f''(x)$ can be approximated by $\alpha f(x) + \beta f(x+h) + \gamma f(x+2h)$,
+% 	      where the values of $\left\{ \alpha, \beta, \gamma \right\}$ taken from \eqref{eq:alphabetagamma}, 
+% 	      with a consistency order of at least order 1, as shown in \eqref{eq:finalsum}.
+
+% 	\item Let's now expand $f(x+h)$ and $f(x+2h)$
+% 	      by using Taylor expansion till $\mathcal{O}(h^4)$.
+% 	      The approach is the same as the above approach  
+% 	      for $\mathcal{O}(h^3)$.
+% 	      However, this will lead to contradictory conditions,  
+% 	      i.e. 3 unknowns $\left\{ \alpha, \beta, \gamma \right\}$  for 4 equations. 
+
+% 	\item Therefore, the highest consistency order we may obtain is of order 1.
+% \end{enumerate}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{Euler scheme $\cdot$ Crank-Nicolson scheme}
+% \begin{example}
+% 	Examine the following problem for $\alpha>0$
+% 	\begin{align}
+% 		\label{eq:diffusion}
+% 		\partial_t u(x,t) = \alpha \;\partial_{xx} u(x,t)+q(x,t), \quad t>0, \; x\in[0,1],
+% 	\end{align}
+% 	with IC $u(x,0) = u_0(x),$ and BC $u(0,t) = u(1,t) = 0.$
+% \end{example}
+% Approach: Vertical line method, i.e. we first discretize space $x$, 
+% we then obtain a system of ODEs w.r.t. time $t$.
+% \begin{enumerate}
+% 	\item Second order discretization in space
+% 	      \begin{align*}
+% 		      \partial_{xx} u(x_j,t)
+% 		      \approx \frac{u(x_{j+1},t) - 2u(x_j,t) + u(x_{j-1},t)}{h^2}
+% 	      \end{align*}
+% 	      Assume $y_j(t) \approx u(x_j,t)$ yields
+% 	      \begin{align*}
+% 		      y'_j(t) =
+% 		      \frac{\alpha}{h^2}
+% 		      (y_{j+1}(t) - 2y_j(t) + y_{j-1}(t)) + q(x_{j},t).
+% 	      \end{align*}
+% 	      General form $y' = Ay + b(t)$ with
+% 	      \begin{align*}
+% 		      A & = -\frac{\alpha}{h_x^2}
+% 		      \begin{pmatrix}
+% 			      2  & -1     &        &        & 0  \\
+% 			      -1 & 2      & -1     &        &    \\
+% 			         & \ddots & \ddots & \ddots &    \\
+% 			         &        & -1     & 2      & -1 \\
+% 			      0  &        &        & -1     & 2
+% 		      \end{pmatrix}  \\
+% 		      \text{and}                  \\
+% 		      b & =
+% 		      \begin{pmatrix}
+% 			      q(x_1,t) \\
+% 			      \vdots   \\
+% 			      q(x_{n-1},t)
+% 		      \end{pmatrix}.
+% 	      \end{align*}
+% 	      where the IC reads
+% 	      \begin{align*}
+% 		      y_i(0)= u_0(x_i),\quad i=1,\ldots,n-1
+% 	      \end{align*}
+
+% 	\item
+% 	      \begin{enumerate}
+% 		      \item Explicit Euler
+% 		            \begin{align*}
+% 			            \therefore\quad
+% 			            \boxed{
+% 				            y^{i+1} = y^i + h_t \left( Ay^{i}+b^i \right).
+% 			            }
+% 		            \end{align*}
+
+% 		      \item Implicit Euler
+% 		            \begin{align*}
+% 			            \therefore\quad
+% 			            \boxed{
+% 				            y^{i+1} = y^i + h_t \left( Ay^{i+1}+b^{i+1} \right).
+% 			            }
+% 		            \end{align*}
+
+% 		      \item Averaging explicit Euler and implicit Euler leads to Crank-Nicolson
+% 		            \begin{align*}
+% 			            \therefore\quad\boxed{
+% 				            \begin{aligned}
+% 					            y^{i+1}
+% 					             & = y^i + \frac{h_t}{2} \left( Ay^i+Ay^{i+1}+b^i+b^{i+1} \right)                  \\
+% 					             & = y^i + \frac{h_t}{2} A (y^i+y^{i+1})+\frac{h_t}{2} \left( b^i+b^{i+1} \right).
+% 				            \end{aligned}
+% 			            }
+% 		            \end{align*}
+% 	      \end{enumerate}
+% \end{enumerate}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{Iterative solution method}
+% \begin{example}
+% 	Examine the following problem: The iteration scheme
+% 	\begin{align*}
+% 		\begin{pmatrix}
+% 			1         & 0 \\
+% 			-\delta a & 1
+% 		\end{pmatrix}
+% 		x^{k+1} =
+% 		\begin{pmatrix}
+% 			1-\delta & \delta a \\
+% 			0        & 1-\delta
+% 		\end{pmatrix}
+% 		x^{k} + \delta b, \quad \delta \in \mathbb{R}.
+% 	\end{align*}
+% 	is used to solve the following problem 
+% 	\begin{align*}
+% 		\begin{pmatrix}
+% 			1  & -a \\
+% 			-a & 1
+% 		\end{pmatrix}
+% 		x = b, \quad x,b\ \in \mathbb{R}^2,
+% 	\end{align*}
+% \end{example}
+
+% \begin{enumerate}
+% 	\item Determine the matrix $C$ from the iteration matrix $I-CA$
+% 	\item Which value of $a \in \mathbb{R}$ can help this method to be converged
+% 	      in case of $\delta=1$?
+% \end{enumerate}
+% Approach: Followed by Bemerkung 3.3. from lecture note.
+% \begin{enumerate}
+% 	\item The iteration scheme takes the form
+% 	      \begin{align*}
+% 		      \boxed{
+% 			      x^{k+1} = (I-CA) x^{k} + Cb.
+% 		      }
+% 	      \end{align*}
+% 	      which is derived directly from the following iteration setting function 
+% 	      \begin{align}
+% 		      \Phi :
+% 		      \begin{cases}
+% 			      \mathbb{R}^n \rightarrow \mathbb{R}^n, \\
+% 			      x \mapsto \Phi(x):= x + C(b-Ax).
+% 		      \end{cases}
+% 	      \end{align}
+% 	      Moreover, when $x^{*}$ is the solution of the system $Ax=b$,
+% 	      we should obtain the following expression
+% 	      \begin{align*}
+% 		      \Phi(x^{*})
+% 		       & = x^{*} + C\underbrace{(b-Ax^{*})}_{=0} \\
+% 		       & = x^{*}.
+% 	      \end{align*}
+% 	      Back to the main problem, we now examine the following derivation
+% 	      \begin{align}
+% 		      \label{eq:iterationphix}
+% 		      x^{k+1} & =
+% 		      \begin{pmatrix}
+% 			      1         & 0 \\
+% 			      -\delta a & 1
+% 		      \end{pmatrix}^{-1}
+% 		      \begin{pmatrix}
+% 			      1-\delta & \delta a \\
+% 			      0        & 1-\delta
+% 		      \end{pmatrix}
+% 		      x^{k}
+% 		      + \delta \begin{pmatrix}
+% 			      1         & 0 \\
+% 			      -\delta a & 1
+% 		      \end{pmatrix}^{-1}b \\
+% 		              & =
+% 		      \begin{pmatrix}
+% 			      1        & 0 \\
+% 			      \delta a & 1
+% 		      \end{pmatrix}
+% 		      \begin{pmatrix}
+% 			      1-\delta & \delta a \\
+% 			      0        & 1-\delta
+% 		      \end{pmatrix}
+% 		      x^{k}
+% 		      + \delta \begin{pmatrix}
+% 			      1        & 0 \\
+% 			      \delta a & 1
+% 		      \end{pmatrix}b      \\
+% 		              & =
+% 		      \begin{pmatrix}
+% 			      1 -\delta              & \delta a              \\
+% 			      \delta a -  \delta^2 a & \delta^2 a^2+1-\delta
+% 		      \end{pmatrix}
+% 		      x^{k}
+% 		      +  \begin{pmatrix}
+% 			      \delta     & 0      \\
+% 			      \delta^2 a & \delta
+% 		      \end{pmatrix}b
+% 	      \end{align}
+% 	      Moreover, we also expect
+% 	      \begin{align}
+% 		      \label{eq:iterationphi}
+% 		      x^{k+1} = (I-CA) x^{k} + Cb.
+% 	      \end{align}
+% 	      Comparison of \eqref{eq:iterationphi} with \eqref{eq:iterationphix} yields
+% 	      the matrix $C$ as follows
+% 	      \begin{align}
+% 		      \therefore\quad
+% 		      \boxed{
+% 			      C =
+% 			      \begin{pmatrix}
+% 				      \delta     & 0      \\
+% 				      \delta^2 a & \delta
+% 			      \end{pmatrix}
+% 		      }
+% 	      \end{align}
+
+% 	\item For the case $\delta=1$ we obtain the following iteration matrix $(I-CA)$
+% 	      \begin{align}
+% 		      I-CA & =
+% 		      \begin{pmatrix}
+% 			      0 & a   \\
+% 			      0 & a^2
+% 		      \end{pmatrix},
+% 	      \end{align}
+% 	      Observation: This matrix is of upper triangle. 
+% 	      Hence, its eigenvalues are those on the main diagonal, 
+% 	      i.e. we can recognize immediately the eigenvalues 
+% 	      \begin{align}
+% 		      \begin{cases}
+% 			      \lambda_{1} = 0, \\
+% 			      \lambda_{2} = a^2.
+% 		      \end{cases}
+% 	      \end{align}
+% 	      The iteration method is expected to be converged when
+% 	      the spectral radius of the iteration matrix $(I-CA)$ smaller than 1,
+% 	      i.e. we should have the following condition
+% 	      \begin{align*}
+% 		      \rho(I-CA) < 1 
+% 		      \Leftrightarrow a^2 <1 
+% 	      \end{align*}
+% 	      which leads to
+% 	      \begin{align}
+% 		      \therefore\quad
+% 		      \boxed{
+% 			      -1 < a < 1
+% 		      }
+% 	      \end{align}
+% \end{enumerate}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{[Review HW10] Consistency error}
+% \begin{example}
+% 	Examine the consistency error of the following problem
+% 	\begin{align*}
+% 		u''(x) - u'(x) + u(x) = 2x -1 -x^2
+% 	\end{align*}
+% 	with the exact solution is known, i.e. $u(x) = 1-x^2$.
+% \end{example}
+% Approach:
+% The consistency error reads
+% \begin{align}
+% 	\label{eq:consistencyerror11}
+% 	\big|\big| -\Delta_{h}u\big|_{\bar{\Omega}_{h}} - f\big|_{\Omega_{h}} \big|\big|	_{\infty}
+% 	=
+% 	\big|\big| A_{h}u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \big|\big|_{\infty}
+% \end{align}
+% Observation: The consistency error can be foreseen (and indeed) with the value $0$,
+% i.e. the numerical solution resembles the exact/analytical solution,
+% since we have been using the following numerical scheme $+$
+% the given information about the exact solution:
+% \begin{enumerate}
+% 	\item \textbf{Second order} discretization scheme is used to approximate $u''(x)$.
+% 	\item \textbf{Second order} discretization scheme is used to approximate $u'(x)$.
+% 	\item The exact solution, which is given, is of \textbf{quadratics}.
+% \end{enumerate}
+% \begin{align*}
+% 	\therefore\quad\boxed{
+% 	\big|\big| A_{h}u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \big|\big|_{\infty} = 0
+% 	}
+% \end{align*}
+% Another way is to substitute the given exact solution $u(x) = 1-x^2$ into \eqref{eq:consistencyerror11}
+% and define it on grid point, together
+% with known matrix $A$ and known $f$,
+% and then compute the consistency error \eqref{eq:consistencyerror11} accordingly.
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{Evaluation}
+
+% Closing time: \textbf{Sunday, 26.06.2022, 23:59:00}
+
+% \inputfig{floats/evaluationQR}{evaluationQR}
+
+% Alternative link:\\
+% \url{https://www.campus.rwth-aachen.de/evasys/online.php?pswd=5F6HTY8K3C}
+% % \href{https://www.campus.rwth-aachen.de/evasys/online.php?pswd=5F6HTY8K3C}{here}
 
 % Since the term $-h^2/3$ from \eqref{eq:finalsum} is nonzero,
 % we only need to expand those two Taylor expansions from \eqref{eq:firstfhreeTaylor}
