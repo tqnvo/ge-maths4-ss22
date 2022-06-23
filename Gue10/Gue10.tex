@@ -556,21 +556,30 @@ Approach: Followed by Bemerkung 3.3. from lecture note.
 \end{example}
 Approach:
 The consistency error reads
-\begin{align*}
+\begin{align}
+	\label{eq:consistencyerror11}
 	\big|\big| -\Delta_{h}u\big|_{\bar{\Omega}_{h}} - f\big|_{\Omega_{h}} \big|\big|	_{\infty}
 	=
 	\big|\big| A_{h}u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \big|\big|_{\infty}
-\end{align*}
+\end{align}
 Observation: The consistency error can be foreseen (and indeed) with the value $0$,
 i.e. the numerical solution resembles the exact/analytical solution,
-since we have been using the following numerical scheme $+$ 
+since we have been using the following numerical scheme $+$
 the given information about the exact solution:
 \begin{enumerate}
-	\item Second order discretization scheme is used to approximate $u''(x)$.
-	\item Second order discretization scheme is used to approximate $u'(x)$.
-	\item The exact solution, which is given, is of quadratics.
+	\item \textbf{Second order} discretization scheme is used to approximate $u''(x)$.
+	\item \textbf{Second order} discretization scheme is used to approximate $u'(x)$.
+	\item The exact solution, which is given, is of \textbf{quadratics}.
 \end{enumerate}
-
+\begin{align*}
+	\therefore\quad\boxed{
+	\big|\big| A_{h}u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \big|\big|_{\infty} = 0
+	}
+\end{align*}
+Another way is to substitute the given exact solution $u(x) = 1-x^2$ into \eqref{eq:consistencyerror11}
+and define it on grid point, together
+with known matrix $A$ and known $f$,
+and then compute the consistency error \eqref{eq:consistencyerror11} accordingly.
 
 % Since the term $-h^2/3$ from \eqref{eq:finalsum} is nonzero,
 % we only need to expand those two Taylor expansions from \eqref{eq:firstfhreeTaylor}
