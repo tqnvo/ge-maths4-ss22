@@ -548,11 +548,29 @@ Approach: Followed by Bemerkung 3.3. from lecture note.
 \newpage
 \section{[Review HW10] Consistency error}
 \begin{example}
-	Examine the following problem
+	Examine the consistency error of the following problem
 	\begin{align*}
-		abc
+		u''(x) - u'(x) + u(x) = 2x -1 -x^2
 	\end{align*}
+	with the exact solution is known, i.e. $u(x) = 1-x^2$.
 \end{example}
+Approach:
+The consistency error reads
+\begin{align*}
+	\big|\big| -\Delta_{h}u\big|_{\bar{\Omega}_{h}} - f\big|_{\Omega_{h}} \big|\big|	_{\infty}
+	=
+	\big|\big| A_{h}u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \big|\big|_{\infty}
+\end{align*}
+Observation: The consistency error can be foreseen (and indeed) with the value $0$,
+i.e. the numerical solution resembles the exact/analytical solution,
+since we have been using the following numerical scheme $+$ 
+the given information about the exact solution:
+\begin{enumerate}
+	\item Second order discretization scheme is used to approximate $u''(x)$.
+	\item Second order discretization scheme is used to approximate $u'(x)$.
+	\item The exact solution, which is given, is of quadratics.
+\end{enumerate}
+
 
 % Since the term $-h^2/3$ from \eqref{eq:finalsum} is nonzero,
 % we only need to expand those two Taylor expansions from \eqref{eq:firstfhreeTaylor}
