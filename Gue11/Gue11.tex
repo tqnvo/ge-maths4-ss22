@@ -27,23 +27,6 @@ Mathe IV $\cdot$ Gue11 $\cdot$ SS22
 \end{center}
 Content covered:
 \begin{itemize}
-	% \item[\checkmark] Programming exercise 02: Explanation.
-	% \item[\checkmark] Analysis:
-	%       \begin{itemize}
-	% 	      \item[*] Distributional derivative.
-	%   \end{itemize}
-	% \item[\checkmark] [Q\&A] Insight review: Example 3 $\cdot$ Gue08
-	% \item[\checkmark] Euler scheme
-	%       $\begin{cases}
-	% 		      \text{Explicit} \\
-	% 		      \text{Implicit}
-	% 	      \end{cases}
-	% 	      :
-	% 	      \sum
-	% 	      \longrightarrow
-	% 	      \text{Crank-Nicolson scheme}
-	%       $
-	% \item[\checkmark] Iterative solution method
 	\item[\checkmark] [Review HW10] Numerics: Consistency error (cont.)
 	\item[\checkmark] [Review HW11 - A1] Analysis: Fundamental solution Laplace-operator in 2D.
 	\item[\checkmark] Numerics:
@@ -62,9 +45,13 @@ Content covered:
 	\begin{align*}
 		u''(x) - u'(x) + u(x) = 2x -1 -x^2
 	\end{align*}
-	with the exact solution is known, i.e. $u(x) = 1-x^2$.
+	with the Neumann and Dirichlet BC are given, respectively, as follows
+	\begin{align*}
+		u'(0) = 0, \quad u(1) = 0.
+	\end{align*}
+	The exact solution is known, i.e. $u(x) = 1-x^2$.
 \end{example}
-% Approach:
+Approach: \textbf{Definition 2.19} in the lecture note.\\
 % The consistency error reads
 % \begin{align}
 % 	\label{eq:consistencyerror11}
@@ -90,6 +77,152 @@ Content covered:
 % and define it on grid point, together
 % with known matrix $A$ and known $f$,
 % and then compute the consistency error \eqref{eq:consistencyerror11} accordingly.
+The discretization error of FDM takes the form
+\begin{align}
+	e_{h} := u\big|_{\overline{\Omega}_{h}} - u_{h}
+\end{align}
+Furthermore, the discretization error is estimated as follows
+\begin{align}
+	\left\| e_{h} \right\| 
+	 & = \left\| u\big|_{\overline{\Omega}_{h}} - u_{h} \right\|                                                           \notag \\
+	 & = \left\| \Delta_{h}^{-1} \Delta_{h} \left( u\big|_{\overline{\Omega}_{h}} - u_{h} \right) \right\|                 \notag \\
+	 & = \left\| \Delta_{h}^{-1} \left( \Delta_{h} u\big|_{\overline{\Omega}_{h}} - \Delta_{h} u_{h} \right) \right\|      \notag \\
+	 & = \left\| \Delta_{h}^{-1} \left( - \Delta_{h} u\big|_{\overline{\Omega}_{h}} + \Delta_{h} u_{h} \right) \right\|    \notag \\
+	 & = \left\| \Delta_{h}^{-1} \left( - \Delta_{h} u\big|_{\overline{\Omega}_{h}} - f\big|_{\Omega_{h}} \right) \right\| \notag \\
+	 & \leq 
+	\underbrace{\left\| \Delta_{h}^{-1} \right\| }_{\text{Stability}}
+	\underbrace{\left\| - \Delta_{h} u\big|_{\overline{\Omega}_{h}} - f\big|_{\Omega_{h}} \right\| }
+	_{\text{Consistency}}
+\end{align}
+We need to estimate the consistency error 
+\begin{align}
+	\label{eq:thisisnorm}
+	\boxed{
+	\left\| - \Delta_{h} u\big|_{\overline{\Omega}_{h}} - f\big|_{\Omega_{h}} \right\|_{\infty}
+	\rightarrow
+	\left\| A_{h} u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \right\|_{\infty}
+	}
+\end{align}
+for the given problem. 
+\newpage
+By taking the discretization
+\begin{align}
+	u_{n} &= u(x_{n}) \\
+	x_{n} &= nh
+\end{align}
+where $n=0,\dots,N-1$.
+The matrix $A_h$ takes the form
+\begin{align}
+	\label{eq:thisisA}
+	\therefore\quad\boxed{
+	A_h= \frac{1}{2h^2}
+	\begin{pmatrix}
+		2h^2-4 & 4      &        &        &        \\
+		2+h    & 2h^2-4 & 2-h    &        &        \\
+		       & 2+h    & 2h^2-4 & 2-h    &        \\
+		       &        & \ddots & \ddots & \ddots \\
+		       &        &        & 2+h    & 2h^2-4
+	\end{pmatrix}_{N\times N},
+	}
+\end{align}
+The exact solution $u(x) = 1-x^2$ defined on grid $\Omega_{h}$, i.e. $u\big|_{\Omega_{h}}$, takes the form
+\begin{align}
+	\label{eq:thisisu}
+	\therefore\quad\boxed{
+	u\big|_{\Omega_{h}} 
+	=
+	\begin{pmatrix}
+		u_{0} \\u_{1}\\u_{2}\\u_{3}\\ \dots \\ u_{N-2}\\u_{N-1}
+	\end{pmatrix}_{N\times 1}
+	=
+	\begin{pmatrix}
+		1-(0h)^2 \\ 1-(1h)^2 \\ 1-(2h)^2 \\ 1-(3h)^2\\ \dots \\ 1-((N-2)h)^2 \\ 1-((N-1)h)^2
+	\end{pmatrix}_{N\times 1}
+	}
+\end{align}
+The function $f(x) = 2x-1-x^2$ defined on grid $\Omega_{h}$, i.e. $f\big|_{\Omega_{h}}$, takes the form
+\begin{align}
+	\label{eq:thisisf}
+	\therefore\quad\boxed{
+	f\big|_{\Omega_{h}} 
+	=
+	\begin{pmatrix}
+		f_{0} \\f_{1}\\f_{2}\\f_{3}\\ \dots \\ f_{N-2}\\f_{N-1}
+	\end{pmatrix}_{N\times 1}
+	=
+	\begin{pmatrix}
+		2(0h)-1-(0h)^2         \\ 
+		2(1h)-1-(1h)^2         \\ 
+		2(2h)-1-(2h)^2         \\ 
+		2(3h)-1-(3h)^2         \\ 
+		\dots                  \\ 
+		2((N-2)h)-1-((N-2)h)^2 \\ 
+		2((N-1)h)-1-((N-1)h)^2
+	\end{pmatrix}_{N\times 1}
+	}
+\end{align}
+Substitution of \eqref{eq:thisisA}, \eqref{eq:thisisu} and \eqref{eq:thisisf}
+into \eqref{eq:thisisnorm} leads to
+\begin{align}
+	 & \left\| A_{h} u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \right\|_{\infty} \notag      \\
+	 & =
+	\left\| 
+	\frac{1}{2h^2}
+	\begin{pmatrix}
+		2h^2-4 & 4      &        &        &        \\
+		2+h    & 2h^2-4 & 2-h    &        &        \\
+		       & 2+h    & 2h^2-4 & 2-h    &        \\
+		       &        & \ddots & \ddots & \ddots \\
+		       &        &        & 2+h    & 2h^2-4
+	\end{pmatrix}
+	\begin{pmatrix}
+		1-(0h)^2 \\ 1-(1h)^2 \\ 1-(2h)^2 \\ 1-(3h)^2\\ \dots \\ 1-((N-2)h)^2 \\ 1-((N-1)h)^2
+	\end{pmatrix}
+	- 
+	f\big|_{\Omega_{h}} 
+	\right\|_{\infty}                                                           \notag       \\
+	 & = \left\| 
+	\begin{pmatrix}
+		-1                          \\
+		-1 + 1(2h) - (1h)^2         \\
+		-1 + 2(2h) - (2h)^2         \\
+		-1 + 3(2h) - (3h)^2         \\
+		\dots                       \\
+		-1 + (N-2)(2h) - ((N-2)h)^2 \\
+		-1 + (N-1)(2h) - ((N-1)h)^2 
+	\end{pmatrix}
+	- 
+	f\big|_{\Omega_{h}}
+	\right\|_{\infty}                                                                 \notag \\
+	 & = \left\| 
+	\begin{pmatrix}
+		-1                          \\
+		-1 + 1(2h) - (1h)^2         \\
+		-1 + 2(2h) - (2h)^2         \\
+		-1 + 3(2h) - (3h)^2         \\
+		\dots                       \\
+		-1 + (N-2)(2h) - ((N-2)h)^2 \\
+		-1 + (N-1)(2h) - ((N-1)h)^2 
+	\end{pmatrix}
+	-
+	\begin{pmatrix}
+		2(0h)-1-(0h)^2         \\ 
+		2(1h)-1-(1h)^2         \\ 
+		2(2h)-1-(2h)^2         \\ 
+		2(3h)-1-(3h)^2         \\ 
+		\dots                  \\ 
+		2((N-2)h)-1-((N-2)h)^2 \\ 
+		2((N-1)h)-1-((N-1)h)^2
+	\end{pmatrix}
+	\right\|_{\infty}                                                                 \notag \\
+	 & = 0.
+\end{align}
+Finally, we obtain the consistency error
+\begin{align}
+	\therefore\quad\boxed{
+	\left\| A_{h} u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \right\|_{\infty} = 0.
+	}
+\end{align}
 
 %------------------------------------------------------------------------------
 \newpage
