@@ -1,0 +1,2642 @@
+\documentclass[12pt]{article}
+\usepackage{anysize}
+\usepackage[ngerman,english]{babel}
+\marginsize{3.5cm}{2.5cm}{1cm}{2cm}
+
+\input{packages_styles.tex}
+%Page numbering in style 1/3...
+\usepackage{lastpage}  
+\usepackage{hyperref}
+\makeatletter
+\renewcommand{\@oddfoot}{\hfil 
+% Aachen, November $04^{th}$, 2021 \hspace{300pt} 
+Mathe IV $\cdot$ Gue12 $\cdot$ SS22 
+\hspace{280pt} 
+\thepage/\pageref{LastPage}\hfil}
+\makeatother
+%------------------------------------------------------------------------------
+\begin{document}
+\begin{center}
+	\section*{Global Exercise - Gue12}
+\end{center}
+\begin{center}
+	Tuan Vo
+\end{center}
+\begin{center}
+	$12^{\text{th}}$ July, 2022
+\end{center}
+Content covered:
+\begin{itemize}
+	\item[\checkmark] [Review HW10] Numerics: Consistency error (cont.)
+	\item[\checkmark] [Review HW11 - A1] Analysis: Fundamental solution Laplace-operator in 2D.
+	\item[\checkmark] Numerics:
+	      $
+		      \begin{cases}
+			      \text{Jacobi iteration solution		}       \\
+			      \text{Gauss-Seidel iteration solution		} \\
+		      \end{cases}
+	      $
+\end{itemize}
+
+% %------------------------------------------------------------------------------
+% \section{[Review HW10] Consistency error (cont.)}
+% \begin{example}
+% 	Examine the consistency error of the following problem
+% 	\begin{align*}
+% 		u''(x) - u'(x) + u(x) = 2x -1 -x^2
+% 	\end{align*}
+% 	with the Neumann and Dirichlet BC are given, respectively, as follows
+% 	\begin{align*}
+% 		u'(0) = 0, \quad u(1) = 0.
+% 	\end{align*}
+% 	The exact solution is known, i.e. $u(x) = 1-x^2$.
+% \end{example}
+% Approach: \textbf{Definition 2.19} in the lecture note.\\
+% % The consistency error reads
+% % \begin{align}
+% % 	\label{eq:consistencyerror11}
+% % 	\big|\big| -\Delta_{h}u\big|_{\bar{\Omega}_{h}} - f\big|_{\Omega_{h}} \big|\big|	_{\infty}
+% % 	=
+% % 	\big|\big| A_{h}u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \big|\big|_{\infty}
+% % \end{align}
+% % Observation: The consistency error can be foreseen (and indeed) with the value $0$,
+% % i.e. the numerical solution resembles the exact/analytical solution,
+% % since we have been using the following numerical scheme $+$
+% % the given information about the exact solution:
+% % \begin{enumerate}
+% % 	\item \textbf{Second order} discretization scheme is used to approximate $u''(x)$.
+% % 	\item \textbf{Second order} discretization scheme is used to approximate $u'(x)$.
+% % 	\item The exact solution, which is given, is of \textbf{quadratics}.
+% % \end{enumerate}
+% % \begin{align*}
+% % 	\therefore\quad\boxed{
+% % 	\big|\big| A_{h}u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \big|\big|_{\infty} = 0
+% % 	}
+% % \end{align*}
+% % Another way is to substitute the given exact solution $u(x) = 1-x^2$ into \eqref{eq:consistencyerror11}
+% % and define it on grid point, together
+% % with known matrix $A$ and known $f$,
+% % and then compute the consistency error \eqref{eq:consistencyerror11} accordingly.
+% The discretization error of FDM takes the form
+% \begin{align}
+% 	e_{h} := u\big|_{\overline{\Omega}_{h}} - u_{h}
+% \end{align}
+% Furthermore, the discretization error is estimated as follows
+% \begin{align}
+% 	\left\| e_{h} \right\| 
+% 	 & = \left\| u\big|_{\overline{\Omega}_{h}} - u_{h} \right\|                                                           \notag \\
+% 	 & = \left\| \Delta_{h}^{-1} \Delta_{h} \left( u\big|_{\overline{\Omega}_{h}} - u_{h} \right) \right\|                 \notag \\
+% 	 & = \left\| \Delta_{h}^{-1} \left( \Delta_{h} u\big|_{\overline{\Omega}_{h}} - \Delta_{h} u_{h} \right) \right\|      \notag \\
+% 	 & = \left\| \Delta_{h}^{-1} \left( - \Delta_{h} u\big|_{\overline{\Omega}_{h}} + \Delta_{h} u_{h} \right) \right\|    \notag \\
+% 	 & = \left\| \Delta_{h}^{-1} \left( - \Delta_{h} u\big|_{\overline{\Omega}_{h}} - f\big|_{\Omega_{h}} \right) \right\| \notag \\
+% 	 & \leq 
+% 	\underbrace{\left\| \Delta_{h}^{-1} \right\| }_{\text{Stability}}
+% 	\underbrace{\left\| - \Delta_{h} u\big|_{\overline{\Omega}_{h}} - f\big|_{\Omega_{h}} \right\| }
+% 	_{\text{Consistency}}
+% \end{align}
+% We need to estimate the consistency error 
+% \begin{align}
+% 	\label{eq:thisisnorm}
+% 	\boxed{
+% 	\left\| - \Delta_{h} u\big|_{\overline{\Omega}_{h}} - f\big|_{\Omega_{h}} \right\|_{\infty}
+% 	\rightarrow
+% 	\left\| A_{h} u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \right\|_{\infty}
+% 	}
+% \end{align}
+% for the given problem. 
+% \newpage
+% By taking the discretization
+% \begin{align}
+% 	u_{n} & = u(x_{n}) \\
+% 	x_{n} & = nh
+% \end{align}
+% where $n=0,\dots,N-1$.
+% The matrix $A_h$ takes the form
+% \begin{align}
+% 	\label{eq:thisisA}
+% 	\therefore\quad\boxed{
+% 	A_h= \frac{1}{2h^2}
+% 	\begin{pmatrix}
+% 		2h^2-4 & 4      &        &        &        \\
+% 		2+h    & 2h^2-4 & 2-h    &        &        \\
+% 		       & 2+h    & 2h^2-4 & 2-h    &        \\
+% 		       &        & \ddots & \ddots & \ddots \\
+% 		       &        &        & 2+h    & 2h^2-4
+% 	\end{pmatrix}_{N\times N},
+% 	}
+% \end{align}
+% The exact solution $u(x) = 1-x^2$ defined on grid $\Omega_{h}$, i.e. $u\big|_{\Omega_{h}}$, takes the form
+% \begin{align}
+% 	\label{eq:thisisu}
+% 	\therefore\quad\boxed{
+% 	u\big|_{\Omega_{h}} 
+% 	=
+% 	\begin{pmatrix}
+% 		u_{0} \\u_{1}\\u_{2}\\u_{3}\\ \dots \\ u_{N-2}\\u_{N-1}
+% 	\end{pmatrix}_{N\times 1}
+% 	=
+% 	\begin{pmatrix}
+% 		1-(0h)^2 \\ 1-(1h)^2 \\ 1-(2h)^2 \\ 1-(3h)^2\\ \dots \\ 1-((N-2)h)^2 \\ 1-((N-1)h)^2
+% 	\end{pmatrix}_{N\times 1}
+% 	}
+% \end{align}
+% The function $f(x) = 2x-1-x^2$ defined on grid $\Omega_{h}$, i.e. $f\big|_{\Omega_{h}}$, takes the form
+% \begin{align}
+% 	\label{eq:thisisf}
+% 	\therefore\quad\boxed{
+% 	f\big|_{\Omega_{h}} 
+% 	=
+% 	\begin{pmatrix}
+% 		f_{0} \\f_{1}\\f_{2}\\f_{3}\\ \dots \\ f_{N-2}\\f_{N-1}
+% 	\end{pmatrix}_{N\times 1}
+% 	=
+% 	\begin{pmatrix}
+% 		2(0h)-1-(0h)^2         \\ 
+% 		2(1h)-1-(1h)^2         \\ 
+% 		2(2h)-1-(2h)^2         \\ 
+% 		2(3h)-1-(3h)^2         \\
+% 		\dots                  \\ 
+% 		2((N-2)h)-1-((N-2)h)^2 \\ 
+% 		2((N-1)h)-1-((N-1)h)^2
+% 	\end{pmatrix}_{N\times 1}
+% 	}
+% \end{align}
+% Substitution of \eqref{eq:thisisA}, \eqref{eq:thisisu} and \eqref{eq:thisisf}
+% into \eqref{eq:thisisnorm} leads to
+% \begin{align}
+% 	 & \left\| A_{h} u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \right\|_{\infty} \notag      \\
+% 	 & =
+% 	\left\| 
+% 	\frac{1}{2h^2}
+% 	\begin{pmatrix}
+% 		2h^2-4 & 4      &        &        &        \\
+% 		2+h    & 2h^2-4 & 2-h    &        &        \\
+% 		       & 2+h    & 2h^2-4 & 2-h    &        \\
+% 		       &        & \ddots & \ddots & \ddots \\
+% 		       &        &        & 2+h    & 2h^2-4
+% 	\end{pmatrix}
+% 	\begin{pmatrix}
+% 		1-(0h)^2 \\ 1-(1h)^2 \\ 1-(2h)^2 \\ 1-(3h)^2\\ \dots \\ 1-((N-2)h)^2 \\ 1-((N-1)h)^2
+% 	\end{pmatrix}
+% 	- 
+% 	f\big|_{\Omega_{h}} 
+% 	\right\|_{\infty}                                                           \notag       \\
+% 	 & = \left\| 
+% 	\begin{pmatrix}
+% 		-1                          \\
+% 		-1 + 1(2h) - (1h)^2         \\
+% 		-1 + 2(2h) - (2h)^2         \\
+% 		-1 + 3(2h) - (3h)^2         \\
+% 		\dots                       \\
+% 		-1 + (N-2)(2h) - ((N-2)h)^2 \\
+% 		-1 + (N-1)(2h) - ((N-1)h)^2 
+% 	\end{pmatrix}
+% 	- 
+% 	f\big|_{\Omega_{h}}
+% 	\right\|_{\infty}                                                                 \notag \\
+% 	 & = \left\| 
+% 	\begin{pmatrix}
+% 		-1                          \\
+% 		-1 + 1(2h) - (1h)^2         \\
+% 		-1 + 2(2h) - (2h)^2         \\
+% 		-1 + 3(2h) - (3h)^2         \\
+% 		\dots                       \\
+% 		-1 + (N-2)(2h) - ((N-2)h)^2 \\
+% 		-1 + (N-1)(2h) - ((N-1)h)^2 
+% 	\end{pmatrix}
+% 	-
+% 	\begin{pmatrix}
+% 		2(0h)-1-(0h)^2         \\ 
+% 		2(1h)-1-(1h)^2         \\ 
+% 		2(2h)-1-(2h)^2         \\ 
+% 		2(3h)-1-(3h)^2         \\ 
+% 		\dots                  \\ 
+% 		2((N-2)h)-1-((N-2)h)^2 \\ 
+% 		2((N-1)h)-1-((N-1)h)^2
+% 	\end{pmatrix}
+% 	\right\|_{\infty}                                                                 \notag \\
+% 	 & = 0.
+% \end{align}
+% Finally, we obtain the consistency error
+% \begin{align}
+% 	\therefore\quad\boxed{
+% 	\left\| A_{h} u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \right\|_{\infty} = 0.
+% 	}
+% \end{align}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{[Review HW10 - A1] Fundamental solution}
+% \begin{example}
+% 	Examine the following problem: Show that the $\gamma$ function defined as
+% 	\begin{align}
+% 		\gamma :
+% 		\begin{cases}
+% 			\mathbb{R}^2 \backslash \{ 0 \} \to \mathbb{R}, \\
+% 			\displaystyle \Bx \mapsto \gamma(\Bx)= -\frac{1}{2\pi} \ln|\Bx|,
+% 		\end{cases}
+% 	\end{align}
+% 	is a fundamental solution of Laplace equation
+% 	$\displaystyle -\Delta \gamma(\Bx) = \delta_{0}$ in $\mathbb{R}^2$.
+% \end{example}
+% Approach:
+% \begin{proof}
+% 	For all test functions $\varphi$
+% 	in the compactly supported, infinitely differentiable function space, i.e.
+% 	$\varphi \in \mathcal{C}^{\infty}_{0}(\mathbb{R}^{2})$,
+% 	we need to show the following equality
+% 	% $\forall \phi\in \mathcal{C}^{\infty}_{0}(\mathbb{R}^{2})$
+% 	\begin{align}
+% 		-\Delta \gamma(\Bx) = \delta_{0}
+% 		 & \Leftrightarrow
+% 		\langle -\Delta \gamma(\Bx),\varphi \rangle = \langle \delta_{0},\varphi \rangle \notag \\
+% 		 & \Leftrightarrow
+% 		\langle 
+% 		-\partial_{xx} \gamma(\Bx)
+% 		-\partial_{yy} \gamma(\Bx),
+% 		\varphi \rangle = \langle \delta_{0},\varphi \rangle \notag                             \\
+% 		 & \Leftrightarrow
+% 		- \langle \partial_{xx} \gamma(\Bx), \varphi \rangle 
+% 		- \langle \partial_{yy} \gamma(\Bx), \varphi \rangle 
+% 		= \langle \delta_{0},\varphi \rangle \notag                                             \\
+% 		 & \Leftrightarrow
+% 		- (-1)^{2} \langle \gamma(\Bx), \partial_{xx} \varphi \rangle 
+% 		- (-1)^{2} \langle \gamma(\Bx), \partial_{yy} \varphi \rangle 
+% 		= \langle \delta_{0},\varphi \rangle \notag                                             \\
+% 		 & \Leftrightarrow
+% 		\langle \gamma(\Bx), - \partial_{xx} \varphi \rangle 
+% 		+ \langle \gamma(\Bx), - \partial_{yy} \varphi \rangle 
+% 		= \langle \delta_{0},\varphi \rangle \notag                                             \\
+% 		 & \Leftrightarrow
+% 		\langle \gamma(\Bx), - \partial_{xx} \varphi - \partial_{yy} \varphi \rangle
+% 		= \langle \delta_{0},\varphi \rangle \notag                                             \\
+% 		 & \Leftrightarrow
+% 		\langle \gamma(\Bx), - \Delta \varphi \rangle
+% 		= \langle \delta_{0},\varphi \rangle 
+% 	\end{align}
+% 	yielding the following expression
+% 	\begin{align}
+% 		\boxed{
+% 			\langle \gamma(\Bx),-\Delta \varphi \rangle
+% 			=
+% 			\langle \delta_{0},\varphi \rangle
+% 			\Leftrightarrow
+% 			\langle \gamma(\Bx),-\Delta \varphi \rangle
+% 			\stackrel{!}{=}
+% 			\varphi(0), \quad \forall \varphi \in \mathcal{C}^{\infty}_{0}(\mathbb{R}^{2}).
+% 		}
+% 	\end{align}
+% 	Setup:
+% 	Let the test function
+% 	$\varphi\in \mathcal{D}(\mathbb{R}^2) = \mathcal{C}^{\infty}_{0}(\mathbb{R}^2)$
+% 	be arbitrarily chosen with its support in a subset of a ball centered at $O$ with radius $R$, i.e.
+% 	$\supp(\varphi) \subset B_R(0)$. 
+% 	This setting leads to the fact
+% 	\begin{align}
+% 		\begin{cases}
+% 			\varphi(\Bx) \ne 0 \text{ in } B_{R}(0), \\
+% 			\varphi(\Bx) = 0 \text{ on } \partial B_{R}(0).
+% 		\end{cases}
+% 	\end{align}
+% 	Besides, let another smaller ball centered at $O$ with radius 
+% 	$\varepsilon \ll 1$ be defined $B_{\varepsilon}(0)$.
+% 	Then, the domain to be considered is 
+% 	$\Omega_\varepsilon := B_R(0) \setminus B_\varepsilon (0)$, i.e. the \textit{2D doughnut}
+% 	as shown in Figure \ref{ballBRBe}.
+% 	By using Gauss divergence theorem twice we obtain the following equality:
+% 	\inputfig{floats/ballBRBe}{ballBRBe}
+% 	\begin{align}
+% 		\label{eq:derivationstart}
+% 		\langle \gamma(\Bx),-\Delta \varphi \rangle 
+% 		 & = - \int_{\mathbb{R}^2} \gamma(\Bx)\Delta\varphi(\Bx)\,d\Bx                                    \notag \\
+% 		 & = \displaystyle \lim_{\varepsilon\to 0^+}
+% 		\left( - \int_{\Omega_\varepsilon} \gamma(\Bx)\Delta\varphi(\Bx)\, d\Omega_{\varepsilon}  \right) \notag \\
+% 		 & = \displaystyle \lim_{\varepsilon\to 0^+}
+% 		\left(
+% 		- \int_{\partial \Omega_\varepsilon} \gamma(\Bx)
+% 		\frac{\partial\varphi(\Bx)}{\partial \nu} \, d\partial\Omega_{\varepsilon}
+% 		+ \int_{\Omega_\varepsilon} \nabla\gamma(\Bx) \nabla\varphi(\Bx) \, d\Omega_{\varepsilon}
+% 		\right)                                                                                           \notag \\
+% 		 & = \displaystyle \lim_{\varepsilon\to 0^+}
+% 		\left(
+% 		- \int_{\partial \Omega_\varepsilon} \gamma(\Bx)
+% 		\frac{\partial\varphi(\Bx)}{\partial \nu} \, d\partial\Omega_{\varepsilon}\right.                 \notag \\
+% 		 & \quad\quad\quad\quad + 
+% 		\left.
+% 		\left(
+% 			\int_{\partial\Omega_\varepsilon}
+% 			\frac{\partial\gamma(\Bx)}{\partial\nu} \varphi(\Bx) \, d\partial\Omega_{\varepsilon}
+% 			- \int_{\Omega_\varepsilon} \cancelto{0}{\Delta\gamma(\Bx)} \varphi(\Bx) \, d\Omega_{\varepsilon}
+% 			\right)
+% 		\right) \notag                                                                                           \\
+% 		 & = \displaystyle \lim_{\varepsilon\to 0^+}
+% 		\left(
+% 		- \int_{\partial \Omega_\varepsilon} \gamma(\Bx)
+% 		\frac{\partial\varphi(\Bx)}{\partial \nu} \, d\partial\Omega_{\varepsilon}
+% 		+
+% 		\int_{\partial\Omega_\varepsilon}
+% 		\frac{\partial\gamma(\Bx)}{\partial\nu} \varphi(\Bx) \, d\partial\Omega_{\varepsilon}
+% 		\right)
+% 	\end{align}
+% 	Note in passing that $\Delta \gamma(\Bx) = 0$ from \eqref{eq:derivationstart} due to the fact that
+% 	\begin{equation}
+% 		\label{eq:boxgamma}
+% 		\boxed{
+% 			\begin{aligned}
+% 				\gamma(\Bx) = -\frac{1}{2\pi} \ln|\Bx|
+% 				 & \Leftrightarrow
+% 				\gamma(x,y) = -\frac{1}{2\pi} \ln\left( \sqrt{x^2 + y^2}\right) \\
+% 				\newline
+% 				\text{which leads to }                                          \\
+% 				 & \begin{aligned}
+% 					\partial_{x}\gamma(x,y)
+% 					 & = \frac{-x}{2\pi (x^2+y^2)} = -\frac{1}{2\pi}\frac{x}{|\Bx|^2} \\
+% 					\partial_{y}\gamma(x,y)
+% 					 & = \frac{-y}{2\pi (x^2+y^2)} = -\frac{1}{2\pi}\frac{y}{|\Bx|^2}
+% 				\end{aligned}                                   \\
+% 				\text{and}                                                      \\
+% 				 & \begin{aligned}
+% 					\partial_{xx}\gamma(x,y)
+% 					 & = \frac{2x^2-2y^2}{4\pi^2 (x^2+y^2)^2} \\
+% 					\partial_{yy}\gamma(x,y)
+% 					 & = \frac{2y^2-2x^2}{4\pi^2 (x^2+y^2)^2}
+% 				\end{aligned}                                   \\
+% 				\text{hence}                                                    \\
+% 				 & \begin{aligned}
+% 					\nabla \gamma(\Bx)
+% 					 & = \left( \partial_{x}\gamma(x,y),\partial_{y}\gamma(x,y) \right)
+% 					=  -\frac{1}{2\pi}
+% 					\frac{\left( x,y\right)}{|\Bx|^2}
+% 					= -\frac{1}{2\pi} \frac{\Bx}{|\Bx|^2}                               \\
+% 					\Delta \gamma(\Bx)
+% 					 & = \partial_{xx}\gamma(x,y) + \partial_{yy}\gamma(x,y)
+% 					= 0
+% 				\end{aligned}
+% 			\end{aligned}
+% 		}
+% 	\end{equation}
+% 	Next, by decomposing the boundary $\partial \Omega_{\varepsilon}$ into 
+% 	$\partial B_{R}(0)$ and $\partial B_{\varepsilon}(0)$, i.e.
+% 	\begin{align}
+% 		\partial \Omega_{\varepsilon} = \partial B_{R}(0) \cup \partial B_{\varepsilon}(0),
+% 	\end{align}
+% 	we consequently obtain from \eqref{eq:derivationstart}
+% 	the following expression
+% 	\begin{align}
+% 		\label{eq:bigderivation}
+% 		 & \langle \gamma(\Bx),-\Delta \varphi \rangle                                       \notag \\
+% 		 & =
+% 		\lim_{\varepsilon\to 0^+}
+% 		\left(
+% 		- \int_{\partial \Omega_\varepsilon} \gamma(\Bx)
+% 		\frac{\partial\varphi(\Bx)}{\partial \nu} \, d\partial\Omega_{\varepsilon}
+% 		+
+% 		\int_{\partial\Omega_\varepsilon}
+% 		\frac{\partial\gamma(\Bx)}{\partial\nu} \varphi(\Bx) \, d\partial\Omega_{\varepsilon}
+% 		\right)                                                                              \notag \\
+% 		 & =
+% 		\lim_{\varepsilon\to 0^+}
+% 		\left(
+% 		- 
+% 		\left(
+% 		\int_{\partial B_{R}(0)} \gamma(\Bx)
+% 		\cancelto{0}{\frac{\partial\varphi(\Bx)}{\partial \nu}} \, d\partial B_{R}(0)
+% 		+ \int_{\partial B_{\varepsilon}(0)} \gamma(\Bx)
+% 		\frac{\partial\varphi(\Bx)}{\partial \nu} \, d\partial B_{\varepsilon}(0)
+% 		\right)
+% 		\right.                                                                              \notag \\
+% 		 & \quad\quad\quad\quad +
+% 		\left.
+% 		\left(
+% 		\int_{\partial B_{R}(0)}
+% 		\frac{\partial\gamma(\Bx)}{\partial\nu} \cancelto{0}{\varphi(\Bx)} \, d\partial B_{R}(0)
+% 		+
+% 		\int_{\partial B_{\varepsilon}(0)}
+% 		\frac{\partial\gamma(\Bx)}{\partial \nu} \varphi(\Bx) \, d\partial B_{\varepsilon}(0)
+% 		\right)
+% 		\right)                                                                              \notag \\
+% 		 & =
+% 		\lim_{\varepsilon\to 0^+}
+% 		\left(
+% 		- 
+% 		\left(
+% 		\int_{\partial B_{R}(0)} \gamma(\Bx)
+% 		\cancelto{0}{\frac{\partial\varphi(\Bx)}{\partial \nu}} \, d\partial B_{R}(0)
+% 		- \int_{\partial B_{\varepsilon}(0)} \gamma(\Bx)
+% 		\frac{\partial\varphi(\Bx)}{\partial n} \, d\partial B_{\varepsilon}(0)
+% 		\right)
+% 		\right.                                                                              \notag \\
+% 		 & \quad\quad\quad\quad +
+% 		\left.
+% 		\left(
+% 		\int_{\partial B_{R}(0)}
+% 		\frac{\partial\gamma(\Bx)}{\partial\nu} \cancelto{0}{\varphi(\Bx)} \, d\partial B_{R}(0)
+% 		-
+% 		\int_{\partial B_{\varepsilon}(0)}
+% 		\frac{\partial\gamma(\Bx)}{\partial n} \varphi(\Bx) \, d\partial B_{\varepsilon}(0)
+% 		\right)
+% 		\right)                                                                              \notag \\
+% 		%  & = \lim_{\varepsilon\to 0^+}
+% 		% \left(
+% 		% - \int_{\partial B_{\varepsilon}(0)} \gamma(\Bx)
+% 		% \frac{\partial\varphi(\Bx)}{\partial \nu} \, d\partial B_{\varepsilon}(0)
+% 		% + \int_{\partial B_{\varepsilon}(0)}
+% 		% \frac{\partial\gamma(\Bx)}{\partial\nu} \varphi(\Bx) \, d\partial B_{\varepsilon}(0)
+% 		% \right)
+% 		% \\
+% 		 & = \lim_{\varepsilon\to 0^+}
+% 		\left(
+% 		\int_{\partial B_{\varepsilon}(0)} \gamma(\Bx)
+% 		\frac{\partial\varphi(\Bx)}{\partial n} \, d\partial B_{\varepsilon}(0)
+% 		- \int_{\partial B_{\varepsilon}(0)}
+% 		\frac{\partial\gamma(\Bx)}{\partial n} \varphi(\Bx) \, d\partial B_{\varepsilon}(0)
+% 		\right)                                                                              \notag \\
+% 		 & = \lim_{\varepsilon\to 0^+}
+% 		\left(
+% 		-
+% 		\int_{\partial B_\varepsilon(0)} (\varphi(\Bx)-\varphi(0))
+% 		\frac{\partial\gamma(\Bx)}{\partial n}\, d\partial B_{\varepsilon}(0) \right.        \notag \\
+% 		 & \quad\quad\quad\quad
+% 		\left.
+% 		-\varphi(0)\int_{\partial B_\varepsilon(0)}
+% 		\frac{\partial\gamma(\Bx)}{\partial n}\, d\partial B_{\varepsilon}(0)
+% 		+\int_{\partial B_\varepsilon(0)} \gamma(\Bx)
+% 		\frac{\partial\varphi(\Bx)}{\partial n}\, d\partial B_{\varepsilon}(0)
+% 		\right)                                                                              \notag \\
+% 		 & = \underbrace{\lim_{\varepsilon\to 0^+}
+% 			\left(
+% 			-
+% 			\int_{\partial B_\varepsilon(0)} (\varphi(\Bx)-\varphi(0))
+% 			\frac{\partial\gamma(\Bx)}{\partial n}\, d\partial B_{\varepsilon}(0) \right)}_{:=A} \notag \\
+% 		 & \quad + 
+% 		\underbrace{\lim_{\varepsilon\to 0^+}
+% 			\left(
+% 			-\varphi(0)\int_{\partial B_\varepsilon(0)}
+% 			\frac{\partial\gamma(\Bx)}{\partial n}\, d\partial B_{\varepsilon}(0) \right)}_{:=B} \notag \\
+% 		 & \quad + 
+% 		\underbrace{\lim_{\varepsilon\to 0^+}
+% 			\left(
+% 			\int_{\partial B_\varepsilon(0)} \gamma(\Bx)
+% 			\frac{\partial\varphi(\Bx)}{\partial n}\, d\partial B_{\varepsilon}(0)
+% 			\right)}_{:=C} = A+B+C.
+% 	\end{align}
+% 	Note in passing that the test function 
+% 	$\varphi \in \mathcal{C}^{\infty}_{0}(\mathbb{R}^2)$ vanishes on boundary $\partial B_R(0)$.
+% 	Next, computation of the directional derivative of $\gamma(\Bx)$ goes as follows
+% 	\begin{align}
+% 		\frac{\partial\gamma(\Bx)}{\partial n}
+% 		= \nabla \gamma(\Bx) \cdot \Bn 
+% 		\stackrel{\eqref{eq:boxgamma}}{=}
+% 		-\frac{1}{2\pi}\frac{\Bx}{|\Bx|^2} \cdot\frac{\Bx}{|\Bx|}=\frac{-1}{2\pi|\Bx|},
+% 	\end{align}
+% 	which leads to
+% 	\begin{align}
+% 		\label{eq:directionalderivativegamma}
+% 		\int_{\partial B_\varepsilon(0)}
+% 		\frac{\partial\gamma(\Bx)}{\partial n}\, d\partial B_\varepsilon(0)
+% 		 & = \frac{-1}{2\pi}
+% 		\int_{\partial B_\varepsilon(0)}\frac{1}{|\Bx|}\, d\partial B_\varepsilon(0)       \notag \\
+% 		 & = \frac{-1}{2\pi}
+% 		\int_{\partial B_\varepsilon(0)}\frac{1}{\varepsilon}\, d\partial B_\varepsilon(0) \notag \\
+% 		 & = \frac{-1}{2\pi\varepsilon}
+% 		\int_{\partial B_\varepsilon(0)}\, d\partial B_\varepsilon(0)
+% 		= \frac{-1}{2\pi\varepsilon} \left( 2\pi \varepsilon \right)
+% 		= -1
+% 	\end{align}
+% 	Therefore, term $B$ in \eqref{eq:bigderivation} yields 
+% 	\begin{align}
+% 		\label{eq:TermBfinal}
+% 		\therefore\quad
+% 		\boxed{
+% 			B = \lim_{\varepsilon\to 0^+}
+% 			\left(
+% 			-\varphi(0)\int_{\partial B_\varepsilon(0)}
+% 			\frac{\partial\gamma(\Bx)}{\partial n}\, d\partial B_{\varepsilon}(0) \right) 
+% 			\stackrel{\eqref{eq:directionalderivativegamma}}{=} \varphi(0)
+% 		}
+% 	\end{align}
+% 	Besides, the analysis of term A goes as follows
+% 	\begin{align}
+% 		|A| & = \lim_{\varepsilon\to 0^+}
+% 		\Bigg|
+% 		- \int_{\partial B_\varepsilon(0)} (\varphi(\Bx)-\varphi(0))
+% 		\frac{\partial\gamma(\Bx)}{\partial n}\, d\partial B_\varepsilon(0)
+% 		\Bigg|                                                                                       \notag \\
+% 		    & \leq \lim_{\varepsilon\to 0^+}
+% 		\int_{\partial B_\varepsilon(0)}
+% 		\Big|\varphi(\Bx)-\varphi(0)\Big|
+% 		\Bigg|\frac{\partial\gamma(\Bx)}{\partial n}\Bigg|
+% 		\, d\partial B_\varepsilon(0)                                                                \notag \\
+% 		    & \leq  
+% 		\lim_{\varepsilon\to 0^+}
+% 		\max_{|\Bx|=\varepsilon}{|\varphi(\Bx)-\varphi(0)|}
+% 		\int_{\partial B_\varepsilon(0)}
+% 		\Bigg|\frac{\partial\gamma(\Bx)}{\partial n}\Bigg|\, d\partial B_\varepsilon(0)              \notag \\
+% 		    & =
+% 		\lim_{\varepsilon\to 0^+}
+% 		\max_{|\Bx|=\varepsilon}{|\nabla\varphi(\Bx) (\Bx - \mathbf{0})|}
+% 		\int_{\partial B_\varepsilon(0)}
+% 		\Bigg|\frac{\partial\gamma(\Bx)}{\partial n}\Bigg|\, d\partial B_\varepsilon(0)              \notag \\
+% 		    & \leq
+% 		\lim_{\varepsilon\to 0^+}
+% 		\underbrace{\max_{|\Bx|=\varepsilon}{|\nabla\varphi(\Bx)|}}
+% 		_{= M_{1}\in\mathbb{R},\ \forall \varphi \in \mathcal{C}^{\infty}_{0}(\mathbb{R}^2)} 
+% 		\underbrace{|\Bx|}_{\varepsilon}
+% 		\int_{\partial B_\varepsilon(0)}
+% 		\Bigg|\underbrace{\frac{\partial\gamma(\Bx)}{\partial n}}
+% 		_{\stackrel{\eqref{eq:directionalderivativegamma}}{=} -1}\Bigg|\, d\partial B_\varepsilon(0) \notag \\
+% 		    & = \lim_{\varepsilon\to 0^+} M_{1}\varepsilon = 0
+% 	\end{align}
+% 	Note in passing that the Mean value theorem has been considered in the above analysis. 
+% 	Consequently, term A vanishes itself
+% 	\begin{align}
+% 		\label{eq:TermAfinal}
+% 		\therefore\quad\boxed{
+% 			A = \lim_{\varepsilon\to 0^+}
+% 			\left(
+% 			-
+% 			\int_{\partial B_\varepsilon(0)} (\varphi(\Bx)-\varphi(0))
+% 			\frac{\partial\gamma(\Bx)}{\partial n}\, d\partial B_{\varepsilon}(0) \right) = 0
+% 		}
+% 	\end{align}
+% 	Last but not least, consideration of term $C$ leads to
+% 	\begin{align}
+% 		|C| 
+% 		 & =
+% 		\lim_{\varepsilon\to 0^+}
+% 		\Bigg|
+% 		\int_{\partial B_\varepsilon(0)} \gamma(\Bx)
+% 		\frac{\partial\varphi(\Bx)}{\partial n}\, d\partial B_{\varepsilon}(0)
+% 		\Bigg|                                                                    \notag \\
+% 		 & =
+% 		\lim_{\varepsilon\to 0^+}
+% 		\Bigg|
+% 		\int_{\partial B_\varepsilon(0)} \gamma(\Bx)
+% 		\nabla\varphi(\Bx)\cdot \Bn
+% 		\, d\partial B_{\varepsilon}(0)
+% 		\Bigg|                                                                    \notag \\
+% 		 & \leq
+% 		\lim_{\varepsilon\to 0^+}
+% 		\int_{\partial B_\varepsilon(0)}
+% 		\big| \gamma(\Bx) \big|
+% 		\Big|\nabla\varphi(\Bx)\Big| 
+% 		\big| \Bn \big|
+% 		\, d\partial B_{\varepsilon}(0)                                           \notag \\
+% 		 & \leq
+% 		\lim_{\varepsilon\to 0^+}
+% 		\underbrace{\max_{\Bx\in\overline{B_R(0)}}|\nabla \varphi|}
+% 		_{=:M_{2}\in\mathbb{R},\ \forall \varphi \in \mathcal{C}^{\infty}_{0}(\mathbb{R}^2)} 
+% 		\underbrace{|\Bn|}_{=1}
+% 		\int_{\partial B_\varepsilon(0)}|\gamma(\Bx)|\,d\partial B_\varepsilon(0) \notag \\
+% 		 & = 
+% 		\lim_{\varepsilon\to 0^+}
+% 		M_{2}
+% 		\int_{\partial B_\varepsilon(0)}
+% 		\frac{1}{2\pi} \ln{|\Bx|}
+% 		\,d\partial B_\varepsilon(0)
+% 		= \lim_{\varepsilon\to 0^+}
+% 		\frac{M_{2}}{2\pi} \ln{(\varepsilon)}
+% 		\underbrace{\int_{\partial B_\varepsilon(0)}\,d\partial B_\varepsilon(0)}
+% 		_{=2\pi\varepsilon}                                                       \notag \\
+% 		 & = \lim_{\varepsilon\to 0^+} M_{2}
+% 		\varepsilon \ln{(\varepsilon)} = 0
+% 	\end{align}
+% 	As a consequence, term $C$ also vanishes itself
+% 	\begin{align}
+% 		\label{eq:TermCfinal}
+% 		\therefore\quad\boxed{
+% 			C 
+% 			= 
+% 			\lim_{\varepsilon\to 0^+}
+% 			\left(
+% 			\int_{\partial B_\varepsilon(0)} \gamma(\Bx)
+% 			\frac{\partial\varphi(\Bx)}{\partial n}\, d\partial B_{\varepsilon}(0)
+% 			\right)
+% 			= 0
+% 		}
+% 	\end{align}
+% 	Finally, substitution of \eqref{eq:TermBfinal}, \eqref{eq:TermAfinal} and \eqref{eq:TermCfinal}
+% 	into \eqref{eq:bigderivation} we obtain
+% 	\begin{align}
+% 		\therefore\quad\boxed{
+% 			\langle \gamma(\Bx),-\Delta \varphi \rangle
+% 			= \varphi(0),
+% 			\quad \forall \varphi \in \mathcal{C}^{\infty}_{0}(\mathbb{R}^2).
+% 		}
+% 	\end{align}
+% \end{proof}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{Numerics: Jacobi iteration solution}
+% \begin{example}
+% 	Examine the following problem: $Ax = b$ with matrix $A$
+% 	\begin{align}
+% 		A =
+% 		\begin{pmatrix}
+% 			2 & -1 & 1  \\
+% 			1 & -4 & -2 \\
+% 			1 & 2  & 3
+% 		\end{pmatrix}
+% 	\end{align}
+% 	Perform the first step of Jacobi iteration given
+% 	the initial value for the vector $x^{(0)} = (1, 0, 0)^T$
+% 	and the RHS vector
+% 	$b = (3, 5, -1)^T $.
+% \end{example}
+% Approach: \textbf{Bemerkung 3.12} in the lecture note:\\
+% \begin{align}
+% 	\label{eq:Jacobiformular}
+% 	\boxed{
+% 		D x^{(k+1)} = (L+U)x^{(k)} + b.
+% 	}
+% \end{align}
+% Note in passing that 
+% \begin{align}
+% 	A = D - L - U
+% \end{align}
+% where the matrix $A$ is decomposed into 
+% \begin{enumerate}
+% 	\item the diagonal matrix $
+% 		      D = 
+% 		      \begin{pmatrix}
+% 			      2 &    &   \\
+% 			        & -4 &   \\
+% 			        &    & 3
+% 		      \end{pmatrix}
+% 	      $
+% 	\item the lower triangular matrix $
+% 		      L=
+% 		      \begin{pmatrix}
+% 			      0  &    &   \\
+% 			      -1 & 0  &   \\
+% 			      -1 & -2 & 0
+% 		      \end{pmatrix}
+% 	      $ with \textbf{sign changed}.
+% 	\item the upper triangular matrix $
+% 		      U =
+% 		      \begin{pmatrix}
+% 			      0 & 1 & -1 \\
+% 			        & 0 & 2  \\
+% 			        &   & 0
+% 		      \end{pmatrix}
+% 	      $ with \textbf{sign changed}.
+% \end{enumerate}
+% By using \eqref{eq:Jacobiformular}
+% the computation of the \textbf{first step} of iternation based on 
+% the \textbf{Jacobi} scheme goes as follows
+% \begin{align}
+% 	Dx^{(1)}
+% 	= \begin{pmatrix}0&1&-1\\-1&0&2\\-1&-2&0\end{pmatrix}
+% 	\begin{pmatrix}1\\0\\0\end{pmatrix}+\begin{pmatrix}3\\5\\-1\end{pmatrix}
+% 	=\begin{pmatrix}3\\4\\-2\end{pmatrix},
+% \end{align}
+% which leads to the solution of the first step of Jacobi iteration
+% \begin{align}
+% 	\therefore\quad\boxed{
+% 		x^{(1)}=\begin{pmatrix}3/2\\-1\\-2/3\end{pmatrix}.
+% 	}
+% \end{align}
+% \newpage
+% \begin{remark}
+% 	The computation of \textbf{Jacobi} iteration requires the inverse of matrix $D$.
+% 	Since matrix $D$ is a diagonal matrix, its inverse is obtained by 
+% 	taking the inverse of every single entry on its diagonal, which is
+% 	\begin{align}
+% 		D = 
+% 		\begin{pmatrix}
+% 			a & 0 & 0  \\
+% 			0 & b & 0  \\
+% 			0 & 0 & c 
+% 		\end{pmatrix},
+% 	\end{align}
+% 	and the inverse of $D$ takes the form
+% 	\begin{align}
+% 		D^{-1} = 
+% 		\begin{pmatrix}
+% 			1/a & 0   & 0    \\
+% 			0   & 1/b & 0    \\
+% 			0   & 0   & 1/c 
+% 		\end{pmatrix},
+% 	\end{align}
+% 	where $a,b,c \neq 0.$
+% \end{remark}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{Numerics: Gauss-Seidel iteration solution}
+% \begin{example}
+% 	Examine the following problem: $Ax = b$ with matrix $A$
+% 	\begin{align}
+% 		A =
+% 		\begin{pmatrix}
+% 			2 & -1 & 1  \\
+% 			1 & -4 & -2 \\
+% 			1 & 2  & 3
+% 		\end{pmatrix}.
+% 	\end{align}
+% 	Perform the first step of Gauss-Seidel iteration given
+% 	the initial value for the vector $x^{(0)} = (1, 0, 0)^T$
+% 	and the RHS vector
+% 	$b = (3, 5, -1)^T $.
+% \end{example}
+% Approach: \textbf{Bemerkung 3.17} in the lecture note:\\
+% Either using
+% \begin{align}
+% 	\boxed{
+% 		x^{(k+1)} = (I-(D-L)^{-1}A)x^{(k)} + (D-L)^{-1}b
+% 	}
+% \end{align}
+% or, equally, using
+% \begin{align}
+% 	\label{eq:GaussSeidelformular}
+% 	\boxed{
+% 		(D-L)x^{(k+1)} = Ux^{(k)} + b
+% 	}
+% \end{align}
+% Note in passing that 
+% \begin{align}
+% 	A = D - L - U
+% \end{align}
+% where the matrix $A$ is decomposed into 
+% \begin{enumerate}
+% 	\item the diagonal matrix $
+% 		      D = 
+% 		      \begin{pmatrix}
+% 			      2 &    &   \\
+% 			        & -4 &   \\
+% 			        &    & 3
+% 		      \end{pmatrix}
+% 	      $
+% 	\item the lower triangular matrix $
+% 		      L=
+% 		      \begin{pmatrix}
+% 			      0  &    &   \\
+% 			      -1 & 0  &   \\
+% 			      -1 & -2 & 0
+% 		      \end{pmatrix}
+% 	      $ with \textbf{sign changed}.
+% 	\item the upper triangular matrix $
+% 		      U =
+% 		      \begin{pmatrix}
+% 			      0 & 1 & -1 \\
+% 			        & 0 & 2  \\
+% 			        &   & 0
+% 		      \end{pmatrix}
+% 	      $ with \textbf{sign changed}.
+% \end{enumerate}
+% By using \eqref{eq:GaussSeidelformular}
+% the computation of the \textbf{first step} of iternation based on 
+% the \textbf{Gauss-Seidel} scheme goes as follows
+% \begin{align}
+% 	(D-L) x^{(k+1)} = U x^{(k)} + b,
+% \end{align}
+% which leads to
+% \begin{align}
+% 	(D-L) x^{(1)}=
+% 	\begin{pmatrix} 0&1&-1\\&0&2\\&&0\end{pmatrix}
+% 	\begin{pmatrix} 1\\0\\0\end{pmatrix}
+% 	+ \begin{pmatrix}3\\5\\-1\end{pmatrix}
+% 	=\begin{pmatrix}3\\5\\-1\end{pmatrix}.
+% \end{align}
+% Therefore, we obtain the solution after the first step
+% \begin{align}
+% 	\therefore\quad\boxed{
+% 		x^{(1)}=(D-L)^{-1}
+% 		\begin{pmatrix}3\\5\\-1\end{pmatrix}
+% 		= \begin{pmatrix}1/2&&\\1/8&-1/4&\\-1/4&1/6&1/3\end{pmatrix}
+% 		\begin{pmatrix} 3\\5\\-1\end{pmatrix}
+% 		= \begin{pmatrix} 3/2\\-7/8\\-1/4\end{pmatrix}.
+% 	}
+% \end{align}
+% \newpage
+% \begin{remark}
+% 	The computation of \textbf{Gauss-Seidel} iteration requires the inverse of matrix $D$.
+% 	Since the matrix $(D-L)$ is a lower triangular matrix with non-zero entries on its diagonal, 
+% 	the matrix $(D-L)$ has the following form
+% 	\begin{align}
+% 		D-L = 
+% 		\begin{pmatrix}
+% 			a & 0 & 0  \\
+% 			b & d & 0  \\
+% 			c & e & f 
+% 		\end{pmatrix},
+% 	\end{align}
+% 	and the inverse $(D-L)^{-1}$ takes the form
+% 	\begin{align}
+% 		(D-L)^{-1} = 
+% 		\begin{pmatrix}
+% 			1/a           & 0       & 0    \\
+% 			-b/(ad)       & 1/d     & 0    \\
+% 			(be-cd)/(adf) & -e/(df) & 1/f 
+% 		\end{pmatrix},
+% 	\end{align}
+% 	where $a,d,f \neq 0.$
+% \end{remark}
+
+% %------------------------------------------------------------------------------
+% \section{Programming exercise 02: Explanation}
+% \begin{example}
+% 	Examine the following Convection-diffustion problem
+% 	\begin{align*}
+% 		-\varepsilon\Delta u(x,y)
+% 		+ \cos\beta\;\frac{\partial u}{\partial x}(x,y)
+% 		+ \sin\beta\;\frac{\partial u}{\partial y}
+% 		       & = f(x,y), \ (x,y) \in \Omega = (0,1)^2,          \\
+% 		u(x,y) & = g(x,y), \ (x,y) \ \text{on} \ \partial \Omega,
+% 	\end{align*}
+% \end{example}
+% Main points of discretization:
+% \begin{align*}
+% 	-\varepsilon\,  \partial_{xx} u(x,y)
+% 	-\varepsilon\,  \partial_{yy} u(x,y)
+% 	+\cos\beta\, \partial_{x} u(x,y)
+% 	+\sin\beta\, \partial_{y} u(x,y) = 1
+% \end{align*}
+% Since $\beta = 5\pi/6$, it goes with $\cos\beta < 0$ and $\sin\beta > 0$.
+% Therefore, we need 
+% Upwind for $\partial_{x} u(x,y)$ and 
+% Downwind for $\partial_{y} u(x,y)$, 
+% as follows
+% \begin{enumerate}
+% 	\item Central difference method applied for $\partial_{xx} u(x,y)$,
+% 	\item Central difference method applied for $\partial_{yy} u(x,y)$,
+% 	\item Upwind method applied for $\partial_{x} u(x,y)$,
+% 	\item Downwind method applied for $\partial_{y} u(x,y)$.
+% \end{enumerate}
+% \begin{align*}
+% 	-\varepsilon\,\frac{u_{i+1,j}-2u_{i,j}+u_{i-1,j}}{h^2}
+% 	 & -\varepsilon\,\frac{u_{i,j+1}-2u_{i,j}+u_{i,j-1}}{h^2} \\
+% 	 & +\cos\beta\,\frac{u_{i+1,j}-u_{i,j}}{h}
+% 	+\sin\beta\,\frac{u_{i,j}-u_{i,j-1}}{h}
+% 	=1
+% \end{align*}
+% \begin{align*}
+% 	\dots
+% 	[\text{further steps is followed by Problem 2.41 in the lecture note.}]
+% \end{align*}
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{[Q\&A] Insight review: Example 3 $\cdot$ Gue08}
+% \begin{example}
+% 	\label{ex:example2consistencyorder}
+% 	Examine the consistency order of the following problem
+% 	\begin{align*}
+% 		f'(x) \approx f(x) + f(x+h) + f(x+2h).
+% 	\end{align*}
+% 	(the consistency order is aimed as high as possible)
+% \end{example}
+% Approach: 
+% \begin{enumerate}
+% 	\item Let's expand $f(x+h)$ and $f(x+2h)$
+% 	      by using Taylor expansion till $\mathcal{O}(h^3)$
+% 	      \begin{align}
+% 		      \label{eq:firstfhreeTaylor}
+% 		      \begin{cases}
+% 			      \begin{aligned}
+% 				      f(x)    & = f(x)                \\
+% 				      f(x+ h) & = f(x) 
+% 				      + \frac{h^1}{1!} f'(x)  
+% 				      + \frac{h^2}{2!} f''(x)  
+% 				      + \mathcal{O}\left( h^3 \right) \\
+% 				      f(x+2h) & = f(x) 
+% 				      + \frac{(2h)^1}{1!} f'(x) 
+% 				      + \frac{(2h)^2}{2!} f''(x) 
+% 				      + \mathcal{O}\left( (2h)^3 \right)
+% 			      \end{aligned}
+% 		      \end{cases}
+% 	      \end{align}
+% 	      which leads to 
+% 	      \begin{align}
+% 		      \alpha f(x)    & = \alpha f(x)  \label{eq:alphafx}                    \\
+% 		      \beta f(x+ h)  & = \beta f(x) 
+% 		      + \beta h f'(x)  
+% 		      + \frac{\beta h^2}{2} f''(x)
+% 		      + \beta \mathcal{O}\left( h^3 \right)              \label{eq:betafxh} \\
+% 		      \gamma f(x+2h) & = \gamma f(x) 
+% 		      + 2\gamma h f'(x)  
+% 		      + 2\gamma h^2 f''(x)
+% 		      + \gamma \mathcal{O}\left( (2h)^3 \right) \label{eq:gammafx2h}
+% 	      \end{align}
+% 	      Summation of \eqref{eq:alphafx}, \eqref{eq:betafxh} and \eqref{eq:gammafx2h} leads to
+% 	      \begin{align}
+% 		      \label{eq:summationall}
+% 		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) 
+% 		       & = (\alpha + \beta + \gamma)f(x) \notag                                \\
+% 		       & \quad + (\beta h + 2 \gamma h)f'(x) \notag                            \\
+% 		       & \quad + \left( \frac{\beta h^2}{2} + 2\gamma h^2 \right)f''(x) \notag \\
+% 		       & \quad + \beta \mathcal{O}\left( h^3 \right)                    \notag \\
+% 		       & \quad + \gamma \mathcal{O}\left( (2h)^3 \right)
+% 	      \end{align}
+% 	      % Comparison of \eqref{eq:summationall} with \eqref{eq:givenproblemfxprime}
+% 	      Since we would like to approximate $f'(x)$ by the following expression
+% 	      \begin{align}
+% 		      \label{eq:wewouldliketoapprox}
+% 		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) \approx f'(x)
+% 	      \end{align}
+% 	      Comparison \eqref{eq:wewouldliketoapprox} with \eqref{eq:summationall} leads to the following 3 conditions
+% 	      \begin{align}
+% 		      \label{eq:alphabetagamma}
+% 		      \begin{cases}
+% 			      \alpha + \beta + \gamma \stackrel{!}{=} 0 \\
+% 			      \beta h + 2 \gamma h \stackrel{!}{=}  1   \\
+% 			      \displaystyle \frac{\beta h^2}{2} + 2\gamma h^2 \stackrel{!}{=} 0
+% 		      \end{cases}
+% 		       & \Leftrightarrow
+% 		      \begin{pmatrix}
+% 			      1 & 1   & 1 \\
+% 			      0 & 1   & 2 \\
+% 			      0 & 1/2 & 2
+% 		      \end{pmatrix}
+% 		      \begin{pmatrix}
+% 			      \alpha \\ \beta \\ \gamma
+% 		      \end{pmatrix}
+% 		      =
+% 		      \begin{pmatrix}
+% 			      0 \\ 1/h \\ 0
+% 		      \end{pmatrix} \\
+% 		       & \Leftrightarrow
+% 		      \begin{pmatrix}
+% 			      \alpha \\ \beta \\ \gamma
+% 		      \end{pmatrix}
+% 		      =
+% 		      \begin{pmatrix}
+% 			      -3/(2h) \\ 2/h \\ -1/(2h)
+% 		      \end{pmatrix}
+% 	      \end{align}
+% 	      which leads the expression \eqref{eq:summationall} to the following equality
+% 	      \begin{align}
+% 		      \label{eq:finalsum}
+% 		      \alpha (x) + \beta f(x+h) + \gamma f(x+2h) 
+% 		       & =
+% 		      f'(x)
+% 		      + \beta \mathcal{O}\left( h^3 \right) + \gamma \mathcal{O}\left( (2h)^3 \right) \notag \\
+% 		       & = f'(x)
+% 		      + \frac{2}{h} \mathcal{O}\left( h^3 \right)
+% 		      + \frac{-1}{2h} \mathcal{O}\left( (2h)^3 \right)                                \notag \\
+% 		       & = f'(x) + \mathcal{O}\left( h^2 \right).
+% 	      \end{align}
+% 	      Therefore, $f'(x)$ can be approximated by $\alpha f(x) + \beta f(x+h) + \gamma f(x+2h)$,
+% 	      where the values of $\left\{ \alpha, \beta, \gamma \right\}$ taken from \eqref{eq:alphabetagamma}, 
+% 	      with a consistency order of at least order 2, as shown in \eqref{eq:finalsum}.
+
+% 	\item Let's now expand $f(x+h)$ and $f(x+2h)$
+% 	      by using Taylor expansion till $\mathcal{O}(h^4)$.
+% 	      The approach is the same as the above approach  
+% 	      for $\mathcal{O}(h^3)$.
+% 	      However, this will lead to contradictory conditions,  
+% 	      i.e. 3 unknowns $\left\{ \alpha, \beta, \gamma \right\}$  for 4 equations. 
+
+% 	\item Therefore, the highest consistency order we may obtain is of order 2.
+% \end{enumerate}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \begin{example}
+% 	Examine the consistency order of the following problem
+% 	\begin{align*}
+% 		f''(x) \approx f(x) + f(x+h) + f(x+2h).
+% 	\end{align*}
+% 	(the consistency order is aimed as high as possible)
+% \end{example}
+% Approach: The procedure goes as same as Example \ref{ex:example2consistencyorder}
+% \begin{enumerate}
+% 	\item Let's expand $f(x+h)$ and $f(x+2h)$
+% 	      by using Taylor expansion till $\mathcal{O}(h^3)$
+% 	      \begin{align}
+% 		      \label{eq:firstfhreeTaylor}
+% 		      \begin{cases}
+% 			      \begin{aligned}
+% 				      f(x)    & = f(x)                \\
+% 				      f(x+ h) & = f(x) 
+% 				      + \frac{h^1}{1!} f'(x)  
+% 				      + \frac{h^2}{2!} f''(x)  
+% 				      + \mathcal{O}\left( h^3 \right) \\
+% 				      f(x+2h) & = f(x) 
+% 				      + \frac{(2h)^1}{1!} f'(x) 
+% 				      + \frac{(2h)^2}{2!} f''(x) 
+% 				      + \mathcal{O}\left( (2h)^3 \right)
+% 			      \end{aligned}
+% 		      \end{cases}
+% 	      \end{align}
+% 	      which leads to 
+% 	      \begin{align}
+% 		      \alpha f(x)    & = \alpha f(x)  \label{eq:alphafx}                    \\
+% 		      \beta f(x+ h)  & = \beta f(x) 
+% 		      + \beta h f'(x)  
+% 		      + \frac{\beta h^2}{2} f''(x)
+% 		      + \beta \mathcal{O}\left( h^3 \right)              \label{eq:betafxh} \\
+% 		      \gamma f(x+2h) & = \gamma f(x) 
+% 		      + 2\gamma h f'(x)  
+% 		      + 2\gamma h^2 f''(x)
+% 		      + \gamma \mathcal{O}\left( (2h)^3 \right) \label{eq:gammafx2h}
+% 	      \end{align}
+% 	      Summation of \eqref{eq:alphafx}, \eqref{eq:betafxh} and \eqref{eq:gammafx2h} leads to
+% 	      \begin{align}
+% 		      \label{eq:summationall}
+% 		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) 
+% 		       & = (\alpha + \beta + \gamma)f(x) \notag                                \\
+% 		       & \quad + (\beta h + 2 \gamma h)f'(x) \notag                            \\
+% 		       & \quad + \left( \frac{\beta h^2}{2} + 2\gamma h^2 \right)f''(x) \notag \\
+% 		       & \quad + \beta \mathcal{O}\left( h^3 \right)                    \notag \\
+% 		       & \quad + \gamma \mathcal{O}\left( (2h)^3 \right)
+% 	      \end{align}
+% 	      % Comparison of \eqref{eq:summationall} with \eqref{eq:givenproblemfxprime}
+% 	      Since we would like to approximate $f''(x)$ by the following expression
+% 	      \begin{align}
+% 		      \label{eq:wewouldliketoapprox}
+% 		      \alpha f(x) + \beta f(x+h) + \gamma f(x+2h) \approx f''(x)
+% 	      \end{align}
+% 	      Comparison \eqref{eq:wewouldliketoapprox} with \eqref{eq:summationall} leads to the following 3 conditions
+% 	      \begin{align}
+% 		      \label{eq:alphabetagamma}
+% 		      \begin{cases}
+% 			      \alpha + \beta + \gamma \stackrel{!}{=} 0 \\
+% 			      \beta h + 2 \gamma h \stackrel{!}{=}  0   \\
+% 			      \displaystyle \frac{\beta h^2}{2} + 2\gamma h^2 \stackrel{!}{=} 1
+% 		      \end{cases}
+% 		       & \Leftrightarrow
+% 		      \begin{pmatrix}
+% 			      1 & 1   & 1 \\
+% 			      0 & 1   & 2 \\
+% 			      0 & 1/2 & 2
+% 		      \end{pmatrix}
+% 		      \begin{pmatrix}
+% 			      \alpha \\ \beta \\ \gamma
+% 		      \end{pmatrix}
+% 		      =
+% 		      \begin{pmatrix}
+% 			      0 \\ 0 \\ 1/h^2
+% 		      \end{pmatrix} \\
+% 		       & \Leftrightarrow
+% 		      \begin{pmatrix}
+% 			      \alpha \\ \beta \\ \gamma
+% 		      \end{pmatrix}
+% 		      =
+% 		      \begin{pmatrix}
+% 			      ?/h^2 \\ ??/h^2 \\ ???/h^2
+% 		      \end{pmatrix}
+% 	      \end{align}
+% 	      which leads the expression \eqref{eq:summationall} to the following equality
+% 	      \begin{align}
+% 		      \label{eq:finalsum}
+% 		      \alpha (x) + \beta f(x+h) + \gamma f(x+2h) 
+% 		       & =
+% 		      f''(x)
+% 		      + \beta \mathcal{O}\left( h^3 \right)
+% 		      + \gamma \mathcal{O}\left( (2h)^3 \right) \notag                                         \\
+% 		       & = f''(x)
+% 		      + \frac{??}{h^2} \mathcal{O}\left( h^3 \right)
+% 		      + \frac{???}{h^2} \mathcal{O}\left( (2h)^3 \right)                                \notag \\
+% 		       & = f''(x) + \mathcal{O}\left( h \right).
+% 	      \end{align}
+% 	      Therefore, $f''(x)$ can be approximated by $\alpha f(x) + \beta f(x+h) + \gamma f(x+2h)$,
+% 	      where the values of $\left\{ \alpha, \beta, \gamma \right\}$ taken from \eqref{eq:alphabetagamma}, 
+% 	      with a consistency order of at least order 1, as shown in \eqref{eq:finalsum}.
+
+% 	\item Let's now expand $f(x+h)$ and $f(x+2h)$
+% 	      by using Taylor expansion till $\mathcal{O}(h^4)$.
+% 	      The approach is the same as the above approach  
+% 	      for $\mathcal{O}(h^3)$.
+% 	      However, this will lead to contradictory conditions,  
+% 	      i.e. 3 unknowns $\left\{ \alpha, \beta, \gamma \right\}$  for 4 equations. 
+
+% 	\item Therefore, the highest consistency order we may obtain is of order 1.
+% \end{enumerate}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{Euler scheme $\cdot$ Crank-Nicolson scheme}
+% \begin{example}
+% 	Examine the following problem for $\alpha>0$
+% 	\begin{align}
+% 		\label{eq:diffusion}
+% 		\partial_t u(x,t) = \alpha \;\partial_{xx} u(x,t)+q(x,t), \quad t>0, \; x\in[0,1],
+% 	\end{align}
+% 	with IC $u(x,0) = u_0(x),$ and BC $u(0,t) = u(1,t) = 0.$
+% \end{example}
+% Approach: Vertical line method, i.e. we first discretize space $x$, 
+% we then obtain a system of ODEs w.r.t. time $t$.
+% \begin{enumerate}
+% 	\item Second order discretization in space
+% 	      \begin{align*}
+% 		      \partial_{xx} u(x_j,t)
+% 		      \approx \frac{u(x_{j+1},t) - 2u(x_j,t) + u(x_{j-1},t)}{h^2}
+% 	      \end{align*}
+% 	      Assume $y_j(t) \approx u(x_j,t)$ yields
+% 	      \begin{align*}
+% 		      y'_j(t) =
+% 		      \frac{\alpha}{h^2}
+% 		      (y_{j+1}(t) - 2y_j(t) + y_{j-1}(t)) + q(x_{j},t).
+% 	      \end{align*}
+% 	      General form $y' = Ay + b(t)$ with
+% 	      \begin{align*}
+% 		      A & = -\frac{\alpha}{h_x^2}
+% 		      \begin{pmatrix}
+% 			      2  & -1     &        &        & 0  \\
+% 			      -1 & 2      & -1     &        &    \\
+% 			         & \ddots & \ddots & \ddots &    \\
+% 			         &        & -1     & 2      & -1 \\
+% 			      0  &        &        & -1     & 2
+% 		      \end{pmatrix}  \\
+% 		      \text{and}                  \\
+% 		      b & =
+% 		      \begin{pmatrix}
+% 			      q(x_1,t) \\
+% 			      \vdots   \\
+% 			      q(x_{n-1},t)
+% 		      \end{pmatrix}.
+% 	      \end{align*}
+% 	      where the IC reads
+% 	      \begin{align*}
+% 		      y_i(0)= u_0(x_i),\quad i=1,\ldots,n-1
+% 	      \end{align*}
+
+% 	\item
+% 	      \begin{enumerate}
+% 		      \item Explicit Euler
+% 		            \begin{align*}
+% 			            \therefore\quad
+% 			            \boxed{
+% 				            y^{i+1} = y^i + h_t \left( Ay^{i}+b^i \right).
+% 			            }
+% 		            \end{align*}
+
+% 		      \item Implicit Euler
+% 		            \begin{align*}
+% 			            \therefore\quad
+% 			            \boxed{
+% 				            y^{i+1} = y^i + h_t \left( Ay^{i+1}+b^{i+1} \right).
+% 			            }
+% 		            \end{align*}
+
+% 		      \item Averaging explicit Euler and implicit Euler leads to Crank-Nicolson
+% 		            \begin{align*}
+% 			            \therefore\quad\boxed{
+% 				            \begin{aligned}
+% 					            y^{i+1}
+% 					             & = y^i + \frac{h_t}{2} \left( Ay^i+Ay^{i+1}+b^i+b^{i+1} \right)                  \\
+% 					             & = y^i + \frac{h_t}{2} A (y^i+y^{i+1})+\frac{h_t}{2} \left( b^i+b^{i+1} \right).
+% 				            \end{aligned}
+% 			            }
+% 		            \end{align*}
+% 	      \end{enumerate}
+% \end{enumerate}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{Iterative solution method}
+% \begin{example}
+% 	Examine the following problem: The iteration scheme
+% 	\begin{align*}
+% 		\begin{pmatrix}
+% 			1         & 0 \\
+% 			-\delta a & 1
+% 		\end{pmatrix}
+% 		x^{k+1} =
+% 		\begin{pmatrix}
+% 			1-\delta & \delta a \\
+% 			0        & 1-\delta
+% 		\end{pmatrix}
+% 		x^{k} + \delta b, \quad \delta \in \mathbb{R}.
+% 	\end{align*}
+% 	is used to solve the following problem 
+% 	\begin{align*}
+% 		\begin{pmatrix}
+% 			1  & -a \\
+% 			-a & 1
+% 		\end{pmatrix}
+% 		x = b, \quad x,b\ \in \mathbb{R}^2,
+% 	\end{align*}
+% \end{example}
+
+% \begin{enumerate}
+% 	\item Determine the matrix $C$ from the iteration matrix $I-CA$
+% 	\item Which value of $a \in \mathbb{R}$ can help this method to be converged
+% 	      in case of $\delta=1$?
+% \end{enumerate}
+% Approach: Followed by Bemerkung 3.3. from lecture note.
+% \begin{enumerate}
+% 	\item The iteration scheme takes the form
+% 	      \begin{align*}
+% 		      \boxed{
+% 			      x^{k+1} = (I-CA) x^{k} + Cb.
+% 		      }
+% 	      \end{align*}
+% 	      which is derived directly from the following iteration setting function 
+% 	      \begin{align}
+% 		      \Phi :
+% 		      \begin{cases}
+% 			      \mathbb{R}^n \rightarrow \mathbb{R}^n, \\
+% 			      x \mapsto \Phi(x):= x + C(b-Ax).
+% 		      \end{cases}
+% 	      \end{align}
+% 	      Moreover, when $x^{*}$ is the solution of the system $Ax=b$,
+% 	      we should obtain the following expression
+% 	      \begin{align*}
+% 		      \Phi(x^{*})
+% 		       & = x^{*} + C\underbrace{(b-Ax^{*})}_{=0} \\
+% 		       & = x^{*}.
+% 	      \end{align*}
+% 	      Back to the main problem, we now examine the following derivation
+% 	      \begin{align}
+% 		      \label{eq:iterationphix}
+% 		      x^{k+1} & =
+% 		      \begin{pmatrix}
+% 			      1         & 0 \\
+% 			      -\delta a & 1
+% 		      \end{pmatrix}^{-1}
+% 		      \begin{pmatrix}
+% 			      1-\delta & \delta a \\
+% 			      0        & 1-\delta
+% 		      \end{pmatrix}
+% 		      x^{k}
+% 		      + \delta \begin{pmatrix}
+% 			      1         & 0 \\
+% 			      -\delta a & 1
+% 		      \end{pmatrix}^{-1}b \\
+% 		              & =
+% 		      \begin{pmatrix}
+% 			      1        & 0 \\
+% 			      \delta a & 1
+% 		      \end{pmatrix}
+% 		      \begin{pmatrix}
+% 			      1-\delta & \delta a \\
+% 			      0        & 1-\delta
+% 		      \end{pmatrix}
+% 		      x^{k}
+% 		      + \delta \begin{pmatrix}
+% 			      1        & 0 \\
+% 			      \delta a & 1
+% 		      \end{pmatrix}b      \\
+% 		              & =
+% 		      \begin{pmatrix}
+% 			      1 -\delta              & \delta a              \\
+% 			      \delta a -  \delta^2 a & \delta^2 a^2+1-\delta
+% 		      \end{pmatrix}
+% 		      x^{k}
+% 		      +  \begin{pmatrix}
+% 			      \delta     & 0      \\
+% 			      \delta^2 a & \delta
+% 		      \end{pmatrix}b
+% 	      \end{align}
+% 	      Moreover, we also expect
+% 	      \begin{align}
+% 		      \label{eq:iterationphi}
+% 		      x^{k+1} = (I-CA) x^{k} + Cb.
+% 	      \end{align}
+% 	      Comparison of \eqref{eq:iterationphi} with \eqref{eq:iterationphix} yields
+% 	      the matrix $C$ as follows
+% 	      \begin{align}
+% 		      \therefore\quad
+% 		      \boxed{
+% 			      C =
+% 			      \begin{pmatrix}
+% 				      \delta     & 0      \\
+% 				      \delta^2 a & \delta
+% 			      \end{pmatrix}
+% 		      }
+% 	      \end{align}
+
+% 	\item For the case $\delta=1$ we obtain the following iteration matrix $(I-CA)$
+% 	      \begin{align}
+% 		      I-CA & =
+% 		      \begin{pmatrix}
+% 			      0 & a   \\
+% 			      0 & a^2
+% 		      \end{pmatrix},
+% 	      \end{align}
+% 	      Observation: This matrix is of upper triangle. 
+% 	      Hence, its eigenvalues are those on the main diagonal, 
+% 	      i.e. we can recognize immediately the eigenvalues 
+% 	      \begin{align}
+% 		      \begin{cases}
+% 			      \lambda_{1} = 0, \\
+% 			      \lambda_{2} = a^2.
+% 		      \end{cases}
+% 	      \end{align}
+% 	      The iteration method is expected to be converged when
+% 	      the spectral radius of the iteration matrix $(I-CA)$ smaller than 1,
+% 	      i.e. we should have the following condition
+% 	      \begin{align*}
+% 		      \rho(I-CA) < 1 
+% 		      \Leftrightarrow a^2 <1 
+% 	      \end{align*}
+% 	      which leads to
+% 	      \begin{align}
+% 		      \therefore\quad
+% 		      \boxed{
+% 			      -1 < a < 1
+% 		      }
+% 	      \end{align}
+% \end{enumerate}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{[Review HW10] Consistency error}
+% \begin{example}
+% 	Examine the consistency error of the following problem
+% 	\begin{align*}
+% 		u''(x) - u'(x) + u(x) = 2x -1 -x^2
+% 	\end{align*}
+% 	with the exact solution is known, i.e. $u(x) = 1-x^2$.
+% \end{example}
+% Approach:
+% The consistency error reads
+% \begin{align}
+% 	\label{eq:consistencyerror11}
+% 	\big|\big| -\Delta_{h}u\big|_{\bar{\Omega}_{h}} - f\big|_{\Omega_{h}} \big|\big|	_{\infty}
+% 	=
+% 	\big|\big| A_{h}u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \big|\big|_{\infty}
+% \end{align}
+% Observation: The consistency error can be foreseen (and indeed) with the value $0$,
+% i.e. the numerical solution resembles the exact/analytical solution,
+% since we have been using the following numerical scheme $+$
+% the given information about the exact solution:
+% \begin{enumerate}
+% 	\item \textbf{Second order} discretization scheme is used to approximate $u''(x)$.
+% 	\item \textbf{Second order} discretization scheme is used to approximate $u'(x)$.
+% 	\item The exact solution, which is given, is of \textbf{quadratics}.
+% \end{enumerate}
+% \begin{align*}
+% 	\therefore\quad\boxed{
+% 	\big|\big| A_{h}u\big|_{\Omega_{h}} - f\big|_{\Omega_{h}} \big|\big|_{\infty} = 0
+% 	}
+% \end{align*}
+% Another way is to substitute the given exact solution $u(x) = 1-x^2$ into \eqref{eq:consistencyerror11}
+% and define it on grid point, together
+% with known matrix $A$ and known $f$,
+% and then compute the consistency error \eqref{eq:consistencyerror11} accordingly.
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{Evaluation}
+
+% Closing time: \textbf{Sunday, 26.06.2022, 23:59:00}
+
+% \inputfig{floats/evaluationQR}{evaluationQR}
+
+% Alternative link:\\
+% \url{https://www.campus.rwth-aachen.de/evasys/online.php?pswd=5F6HTY8K3C}
+% % \href{https://www.campus.rwth-aachen.de/evasys/online.php?pswd=5F6HTY8K3C}{here}
+
+% Since the term $-h^2/3$ from \eqref{eq:finalsum} is nonzero,
+% we only need to expand those two Taylor expansions from \eqref{eq:firstfhreeTaylor}
+% till $\mathcal{O}(h^3)$. Therefore, the consistency order, 
+% due to the factor $h$ coming along with $f'(x)$, i.e. $\mathcal{O}(h^3)/h$, 
+% is guaranteed till at least order 2.
+
+% \begin{align}
+% 	\label{eq:firstfhreeTaylororder4}
+% 	\begin{cases}
+% 		\begin{aligned}
+% 			f(x)    & = f(x)   \\
+% 			f(x+ h) & = f(x) 
+% 			+ \frac{h^1}{1!} f'(x)  
+% 			+ \frac{h^2}{2!} f''(x)  
+% 			+ \frac{h^3}{3!} f'''(x) 
+% 			+ \mathcal{O}(h^4) \\
+% 			f(x+2h) & = f(x) 
+% 			+ \frac{(2h)^1}{1!} f'(x) 
+% 			+ \frac{(2h)^2}{2!} f''(x) 
+% 			+ \frac{(2h)^3}{3!} f'''(x) 
+% 			+ \mathcal{O}(h^4)
+% 		\end{aligned}
+% 	\end{cases}
+% \end{align}
+
+% \newpage
+% \inputfig{floats/fixedUpwind_variatedEpsilon}{fixedUpwind_variatedEpsilon}
+
+% \newpage
+% \inputfig{floats/fixedCentral_variatedEpsilon}{fixedCentral_variatedEpsilon}
+
+% \newpage
+% \inputfig{floats/fixedUpwind_variatedBeta}{fixedUpwind_variatedBeta}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{Analysis: 2D Eigenfuctions of Laplace operator}
+% \begin{recall}
+% 	\hphantom{a}\\
+% 	\hphantom{a}\\
+% 	\hphantom{a}\\
+% 	\hphantom{a}\\
+% 	\hphantom{a}\\
+% 	\hphantom{a}\\
+% 	\hphantom{a}\\
+% 	\hphantom{a}\\
+% 	\hphantom{a}\\
+% 	\hphantom{a}\\
+% 	\hphantom{a}\\
+% 	\hphantom{a}\\
+% \end{recall}
+% \begin{example}
+% 	\label{ex:example2DEigenfcnLaplace}
+% 	Examine the following problem where the squared unit domain defined as
+% 	$\Omega = [0,1]^2$ and the function
+% 	$f(x,y)$ given as follows
+% 	\begin{align*}
+% 		f(x,y) = xy (1-x)(1-y).
+% 	\end{align*}
+% 	Expand the given function $f(x,y)$ to eigenfunctions derived from  
+% 	\begin{align*}
+% 		-\Delta \phi  
+% 		     & = \lambda \phi, \ \text{in} \ \Omega, \\
+% 		\phi & = 0, \ \text{on} \ \partial \Omega.
+% 	\end{align*}
+% \end{example}
+% Approach: The Eigenfunctions take the form
+% \begin{align*}
+% 	\boxed{
+% 		\phi_{j,k} (x,y) = C_1 \sin (j \pi x) \sin(k \pi y).
+% 	}
+% \end{align*}
+% Normalization of eigenfunctions goes as follows
+% \begin{align*}
+% 	\boxed{
+% 		\begin{aligned}
+% 			||\phi_{j,k} (x,y)||^2_{2} 
+% 			\stackrel{!}{=} 1 
+% 			 & \Leftrightarrow
+% 			\int_\Omega \phi_{j,k}^2(x,y) \ d\Omega 
+% 			\stackrel{!}{=} 1   \\
+% 			 & \Leftrightarrow 
+% 			\int_0^1 \int_0^1 C_1^2 \sin^2 (j \pi x) \sin^2(k \pi y) \ dx dy
+% 			\stackrel{!}{=} 1
+% 			\Rightarrow C_1=2.
+% 		\end{aligned}
+% 	}
+% \end{align*}
+% \newpage
+% Derivation of eigenfunctions $\phi_{j,k} (x,y)$
+
+% \newpage
+% Derivation of eigenfunctions $\phi_{j,k} (x,y)$ (cont.)
+
+% \newpage
+% Expansion
+% \begin{align*}
+% 	f(x,y) = xy(1-x)(1-y)
+% 	\stackrel{!}{=}
+% 	\sum_{j=1}^\infty  \sum_{k=1}^\infty \alpha_{j,k} \phi_{j,k} (x,y)
+% \end{align*}
+% where the coefficient $\alpha_{j,k}$ is computed as follows
+% \begin{align*}
+% 	\alpha_{j,k} & = \int_\Omega f(x,y) \phi_{j,k} \ d\Omega                                   \\
+% 	             & =  \int_0^1 \int_0^1 xy(1-x)(1-y) \ 2 \sin (j \pi x) \sin(k \pi y) \  dx dy \\
+% 	             & = 2 \int_0^1  x(1-x) \sin(j \pi x) \ dx \int_0^1  y(1-y) \sin(k \pi y) \ dy
+% \end{align*}
+% which is computed firstly w.r.t. $dx$ step-by-step as follows
+% \begin{align*}
+% 	\int_0^1  x(1-x) \sin(j \pi x) \ dx
+% 	= \frac{2}{j^3 \pi^3} (1-\cos(j \pi)) - \frac{1}{j^2 \pi^2} \sin(j \pi)
+% \end{align*}
+% The term goes with sinus function gets vanished, while the term goes with cosinus function takes the form
+% $\cos(j \pi) = (-1)^j$. Similarly, it goes the same for $dy$. Finally, we obtain
+% \begin{align*}
+% 	\alpha_{j,k} & = 2 \frac{2}{j^3 \pi^3} \left( 1-(-1)^j  \right)  \frac{2}{k^3 \pi^3} \left( 1-(-1)^k  \right) \\
+% 	             & =
+% 	\left\{
+% 	\begin{matrix}
+% 		\dfrac{32}{j^3 k^3 \pi^6}, & \text{if } j, k \text{ odd}, \\
+% 		0,                         & \text{otherwise},
+% 	\end{matrix}\right.
+% \end{align*}
+% which leads to the final form of expansion of $f(x,y)$ as follows
+% \begin{align*}
+% 	\therefore\quad\boxed{
+% 		f(x,y) = \sum_{j,k \ \text{odd}}  \frac{32}{j^3 k^3 \pi^6} 2 \sin(j \pi x ) \sin(k \pi y ).
+% 	}
+% \end{align*}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{Analysis: Distributional derivative}
+% \begin{example}
+% 	Examine the following problem 
+% 	\begin{align*}
+% 		f:
+% 		\begin{cases}
+% 			\mathbb{R} \to \mathbb{R}, \\
+% 			x \mapsto f(x) = |x+1|.
+% 		\end{cases}
+% 	\end{align*}
+% \end{example}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{Numerics: Ghost points in FDM}
+% \begin{example}
+% 	Examine the following FDM problem:
+% 	\begin{align*}
+% 		u''(x) - u'(x) + u(x) = -x^2 + 2x - 1,
+% 		\quad
+% 		\text{for }\  x\in \Omega =(0,1),
+% 	\end{align*}
+% 	\inputfig{floats/discretizeGhost}{discretizeGhost}
+% 	where the boundary conditions are defined as follows
+% 	\begin{align*}
+% 		u(0) = 0, \quad u(1) = 0.
+% 	\end{align*}
+% 	Determine the resulting system of linear equations 
+% 	$A_h u_h = b_h$ by using second order FDM scheme for both $u''(x)$ and $u'(x)$. 
+% \end{example}
+% Approach: This problem exists no ghost point $\mathghost$\\
+
+% The second order FDM scheme for both $u''(x)$ and $u'(x)$ take the following forms
+% \begin{align*}
+% 	\boxed{
+% 		\begin{aligned}
+% 			u''(x) & \approx  \frac{u(x+h)-2u(x)+u(x-h)}{h^2}, \\
+% 			u'(x)  & \approx   \frac{u(x+h)-u(x-h)}{2h},
+% 		\end{aligned}
+% 	}
+% \end{align*}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \begin{example}
+% 	Examine the following FDM problem:
+% 	\begin{align*}
+% 		u''(x) - u'(x) + u(x) = -x^2 + 2x - 1,
+% 		\quad
+% 		\text{for }\  x\in \Omega =(0,1),
+% 	\end{align*}
+% 	\inputfig{floats/discretizeGhostLeft}{discretizeGhostLeft}
+% 	where the boundary conditions are defined as follows
+% 	\begin{align*}
+% 		u'(0) = 0, \quad u(1) = 0.
+% 	\end{align*}
+% 	Determine the resulting system of linear equations 
+% 	$A_h u_h = b_h$ by using second order FDM scheme for both $u''(x)$ and $u'(x)$. 
+% \end{example}
+
+% Approach: This problem exists a ghost point $\mathleftghost$
+% on the LHS boundary $\partial\Omega_{L}$\\
+
+% The second order FDM scheme for both $u''(x)$ and $u'(x)$ take the following forms
+% \begin{align*}
+% 	\boxed{
+% 		\begin{aligned}
+% 			u''(x) & \approx  \frac{u(x+h)-2u(x)+u(x-h)}{h^2}, \\
+% 			u'(x)  & \approx   \frac{u(x+h)-u(x-h)}{2h},
+% 		\end{aligned}
+% 	}
+% \end{align*}
+
+% \newpage
+% Derivation the system of equations
+
+% \newpage
+% Derivation the system of equations (cont.)
+
+% \newpage
+% \begin{enumerate}
+% 	\item Discretization for $n = 1,..,N-1$
+% 	      \begin{align*}
+% 		      \frac{u_{n+1} - 2u_n + u_{n-1}}{h^2} -
+% 		      \frac{u_{n+1}-u_{n-1}}{2h} + u_n 
+% 		      = 2x_n - 1 - x_n^2,
+% 	      \end{align*}
+% 	      which leads to the following grouped form
+% 	      \begin{align*}
+% 		      \boxed{
+% 			      (2+h)u_{n-1} + (2h^2-4)u_n + (2-h)u_{n+1}
+% 			      = 2h^2 \left( 2nh - 1 - (nh)^2 \right).
+% 		      }
+% 	      \end{align*}
+
+% 	\item Left boundary exists \textbf{ghost} point $u_{-1}$ taking the following expression
+% 	      \begin{align*}
+% 		      u'(0) 
+% 		      = 0~~\Rightarrow~~\frac{u_1-u_{-1}}{2h} 
+% 		      = 0~~\Rightarrow~~u_1 
+% 		      = u_{-1}
+% 	      \end{align*}
+% 	      which yields the first equation for the case $n=0$ as follows
+% 	      \begin{align*}
+% 		      \boxed{
+% 			      (2h^2-4)u_0 + 4 u_{1} = -2h^2.
+% 		      }
+% 	      \end{align*}
+
+% 	\item The right boundary where $u(1)=0$, meaning $u_N=0$,
+% 	      is for the case of $n=N-1$
+% 	      \begin{align*}
+% 		      \boxed{
+% 			      (2+h)u_{N-2} + (2h^2-4)u_{N-1} = 2h^2(2(1-h)-1-(1-h)^2).
+% 		      }
+% 	      \end{align*}
+
+% 	\item The final system of equations takes the following form
+% 	      \begin{align*}
+% 		      \therefore\quad\boxed{
+% 		      A_h=
+% 		      \begin{pmatrix}
+% 			      2h^2-4 & 4      &        &        &        \\
+% 			      2+h    & 2h^2-4 & 2-h    &        &        \\
+% 			             & 2+h    & 2h^2-4 & 2-h    &        \\
+% 			             &        & \ddots & \ddots & \ddots \\
+% 			             &        &        & 2+h    & 2h^2-4
+% 		      \end{pmatrix}_{N\times N},
+% 		      }
+% 	      \end{align*}
+
+% 	      \begin{align*}
+% 		      \therefore\quad\boxed{
+% 		      u_h =
+% 		      \begin{pmatrix}
+% 			      u_0    \\
+% 			      u_1    \\
+% 			      u_2    \\
+% 			      \vdots \\
+% 			      u_{N-1}
+% 		      \end{pmatrix}_{N \times 1},
+% 		      \quad
+% 		      \quad
+% 		      b_h=2h^2
+% 		      \begin{pmatrix}
+% 			      -1          \\
+% 			      2h-1-h^2    \\
+% 			      4h-1-(2h)^2 \\
+% 			      \vdots      \\
+% 			      2 (N-1)h-1 - \left( (N-1)h \right)^2
+% 		      \end{pmatrix}_{N \times 1}.
+% 		      }
+% 	      \end{align*}
+
+% 	      % \item Da für die ersten beiden Ableitungen gem\"{a}{\ss}
+% 	      %       Taylorentwicklung-Formel gilt, dass
+% 	      %       \begin{align*}
+% 	      % 	      u''_h(x) & =  \frac{u(x+h)-2u(x)+u(x-h)}{h^2} + \mathcal{O}(h^2)\cdot u^{(4)}(x), \\
+% 	      % 	      %   u''_h(x) & = \frac{u(x+h)-2u(x)+u(x-h)}{h^2} + \mathcal{O}(h^2), \\
+% 	      % 	      u'_h(x)  & =   \frac{u(x+h)-u(x-h)}{2h} + \mathcal{O}(h^2)\cdot u^{(3)}(x),       \\
+% 	      % 	      %   u'_h(x)  & = \frac{u(x+h)-u(x-h)}{2h} + \mathcal{O}(h^2),        \\
+% 	      % 	      u_h(x)   & = u(x),
+% 	      %       \end{align*}
+
+% 	      %       und weiterhin die exakte L\"{o}sung unendlich oft differenzierbar ist mit
+% 	      %       \begin{align*}
+% 	      % 	      u^{(n)} = 0,\ \forall\ n\in\mathbb{R},\ n>2,
+% 	      %       \end{align*}
+% 	      %       wird die L\"{o}sung mit diesem Finite Differenzen Schema exakt
+% 	      %       approximiert, das hei{\ss}t die Differenz zwischen $u_h$ und $u$
+% 	      %       ist $0$ in jedem Punkt. Sei
+% 	      %       \begin{align*}
+% 	      % 	      f(x)=u''(x) - u'(x) + u(x),
+% 	      % 	      \text{ also }
+% 	      % 	      f(x) := 2x-1-x^2.
+% 	      %       \end{align*}
+
+% 	      %       Für den Konsistenzfehler erhalten wir somit
+% 	      %       \begin{align*}
+% 	      % 	      \| \left(A_h u\right)|_{\Omega_h} - f|_{\Omega_h} \|_\infty
+% 	      % 	       & = \max_{x\in\Omega_h}
+% 	      % 	      \left|
+% 	      % 	      \left( u''_h(x) - u'_h(x) + u_h(x) \right)
+% 	      % 	      - \left( u''(x) - u'(x) + u(x)  \right)
+% 	      % 	      \right|                                                     \\
+% 	      % 	       & \leq \max_{x\in \Omega_h} \left| u''_h(x)-u''(x) \right|
+% 	      % 	      + \max_{x \in \Omega_h} \left| u'_h(x)-u'(x) \right|
+% 	      % 	      + \max_{x \in \Omega_h} \left| u_h(x)-u(x) \right|          \\
+% 	      % 	       & \leq \mathcal{O}(h^2) \left| u^{(4)}(x) \right|_\infty
+% 	      % 	      + \mathcal{O}(h^2) \left| u^{(3)}(x) \right|_\infty
+% 	      % 	      + 0                                                         \\
+% 	      % 	       & \leq 0.
+% 	      %       \end{align*}
+
+% 	      %       Jede Norm ist nicht negative und damit erhalten wir den Konsistenzfehler
+% 	      %       \begin{align*}
+% 	      % 	      \therefore\quad\boxed{
+% 	      % 	      \| \left(A_h u\right)|_{\Omega_h} - f|_{\Omega_h} \|_\infty = 0.
+% 	      % 	      }
+% 	      %       \end{align*}
+% \end{enumerate}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \begin{example}
+% 	Examine the following FDM problem:
+% 	\begin{align*}
+% 		u''(x) - u'(x) + u(x) = -x^2 + 2x - 1,
+% 		\quad
+% 		\text{for }\  x\in \Omega =(0,1),
+% 	\end{align*}
+% 	\inputfig{floats/discretizeGhostRight}{discretizeGhostRight}
+% 	where the boundary conditions are defined as follows
+% 	\begin{align*}
+% 		u(0) = 0, \quad u'(1) = 0.
+% 	\end{align*}
+% 	Determine the resulting system of linear equations 
+% 	$A_h u_h = b_h$ by using second order FDM scheme for both $u''(x)$ and $u'(x)$. 
+% \end{example}
+
+% Approach: This problem exists a ghost point $\mathrightghost$
+% on the RHS boundary $\partial\Omega_{R}$.\\
+
+% The second order FDM scheme for both $u''(x)$ and $u'(x)$ take the following forms
+% \begin{align*}
+% 	\boxed{
+% 		\begin{aligned}
+% 			u''(x) & \approx  \frac{u(x+h)-2u(x)+u(x-h)}{h^2}, \\
+% 			u'(x)  & \approx   \frac{u(x+h)-u(x-h)}{2h},
+% 		\end{aligned}
+% 	}
+% \end{align*}
+
+% %------------------------------------------------------------------------------
+% \newpage
+% \section{Evaluation}
+
+% \inputfig{floats/evaluationQR}{evaluationQR}
+
+% Alternative link:
+% % \url{https://www.campus.rwth-aachen.de/evasys/online.php?pswd=5F6HTY8K3C}
+% \href{https://www.campus.rwth-aachen.de/evasys/online.php?pswd=5F6HTY8K3C}{here}
+
+% \inputfig{floats/nodiscretize}{nodiscretize}
+% Approach:
+% \begin{enumerate}
+% 	\item Homogenization of the BCs: We search for $u_{inh}(x,t)$ such that
+% 	      \begin{align}
+% 		      \label{eq:uinh}
+% 		      \partial_{xx}u_{inh} = 0, \quad \text{with BCs:}\ 
+% 		      \begin{cases}
+% 			      u_{inh}(0,t) = 0,                  \\
+% 			      u_{inh}(L,t) = \mu t \exp(-\mu t), \\
+% 		      \end{cases}
+% 	      \end{align}
+% 	      which leads to
+% 	      \begin{align}
+% 		      \label{eq:uinhsol}
+% 		      \boxed{
+% 			      u_{inh}(x,t) = \frac{x}{L}\mu t \exp(-\mu t).
+% 		      }
+% 	      \end{align}
+% 	      Likewise, we also obtain the following expression
+% 	      \begin{align}
+% 		      \label{eq:ptuinh}
+% 		      \partial_{t}u_{inh} 
+% 		      = \frac{x}{L}\mu \exp(-\mu t) - \frac{x}{L}\mu^{2} t \exp(-\mu t)
+% 		      = \frac{x}{L}(1-\mu t)\mu \exp(-\mu t)
+% 	      \end{align}
+% 	      Note in passing that we have used $u_{inh}(x,t) = ax+b, \forall a,b \in\mathbb{R}$
+% 	      to probe the solution mentioned at \eqref{eq:uinh}, since it satisfies $\partial_{xx}(ax+b) = 0$.
+% 	      The solution \eqref{eq:uinhsol} is obtained by considering BCs given in \eqref{eq:uinh}.
+
+% 	\item We define
+% 	      \begin{align}
+% 		      \label{eq:utilde}
+% 		      \tilde{u}(x,t) := u(x,t) - u_{inh}(x,t) 
+% 		      \Leftrightarrow 
+% 		      u(x,t) = \tilde{u}(x,t) + u_{inh}(x,t)
+% 	      \end{align}
+% 	      By substituting \eqref{eq:utilde} into \eqref{eq:probleminh} we obtain the following equality
+% 	      \begin{align}
+% 		      \partial_t(\tilde{u} + u_{inh}) = \partial_{xx}(\tilde{u} + u_{inh})
+% 		       & \Leftrightarrow
+% 		      \partial_t\tilde{u} - \partial_{xx}\tilde{u}
+% 		      = \cancelto{0; \text{cf.} \eqref{eq:uinh}}{\partial_{xx}u_{inh}} - \partial_{t}u_{inh} \notag \\
+% 		       & \Leftrightarrow
+% 		      \partial_t\tilde{u} - \partial_{xx}\tilde{u}
+% 		      = - \partial_{t}u_{inh}                                                                \notag \\
+% 		       & \Leftrightarrow
+% 		      \partial_t\tilde{u} - \partial_{xx}\tilde{u}
+% 		      \stackrel{\eqref{eq:ptuinh}}{=}
+% 		      - \frac{x}{L}(1-\mu t)\mu \exp(-\mu t)
+% 	      \end{align}
+% 	      Then, the homogenized problem reads
+% 	      \begin{equation}
+% 		      \label{eq:utildeeqn}
+% 		      \boxed{
+% 			      \begin{aligned}
+% 				      \partial_t\tilde{u}(x,t) - \partial_{xx}\tilde{u}(x,t) = \tilde{f}(x,t),
+% 				      \quad \text{with}
+% 				      \
+% 				      \begin{cases}
+% 					      \tilde{u}(0,t)=\tilde{u}(L,t)= 0, \\
+% 					      \tilde{u}(x,0)= u_{0}\ x(L-x),
+% 				      \end{cases}
+% 			      \end{aligned}
+% 		      }
+% 	      \end{equation}
+% 	      where the source term $\tilde{f}(x,t)$ defined as 
+% 	      $\displaystyle \tilde{f}(x,t) := -\frac{x}{L}(1-\mu t)\mu \exp(-\mu)$.
+
+% 	\item We now need to find out the Eigenfunctions $\varphi(x)$ satisfying
+% 	      \begin{align}
+% 		      \label{eq:eigenfunctionproblemlambda}
+% 		      -\partial_{xx}\varphi(x) = \lambda\varphi(x),
+% 		      \quad\text{with}\ \varphi(0)=\varphi(L)=0.
+% 	      \end{align}
+% 	      By taking into consideration the Ansatz
+% 	      \begin{align}
+% 		      \label{eq:ansatz}
+% 		      \begin{cases}
+% 			      \begin{aligned}
+% 				      \varphi(x)   & = \exp(rx)      \\
+% 				      \varphi''(x) & = r^{2}\exp(rx)
+% 			      \end{aligned}
+% 		      \end{cases}
+% 	      \end{align}
+% 	      We then obtain the following expressions
+% 	      \begin{align}
+% 		      \eqref{eq:eigenfunctionproblemlambda}
+% 		      \stackrel{\eqref{eq:ansatz}}{\Leftrightarrow}
+% 		      \exp(rx)(r^{2} + \lambda) = 0
+% 		      \Leftrightarrow
+% 		      r = \pm i\sqrt{\lambda}
+% 	      \end{align}
+% 	      The solution to \eqref{eq:eigenfunctionproblemlambda} $\forall A,B,C_{1},C_{2} \in \mathbb{R}$ takes the following form 
+% 	      \begin{align}
+% 		      \label{eq:varphix}
+% 		      \varphi(x)
+% 		       & = A\exp\left(i\sqrt{\lambda}x\right) + B\exp\left(-i\sqrt{\lambda}x\right) \notag          \\
+% 		       & = A\left( \cos\left(\sqrt{\lambda}x\right) + i\sin\left(\sqrt{\lambda}x\right) \right)
+% 		      + B\left( \cos\left(\sqrt{\lambda}x\right) - i\sin\left(\sqrt{\lambda}x\right) \right) \notag \\
+% 		       & = (A+B)\cos\left(\sqrt{\lambda}x\right) + (A-B)i\sin\left(\sqrt{\lambda}x\right) \notag    \\
+% 		       & = C_{1}\cos\left(\sqrt{\lambda}x\right) + iC_{2}\sin\left(\sqrt{\lambda}x\right)
+% 	      \end{align}
+% 	      Note in passing that Euler's formula $\exp(ix) = \cos(x) +i\sin(x)$ has been used in \eqref{eq:varphix}.
+% 	      Next, by applying BCs from \eqref{eq:eigenfunctionproblemlambda}
+% 	      we obtain the explicit values for $C_{1}$ and eigenvalues $\lambda_{k}$ for \eqref{eq:varphix}, as follows
+% 	      \begin{align}
+% 		       & \varphi(0)=0 \stackrel{\eqref{eq:varphix}}{\Leftrightarrow} C_{1} = 0. \label{eq:C1} \\
+% 		       & \varphi(L)=0 \stackrel{\eqref{eq:varphix}\eqref{eq:C1}}{\Leftrightarrow}
+% 		      iC_{2}\sin\left( \sqrt{\lambda}L \right) = 0
+% 		      \Leftrightarrow \lambda_{k} = \left( \frac{k\pi}{L} \right)^2,\quad\forall \ k\in\mathbb{Z}.
+% 	      \end{align}
+% 	      Till this point we have obtained so far only \textbf{non-normalized}
+% 	      eigenfunctions $\varphi_k(x)$ and their eigenvalues $\lambda_k$ as follows
+% 	      \begin{align}
+% 		      \label{eq:nonnomalized}
+% 		      \begin{cases}
+% 			      \begin{aligned}
+% 				      \varphi_k(x) & = iC_{2} \sin\left(\frac{k \pi}{L} x\right), \\
+% 				      \lambda_k    & = \left( \frac{k \pi}{L} \right)^2,
+% 			      \end{aligned}
+% 			      \quad\forall\ k\in\mathbb{Z}.
+% 		      \end{cases}
+% 	      \end{align}
+% 	      Next, the eigenfunction $\varphi_k(x)$  in \eqref{eq:nonnomalized} needs to be normalized. It goes as follows
+% 	      \begin{align}
+% 		      ||\varphi_{k}(x)||_{2} \stackrel{!}{=} 1 
+% 		       & \Leftrightarrow \sqrt{\int_{0}^{L} \left( \varphi_{k}(x) \right)^2\ dx } = 1 \notag   \\
+% 		       & \stackrel{\eqref{eq:nonnomalized}}{\Leftrightarrow }
+% 		      \int_{0}^{L} \left( iC_{2} \sin\left(\frac{k \pi}{L} x\right) \right)^2 \ dx  = 1 \notag \\
+% 		       & \Leftrightarrow 
+% 		      \int_{0}^{L} \sin^2\left(\frac{k \pi}{L} x\right) \ dx  = \frac{-1}{(C_{2})^2} \notag    \\
+% 		       & \Leftrightarrow 
+% 		      \int_{0}^{L} \left(\frac{1}{2} - \frac{1}{2}\cos\left( \frac{2k \pi}{L} x \right) \right) \ dx 
+% 		      = \frac{-1}{(C_{2})^2} \notag                                                            \\
+% 		       & \Leftrightarrow 
+% 		      \frac{1}{2}x\Bigg|_{x=0}^{x=L} 
+% 		      -\frac{1}{2}\frac{L}{2k\pi}\sin\left(\frac{2k\pi}{L}x\right)\Bigg|_{x=0}^{x=L}
+% 		      = \frac{-1}{(C_{2})^2} \notag                                                            \\
+% 		       & \Leftrightarrow
+% 		      \frac{1}{2}L = \frac{-1}{(C_{2})^2}
+% 		      \Leftrightarrow
+% 		      C_{2} = \pm i\sqrt{\frac{2}{L}}
+% 	      \end{align}
+% 	      \begin{itemize}
+% 		      \item $\displaystyle C_{2} = i\sqrt{\frac{2}{L}}
+% 			            \stackrel{\eqref{eq:nonnomalized}}{\Rightarrow}
+% 			            \varphi_k(x)
+% 			            % = iC_{2} \sin\left(\frac{k \pi}{L} x\right)
+% 			            = - \sqrt{\frac{2}{L}}\sin\left(\frac{k \pi}{L} x\right)
+% 			            = \sqrt{\frac{2}{L}}\sin\left(\frac{h \pi}{L} x\right)
+% 			            \forall\ k,h\in\mathbb{Z}.
+% 		            $
+% 		      \item $\displaystyle C_{2} = - i\sqrt{\frac{2}{L}}
+% 			            \stackrel{\eqref{eq:nonnomalized}}{\Rightarrow}
+% 			            \varphi_k(x)
+% 			            % = iC_{2} \sin\left(\frac{k \pi}{L} x\right)
+% 			            = + \sqrt{\frac{2}{L}}\sin\left(\frac{k \pi}{L} x\right)
+% 			            = \sqrt{\frac{2}{L}}\sin\left(\frac{k \pi}{L} x\right)
+% 			            \forall\ k\in\mathbb{Z}.
+% 		            $
+% 	      \end{itemize}
+
+% 	      Therefore, the \textbf{normalized} eigenfunctions $\varphi_k(x)$ and their eigenvalues $\lambda_k$
+% 	      take the following forms
+% 	      \begin{equation*}
+% 		      \therefore\quad
+% 		      \boxed{
+% 			      \begin{aligned}
+% 				      \varphi_k(x) & = \sqrt{\frac{2}{L}} \sin\left(\frac{k \pi}{L} x\right) \\
+% 				      \lambda_k    & = \left( \frac{k \pi}{L} \right)^2, 
+% 				      \forall\ k\in\mathbb{Z}
+% 			      \end{aligned}
+% 		      }
+% 	      \end{equation*}
+
+% 	\item Expand the source term $\tilde{f}(x,t)$ by using the normalized eigenfunction $\varphi_{k}(x)$.
+% 	      The source term $\tilde{f}(x,t)$ takes the following form
+% 	      \begin{align}
+% 		      \tilde{f}(x,t) = -\frac{x}{L} (1-\mu t)\mu \exp(-\mu t),
+% 	      \end{align}
+% 	      which can be written in an expansion of eigenfunctions
+% 	      \begin{align}
+% 		      \label{eq:ftilde}
+% 		      \boxed{
+% 			      \tilde{f}(x,t)
+% 			      = \sum_{k=1}^\infty \beta_k(t) \varphi_{k}(x)
+% 			      = \sum_{k=1}^\infty \beta_k(t) \sqrt{\frac{2}{L}} \sin\left( \frac{k \pi}{L} x \right)
+% 		      }
+% 	      \end{align}
+% 	      where coefficient $\beta_{k}(t)$ is computed by projecting $\tilde{f}(x,t)$ on eigenfunctions $\varphi_{k}(x)$, 
+% 	      as follows
+% 	      \begin{align}
+% 		      \label{eq:betacoefficient}
+% 		      \beta_k(t)
+% 		       & = \langle \tilde{f}(x,t),\varphi_{k}(x) \rangle             \notag \\
+% 		       & = \int_0^L 
+% 		      \left(-\frac{x}{L} (1-\mu t)\mu \exp(-\mu t) \right)
+% 		      \sqrt{\frac{2}{L}} \sin\left(\frac{k \pi}{L} x\right) \ dx     \notag \\
+% 		       & = \frac{-(1-\mu t) \mu \exp(-\mu t)}{L} \sqrt{\frac{2}{L}}
+% 		      \int_0^L x
+% 		      \sin\left(\frac{k \pi}{L} x\right) \ dx                        \notag \\  
+% 		       & = \frac{-(1-\mu t) \mu \exp(-\mu t)}{L} \sqrt{\frac{2}{L}}
+% 		      \frac{(-1)^k}{k\pi}L^2                                         \notag \\
+% 		       & = (-1)^k \frac{\sqrt{2L}}{k \pi}(1-\mu t)\mu \exp(-\mu t).
+% 	      \end{align}
+
+% 	\item Ansatz for solution $\tilde{u}(x,t)$ take the following form
+% 	      \begin{align}
+% 		      \label{eq:ansatzu}
+% 		      \tilde{u}(x,t) = \sum_{k=1}^\infty \alpha_k(t) \varphi_k(x).
+% 	      \end{align}
+% 	      By substituting \eqref{eq:ftilde} and \eqref{eq:ansatzu} into \eqref{eq:utildeeqn} we obtain 
+% 	      \begin{align}
+% 		      \label{eq:ODEalpha}
+% 		       & \Leftrightarrow 
+% 		      \sum_{k=1}^\infty 
+% 		      \left(
+% 		      \partial_t \alpha_{k}(t) \varphi_k(x)
+% 		      - \alpha_k(t) \partial_{xx} \varphi_k(x)
+% 		      - \beta_k(t) \varphi_k(x)
+% 		      \right)
+% 		      = 0             \notag                                               \\
+% 		       & \stackrel{\eqref{eq:eigenfunctionproblemlambda}}{\Leftrightarrow}
+% 		      \sum_{k=1}^\infty 
+% 		      \left( 
+% 		      \alpha_{k}'(t) \varphi_k(x)
+% 		      + \alpha_k(t) \lambda_k \varphi_k(x)
+% 		      - \beta_k(t) \varphi_k(x)
+% 		      \right)              
+% 		      = 0             \notag                                               \\
+% 		       & \Leftrightarrow 
+% 		      \sum_{k=1}^\infty 
+% 		      \left( \alpha_{k}'(t)  + \lambda_k\alpha_k(t) - \beta_k(t) \right) \varphi_k(x)
+% 		      = 0.
+% 	      \end{align}
+% 	      Since the eigenfunctions $\varphi_{k}(x)$ are orthonormal to each other, 
+% 	      we induce from \eqref{eq:ODEalpha} and arrive at the following equality 
+% 	      \begin{align}
+% 		      \label{eq:ODEalphafinal}
+% 		      \boxed{
+% 			      \alpha_{k}'(t) + \lambda_k \alpha_k(t) - \beta_k(t) = 0.
+% 		      }
+% 	      \end{align}
+% 	      This is the 1st order ODE with unknown $\alpha_{k}(t)$. 
+% 	      The solution to $\alpha_k(t)$ takes the form
+% 	      \begin{align*}
+% 		      \therefore\quad
+% 		      \boxed{
+% 			      \alpha_k(t)
+% 			      = \alpha_k(0) \exp(-\lambda_k t)
+% 			      + \exp(-\lambda_k t) \int_0^t \exp(\lambda_k \tau) \beta_k(\tau) \ d\tau,
+% 		      }
+% 	      \end{align*}
+% 	      whose derivation goes as follows
+% 	      \begin{itemize}
+% 		      \item Solving for homogeneous part:
+% 		            \begin{align}
+% 			            \alpha_{k}'(t) + \lambda_k \alpha_k(t) = 0 
+% 			            \Leftrightarrow
+% 			            \alpha^{hom}_{k}(t) = \alpha_{k}(0)\exp(-\lambda_k t).
+% 		            \end{align}
+% 		      \item Inhomogeneous part: By using the method \emph{variation of constant}
+% 		            we exploit the ansatz 
+% 		            \begin{align}
+% 			            \label{eq:ansatzforalpha}
+% 			            \alpha^{inh}_{k}(t) = \alpha_{k}(t)\exp(-\lambda_k t).
+% 		            \end{align}
+% 		            Insertion of \eqref{eq:ansatzforalpha} into \eqref{eq:ODEalphafinal} leads to 
+% 		            \begin{align*}
+% 			            \alpha'_{k}(t)\exp(-\lambda_k t)
+% 			            - \lambda_k \alpha_{k}(t)\exp(-\lambda_k t)
+% 			            + \lambda_k \alpha_{k}(t)\exp(-\lambda_k t)
+% 			            - \beta_{k}(t)                   = 0                  
+% 		            \end{align*}
+% 		            where the two terms in the middle have been canceled out with each other. 
+% 		            We then obtain the equality
+% 		            \begin{align}
+% 			            \alpha'_{k}(t)\exp(-\lambda_k t)
+% 			             & = \beta_{k}(t) \notag                                                                              \\
+% 			            \Leftrightarrow \alpha'_{k}(t)   
+% 			             & = \exp(\lambda_k t)\beta_{k}(t)                                                      \notag        \\
+% 			            \Leftrightarrow \alpha_{k}(t)
+% 			             & = \int_{0}^{t} \exp(\lambda_k \tau)\beta_{k}(\tau)\ d\tau                            \notag        \\
+% 			            \Leftrightarrow \alpha_{k}(t)
+% 			             & \stackrel{\eqref{eq:betacoefficient}}{=}
+% 			            \int_0^t \exp(\lambda_k \tau)
+% 			            (-1)^k \frac{\sqrt{2 L}}{k \pi} (1- \mu\tau) \mu \exp(-\mu\tau) \ d\tau                       \notag  \\
+% 			            \Leftrightarrow \alpha_{k}(t)
+% 			             & = (-1)^k \frac{\sqrt{2L}}{k \pi} \mu \int_0^t 
+% 			            \exp(\lambda_{k}\tau) ( 1 - \mu\tau) \exp(-\mu\tau) \ d\tau                                    \notag \\
+% 			            \Leftrightarrow \alpha_{k}(t)
+% 			             & = (-1)^k \frac{\sqrt{2L}}{k \pi} \mu 
+% 			            \left(
+% 			            \int_0^t \exp(\lambda_k \tau - \mu\tau)  \ d\tau
+% 			            - \mu \int_0^t \tau \exp(\lambda_k \tau -\mu\tau ) \ d\tau 
+% 			            \right)                                                                                 \notag        \\
+% 			            \Leftrightarrow \alpha_{k}(t)
+% 			             & = (-1)^k \frac{\sqrt{2L}}{k \pi} \mu  
+% 			            \frac{(\lambda_k - (\lambda_k-\mu)\mu t) \exp(\lambda_k -\mu t) - \lambda_k}
+% 			            {(\lambda_k -\mu)^2}  \notag                                                                          \\
+% 			            \Leftrightarrow \alpha_{k}(t)
+% 			             & = (-1)^k \frac{\sqrt{2L}}{k \pi} \mu  
+% 			            \frac{
+% 				            (\lambda_k - (\lambda_k-\mu)\mu t) \exp(-\mu t)
+% 				            - \lambda_k \exp(-\lambda_k t)}
+% 			            {(\lambda_k -\mu)^2}
+% 		            \end{align}
+% 	      \end{itemize}
+
+% 	\item Find $\alpha_k(0)$ by taking into consideration the IC of $\tilde{u}(x,0)$, as follows
+% 	      \begin{align}
+% 		      \tilde{u}(x,0) = \sum_{k=1}^{\infty} \alpha_k(0) \varphi_k(x)
+% 		      \stackrel{\eqref{eq:utildeeqn}}{\Leftrightarrow}
+% 		      u_0\ x(L-x) \stackrel{!}{=} \sum_{k=1}^{\infty} \alpha_k(0) \varphi_k(x)
+% 	      \end{align}
+% 	      where the coefficient $\alpha_k(0)$ is computed as follows
+% 	      \begin{align}
+% 		      \alpha_k(0)
+% 		       & = \langle \tilde{u}(x,0),\varphi_k(x) \rangle                                           \notag \\
+% 		       & = \int_0^L u_0\ x (L-x) \sqrt{\frac{2}{L}} \sin\left( \frac{k \pi}{L} x \right) \ dx 
+% 		      =
+% 		      \begin{cases}
+% 			      \displaystyle
+% 			      u_0 \sqrt{2L} \frac{4 L^2}{(k\pi)^3}, & k \text{ odd}, \\
+% 			      0,                                    & k\text{ even}.
+% 		      \end{cases}
+% 	      \end{align}
+% 	      The solution to $\tilde{u}(x,t)$ then reads
+% 	      \begin{equation}
+% 		      \label{eq:utildesolution}
+% 		      %   \therefore\quad
+% 		      \boxed{
+% 			      \begin{aligned}
+% 				      \tilde{u}(x,t)
+% 				       & = \sum_{k=1}^\infty \alpha_k(t) \varphi_k(x)  \\
+% 				       & = \sum_{\substack{k=1                         \\k \text{ odd}}}^\infty \frac{8 u_0 L^2}{(k\pi)^3}
+% 				      \exp(-\lambda_k t)
+% 				      \sin\left( \frac{k \pi}{L} x \right)             \\
+% 				       & \ + \sum_{k=1}^\infty (-1)^k \frac{2\mu}{k \pi}
+% 				      \frac{(\lambda_k - (\lambda_k-\mu)\mu t)\exp(-\mu t) - \lambda_k \exp(-\lambda_k t)}
+% 				      {(\lambda_k - \mu)^2}
+% 				      \sin\left( \frac{k \pi}{L} x \right)
+% 			      \end{aligned}
+% 		      }
+% 	      \end{equation}
+
+% 	\item Finally, by substituting \eqref{eq:ptuinh} and \eqref{eq:utildesolution}
+% 	      into  \eqref{eq:utilde}
+% 	      the solution to $u(x,t)$ reads
+% 	      \begin{align*}
+% 		      \therefore\quad\boxed{
+% 			      u(x,t) = \tilde{u}(x,t) + \frac{x}{L} \mu t\exp(-\mu t).
+% 		      }
+% 	      \end{align*}
+% \end{enumerate}
+
+% Similarly to steps approaching to \eqref{eq:ODEalphafinal}, which is shown in Example \ref{ex:example1}, 
+% we obtain a 2nd order ODE, instead of the 1st order ODE, as follows
+% \begin{align}
+% 	\label{eq:2ndODEform}
+% 	\therefore\quad
+% 	\boxed{
+% 		\alpha_{k}''(t) + \lambda_k \alpha_k(t) - \beta_k = 0.
+% 	}
+% \end{align}
+% Essentially, the equation \eqref{eq:2ndODEform} has the form 
+% \begin{align}
+% 	y''(x) = -cy(x) + b,\quad\forall \ c,b\in\mathbb{R},
+% \end{align}
+% whose solution takes the following form
+% \begin{align}
+% 	y(x) = \frac{b}{c}
+% 	+ C_{1}\sin\left(\sqrt{c}x\right)
+% 	+ C_{2}\cos\left(\sqrt{c}x\right),\quad\forall \ C_{1},C_{2}\in\mathbb{R}.
+% \end{align}
+
+
+% Approach: By using Taylor expansion for $f(x+h)$ and $f(x+2h)$
+% we obtain the following expressions
+% \begin{align}
+% 	\label{eq:firstfhreeTaylor}
+% 	\begin{cases}
+% 		\begin{aligned}
+% 			f(x)    & = f(x)   \\
+% 			f(x+ h) & = f(x) 
+% 			+ \frac{h^1}{1!} f'(x)  
+% 			+ \frac{h^2}{2!} f''(x)  
+% 			+ \frac{h^3}{3!} f'''(x) 
+% 			+ \mathcal{O}(h^4) \\
+% 			f(x+2h) & = f(x) 
+% 			+ \frac{(2h)^1}{1!} f'(x) 
+% 			+ \frac{(2h)^2}{2!} f''(x) 
+% 			+ \frac{(2h)^3}{3!} f'''(x) 
+% 			+ \mathcal{O}(h^4)
+% 		\end{aligned}
+% 	\end{cases}
+% \end{align}
+% which leads to 
+% \begin{align}
+% 	\alpha f(x)    & = \alpha f(x)  \label{eq:alphafx} \\
+% 	\beta f(x+ h)  & = \beta f(x) 
+% 	+ \beta h f'(x)  
+% 	+ \frac{\beta h^2}{2} f''(x)
+% 	+ \frac{\beta h^3}{6} f'''(x)
+% 	+ \mathcal{O}(h^4)              \label{eq:betafxh} \\
+% 	\gamma f(x+2h) & = \gamma f(x) 
+% 	+ 2\gamma h f'(x)  
+% 	+ 2\gamma h^2 f''(x)
+% 	+ \frac{4\gamma h^3}{3} f'''(x)
+% 	+ \mathcal{O}(h^4) \label{eq:gammafx2h}
+% \end{align}
+% Summation of \eqref{eq:alphafx}, \eqref{eq:betafxh} and \eqref{eq:gammafx2h} leads to
+% \begin{align}\label{eq:summationall}
+% 	\alpha f(x) + \beta f(x+h) + \gamma f(x+2h) 
+% 	 & = (\alpha + \beta + \gamma)f(x) \notag                                      \\
+% 	 & \quad + (\beta h + 2 \gamma h)f'(x) \notag                                  \\
+% 	 & \quad + \left( \frac{\beta h^2}{2} + 2\gamma h^2 \right)f''(x) \notag       \\
+% 	 & \quad + \left( \frac{\beta h^3}{6} + \frac{4\gamma h^3}{3}  \right) f'''(x)
+% 	+ \mathcal{O}(h^4)
+% \end{align}
+% Comparison of \eqref{eq:summationall} with \eqref{eq:givenproblemfxprime}
+% yields the following equalities
+% \begin{align}
+% 	\begin{cases}
+% 		\alpha + \beta + \gamma = 0 \\
+% 		\beta h + 2 \gamma h =  1   \\
+% 		\displaystyle \frac{\beta h^2}{2} + 2\gamma h^2 = 0
+% 	\end{cases}
+% 	\Leftrightarrow
+% 	\begin{pmatrix}
+% 		1 & 1   & 1 \\
+% 		0 & 1   & 2 \\
+% 		0 & 1/2 & 2
+% 	\end{pmatrix}
+% 	\begin{pmatrix}
+% 		\alpha \\ \beta \\ \gamma
+% 	\end{pmatrix}
+% 	=
+% 	\begin{pmatrix}
+% 		0 \\ 1/h \\ 0
+% 	\end{pmatrix}
+% 	\Leftrightarrow
+% 	\begin{pmatrix}
+% 		\alpha \\ \beta \\ \gamma
+% 	\end{pmatrix}
+% 	=
+% 	\begin{pmatrix}
+% 		-3/(2h) \\ 2/h \\ -1/(2h)
+% 	\end{pmatrix}
+% \end{align}
+% which leads to
+% \begin{align}
+% 	\label{eq:finalsum}
+% 	af(x) + bf(x+h) + cf(x+2h) 
+% 	\approx
+% 	f'(x) 
+% 	+ f'''(x) \underbrace{\left( \frac{2}{h}\frac{h^3}{6}+\frac{-1}{2h}\frac{4h^3}{3}\right)}
+% 	_{\displaystyle =-h^2/3}
+% 	+ \mathcal{O}(h^4).
+% \end{align}
+% Since the term $-h^2/3$ from \eqref{eq:finalsum} is nonzero,
+% we only need to expand those two Taylor expansions from \eqref{eq:firstfhreeTaylor}
+% till $\mathcal{O}(h^3)$. Therefore, the consistency order, 
+% due to the factor $h$ coming along with $f'(x)$, i.e. $\mathcal{O}(h^3)/h$, 
+% is guaranteed till at least order 2.
+
+% \newpage
+% (Example 4 cont.)
+
+% Die Gleichung $y''(x) = -cy(x) +b$ besitzt die allg. Lösung 
+% 	\begin{align*}
+% 		y(x) = \frac{b}{c} + k_1 \sin(\sqrt{c} x)+ k_2\cos(\sqrt{c} x), \quad k_1,k_2 \in \mathbb{R}
+% 	\end{align*}
+
+% \begin{enumerate}
+% 	\item Die zum Problem geh"orenden Eigenfunktionen und Eigenwerte erf"ullen
+% 	      \begin{align*}
+% 		      \varphi^{\prime\prime}(x)+\lambda\varphi(x) & =0, \quad x\in (0,1) \\
+% 		      \varphi(0)=\varphi(1)                       & =0
+% 	      \end{align*}
+% 	      \begin{align*}
+% 		      \Rightarrow \quad \varphi(x) = C_1\sin(\sqrt{\lambda}x) + C_2 \cos(\sqrt{\lambda}x)
+% 	      \end{align*}
+% 	      Mit den Randbedingungen f"ur $\varphi$ erh"alt man
+% 	      \begin{align*}
+% 		      0 = \varphi(0) & = C_2 \, \Rightarrow \, C_2 = 0                                                       \\
+% 		      0 = \varphi(1) & = C_1\sin(\sqrt{\lambda}x) \, \Rightarrow \, \lambda_k = (k\pi)^2, \, k\in \mathbb{N}
+% 	      \end{align*}
+% 	      \begin{align*}
+% 		      \Rightarrow \varphi_k(x) = C_1\sin(k\pi x) , \, k \in \mathbb{N}
+% 	      \end{align*}
+% 	      $C_1$ is obtained by taking into the consideration of normalization
+% 	      \begin{align*}
+% 		      1 & \stackrel{!}{=} \int_0^1 \varphi_k(x)^2\, dx = C_1^2 \int_0^1 \sin^2(k\pi x) \, dx                \\
+% 		        & = C_1^2 \left[ \left. \frac x 2 - \frac{\sin(2k\pi x)}{4k\pi}\right|^1_0 \right] = C_1^2\frac 1 2 \\
+% 		      \Rightarrow C_1 = \sqrt{2}
+% 	      \end{align*}
+% 	      \reversemarginpar
+% 	      damit lauten die Eigenwerte und normierten Eigenfunktionen
+% 	      \begin{align*}
+% 		      \varphi_k(x)               & =\sqrt{2}\sin(k\pi x)                  \\
+% 		      \text{und} \quad \lambda_k & =(k\pi)^2 \text{ f"ur } k\in\mathbb{N}
+% 	      \end{align*}
+
+% 	\item Die Entwicklung des konstanten Quellterms $a(x,t)=a$  in Eigenfunktionen lautet
+% 	      \begin{align*}
+% 		      a & = \sum^{\infty}_{k=1}\beta_k\varphi_k(x)         \\
+% 		        & = \sum^{\infty}_{k=1}\beta_k\sqrt{2}\sin(k\pi x)
+% 	      \end{align*}
+% 	      Die Koeffizienten berechnet man durch
+% 	      \begin{align*}
+% 		      \beta_k & =\int^1_0 a\sqrt{2}\sin(k\pi x)dx                                         \\
+% 		              & = a \sqrt{2} \left[ \left. -\frac{\cos(k \pi x)}{k\pi}\right|^1_0 \right] \\
+% 		              & =\frac{a\sqrt{2}}{k\pi}(1-\cos(k\pi))=\begin{cases}\frac{2a\sqrt{2}}{k\pi} & , k\text{ ungerade} \\
+% 			      0                       & , \text{sonst}
+% 		      \end{cases}
+% 	      \end{align*}
+% 	      Für die Entwicklung der Anfangsbedingung $u(x,0) = x$ gilt:
+% 	      \begin{align*}
+% 		      x & = \sum^{\infty}_{k=1}\gamma_k\varphi_k(x)         \\
+% 		        & = \sum^{\infty}_{k=1}\gamma_k\sqrt{2}\sin(k\pi x)
+% 	      \end{align*}
+% 	      mit
+% 	      \begin{align*}
+% 		      \gamma_k & = \int_{0}^{1} x \sqrt{2} \sin(k\pi x)dx                                                                               \\
+% 		               & = \sqrt{2} \left[ - x \cos(k \pi x) \frac{1}{k \pi}  \right]_0^1 + \sqrt{2}  \int_0^1 \frac{1}{k \pi} \cos(k \pi x) dx \\
+% 		               & =\frac{\sqrt{2}}{k \pi}  \cos(k \pi)+ \frac{\sqrt{2}}{k \pi} \left[ \frac{1}{k \pi} \sin(k \pi x) \right]_0^1          \\
+% 		               & = (-1)^k \frac{\sqrt{2}}{k \pi}
+% 	      \end{align*}
+
+% 	\item F"ur die L"osung $u$ wird der Eigenfunktionen-Ansatz
+% 	      \begin{align*}
+% 		      u(x,t)=\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x)
+% 	      \end{align*}
+% 	      gew"ahlt, mit zeitabh"angigen Koeffizienten $\alpha_k(t), \, t>0, k\in \mathbb{N}$. \\
+% 	      Einsetzen der Entwicklungen von $u(x,t)$ und $a$ in die Differentialgleichung liefert
+% 	      \begin{align*}
+% 		                           & (\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x))_{tt}=  (\sum^{\infty}_{k=1}\alpha_k(t)\varphi_k(x))_{xx}+\sum^{\infty}_{k=1}\beta_k\varphi_k(x) \\
+% 		      \Leftrightarrow\quad & \sum^{\infty}_{k=1}\alpha''_k(t)\varphi_k(x)=-\sum^{\infty}_{k=1}\alpha_k(t)\lambda_k\varphi_k(x)+\sum^{\infty}_{k=1}\beta_k\varphi_k(x)     \\
+% 		      \Leftrightarrow\quad & \sum^{\infty}_{k=1}(\alpha''_k(t)+\lambda_k\alpha_k(t)-\beta_k)\varphi_k(x)=0
+% 	      \end{align*}
+% 	      \normalmarginpar
+% 	      Wir erhalten eine gew"ohnliche Differentialgleichung f"ur die Koeffizienten $\alpha_k(t)$
+% 	      \begin{align*}
+% 		      \alpha''_k(t) & =-\lambda_k\alpha_k(t)+\beta_k
+% 	      \end{align*}
+% 	      mit der allgemeinen L"osung (Hinweis)
+% 	      \begin{align*}
+% 		      \alpha_k(t) & =\frac{\beta_k }{\lambda_k}+ C_{k,1} \sin(\sqrt{\lambda_k} t) + C_{k,2} \cos(\sqrt{\lambda_k} t) .
+% 	      \end{align*}
+% 	      Die Konstanten werden durch die Anfangsbedingungen bestimmt. Dazu gilt zunächst wegen $u_t(x,0) = 0$:
+% 	      \begin{align*}
+% 		      u_t(x,0) = \sum_{k = 1}^{\infty} \alpha'_k(0) \sqrt{2} \sin(k\pi x) \stackrel{!}{=} 0                            \\
+% 		      \Rightarrow \alpha'_k(0) = \sqrt{\lambda_k} C_{k,1} \cos(0) - \sqrt{\lambda_k} C_{k,2} \sin(0) \stackrel{!}{=} 0 \\
+% 		      \Rightarrow C_{k,1} = 0
+% 	      \end{align*}
+% 	      Die Konstante $C_{k,2}$ wird durch die Anfangsbedingung $u(x,0) = x$ bestimmt. Dazu betrachte
+% 	      \begin{align*}
+% 		      u(x,0)=\sum^{\infty}_{k=1}\alpha_k(0)\sqrt{2}\sin(k\pi x)\stackrel{!}{=} \sum^{\infty}_{k=1}\gamma_k\sqrt{2}\sin(k\pi x) \\
+% 		      \Rightarrow \alpha_k(0)\stackrel{!}{=} \gamma_k
+% 	      \end{align*}
+% 	      Also gilt
+% 	      \begin{align*}
+% 		      \alpha_k(0)         & =  \frac{\beta_k}{\lambda_k}+C_{k,2} \stackrel{!}{=} \gamma_k =(-1)^k \frac{\sqrt{2}}{k \pi} \\
+% 		      \Rightarrow C_{k,2} & = \begin{cases} - \frac{2 a \sqrt{2} }{(k \pi)^3} - \frac{\sqrt{2}}{ k \pi}, k \text{ ungerade} \\
+% 			      \frac{\sqrt{2}}{ k \pi},  \text{ sonst}
+% 		      \end{cases}
+% 	      \end{align*}
+% 	      Die L"osung $u$ lautet daher insgesamt
+% 	      \begin{align*}
+% 		      u(x,t) & = \sum_{k=1}^{\infty} \left( \frac{\beta_k }{\lambda_k}+ C_{k,1} \sin(\sqrt{\lambda_k} t) + C_{k,2} \cos(\sqrt{\lambda_k} t) \right) \sqrt{2} \sin(k \pi x)                        \\
+% 		             & = \sum_{k=1 \atop k \text{ gerade}}^{\infty} \left[  \frac{4a }{(k \pi)^3}  +\left( \frac{{2}}{ k \pi} \right)   \cos(k \pi t)  \right]  \sin(k \pi x)                             \\
+% 		             & +  \sum_{k=1 \atop k \text{ ungerade}}^{\infty} \left[  \frac{4a }{(k \pi)^3}  - \left( \frac{{2}a }{(k \pi)^3} + \frac{{2}}{ k \pi} \right) \cos(k \pi t)  \right]  \sin(k \pi x)
+% 	      \end{align*}
+% \end{enumerate}
+
+% \section{Conservation laws - Idea}
+% % Integral form
+% % \begin{equation}
+% % 	\frac{d}{dt}\int_{\Omega}u\,d\Omega 
+% % 	= -\int_{\partial\Omega}f(u)\cdot n\,d\partial\Omega
+% % \end{equation}
+% % Differential form
+% % \begin{equation}
+% % 	u_{t} + \nabla\cdot f(u) = 0 
+% % \end{equation}
+% \emph{Master balance principle}: due to the fact that the mathematical structure of the fundamental balance relations,
+% namely of mass, linear momentum, moment of momentum, energy and entropy, is in principle identical, they can be 
+% formulated within the concise shape of a master balance. To begin with, let $\Psi$ and $\BPsi$ be volume specific
+% scalar and vector value densities of a physical quantity to be balanced, respectively. Then, the general balance relations take 
+% the global \textbf{integral form} as follows 
+% \begin{align}
+% 	\frac{d}{dt}\int_{\Omega} \Psi \,d\Omega  & = 
+% 	-\int_{\partial\Omega}\Bphi\cdot\Bn\,d\partial\Omega 
+% 	+ \int_{\Omega}\sigma\,d\Omega
+% 	+ \int_{\Omega}\hat{\Psi}\,d\Omega             \\
+% 	\frac{d}{dt}\int_{\Omega} \BPsi \,d\Omega & = 
+% 	-\int_{\partial\Omega}\BPhi\cdot\Bn\,d\partial\Omega 
+% 	+ \int_{\Omega}\Bsigma\,d\Omega
+% 	+ \int_{\Omega}\hat{\BPsi}\,d\Omega
+% \end{align}
+% where $(\Bphi\cdot\Bn)$ and $(\BPhi\cdot\Bn)$ describe action at the vicinity; $\sigma$ and 
+% $\Bsigma$ present for action from a distance; and $\hat{\Psi}$ and $\hat{\BPsi}$ for production or nucleation.
+% \begin{example}
+% 	Conservation of mass: A derivation from integral to differential form.
+% \end{example}
+% \inputfig{floats/massx1x2}{massx1x2}
+% Let $x$ represent the distance along the tube and let $\rho(x,t)$ be the mass density of the 
+% fluid at point $x$ and time $t$. Then, the total mass $M$ in the section 
+% $[x_{1},x_{2}]$ at time $t$ is defined as follows
+% \begin{equation}
+% 	M := \int_{x_{1}}^{x_{2}} \rho(x,t)\,dx.
+% \end{equation}
+% Assume that the walls of the tube are impermeable and mass is neither created nor destroyed, 
+% this total mass $M$ in this interval $[x_1,x_2]$ varies over time only due to the fluid flowing
+% across at the boundaries $x=x_{1}$ and $x=x_{2}$. 
+% % Besides, the flow rate (also called \emph{rate of flow}, or \emph{flux}) is denoted as $f(\rho)$.
+% Now let $v(x,t)$ be the measured velocity of flow at point $x$ and time $t$.
+% Then, the flow rate (also called \emph{rate of flow}, or \emph{flux})
+% passing the end points of the interval $[x_{1},x_{2}]$ at time $t$ is given by
+% \begin{equation}
+% 	\rho(x_{1},t)v(x_{1},t)-\rho(x_{2},t)v(x_{2},t).
+% \end{equation}
+% The rate of change of mass in $[x_{1},x_{2}]$ given by the difference of fluxes at 
+% $x_1$ and $x_2$ flow rate has to be equal with the time rate of change of total mass
+% \begin{equation}\label{eq:relation0}
+% 	\boxed{
+% 		\frac{d}{dt}\int_{x_{1}}^{x_{2}} \rho(x,t)\,dx 
+% 		% \stackrel{!}{=} f(\rho(x_{1},t))-f(\rho(x_{2},t))
+% 		= \rho(x_{1},t)v(x_{1},t)-\rho(x_{2},t)v(x_{2},t)
+% 	}
+% \end{equation}
+% which is the \textbf{integral form} of the conservation law. Next, note that the following relation holds
+% \begin{equation}\label{eq:relation1}
+% 	\int_{x_{1}}^{x_{2}} \frac{\partial}{\partial x}f(\rho)\,dx 
+% 	= f(\rho(x_{2},t))-f(\rho(x_{1},t)).
+% \end{equation}
+% Substitution of \eqref{eq:relation1} into \eqref{eq:relation0} leads to
+% \begin{equation}\label{eq:relation2}
+% 	\frac{d}{dt}\int_{x_{1}}^{x_{2}} \rho(x,t)\,dx 
+% 	= -\int_{x_{1}}^{x_{2}}\frac{\partial}{\partial x}f(\rho)\,dx.
+% \end{equation}
+% If $\rho(x,t)$ is sufficiently smooth, time derivative on the LHS of \eqref{eq:relation2}
+% can be brought inside the integral. Then, an arrangement of \eqref{eq:relation2} yields
+% \begin{equation}\label{eq:relation3}
+% 	\int_{x_{1}}^{x_{2}}
+% 	\left(\frac{\partial}{\partial t}\rho(x,t) + \frac{\partial}{\partial x}f(\rho)\right)\,dx 
+% 	= 0.
+% \end{equation}
+% Since \eqref{eq:relation3} holds for any choice of $x_{1}$ and $x_{2}$, the integrant must be vanished
+% everywhere. Therefore, one obtains the \textbf{differential form} of the conservation law
+% \begin{equation}\label{eq:deri}
+% 	\therefore \quad
+% 	\boxed{\rho_{t} + f(\rho)_{x} = 0}
+% \end{equation}
+% % \begin{enumerate}
+% % 	\item gas dynamics
+% % 	\item oil-water mixtures
+% % 	\item plasmas
+% % 	\item shallow water flows
+% % 	\item meteology
+% % 	\item traffic
+% % 	\item ...
+% % \end{enumerate}
+% % \begin{definition}
+% % 	Cauchy problem
+% % \end{definition}
+% % Cauchy problem\\
+% % Riemann problem\\
+% % \begin{equation}
+% % 	u_{t} + f(u)_{x} = 0 
+% % \end{equation}
+% \begin{example}
+% 	Different definitions of flux function yields different applications
+% \end{example}
+% \begin{enumerate}
+% 	\item Advection equation: \eqref{eq:deri} with flux function
+% 	      $\displaystyle  f(\rho) =  a\rho, \ a\in \mathbb{R^+}$, taking form
+% 	      \begin{equation}
+% 		      \boxed{
+% 			      \rho_{t} + a\rho_{x} = 0
+% 		      }
+% 	      \end{equation}
+% 	\item \emph{Inviscid} Burgers' equation: \eqref{eq:deri} with flux function
+% 	      $\displaystyle  f(\rho) =  \frac{1}{2}\rho^2$, yielding
+% 	      \begin{equation}
+% 		      \boxed{
+% 			      \rho_{t} + \rho\rho_{x} = 0
+% 		      }
+% 	      \end{equation}
+% 	      which is used to illustrate the distortion of waveform in simple waves.
+% 	      Meanwhile, \emph{viscous} Burgers' equation is a scalar parabolic PDE, taking the form
+% 	      $$\rho_t + \rho\rho_{x} = \varepsilon\rho_{xx}$$
+% 	      which is the simplest differential model for a fluid flow.
+% 	\item Lighthill-Whitham-Richards (LWR) equation: \eqref{eq:deri} with flux function
+% 	      $$\displaystyle  f(\rho) =  u_{max}\,\rho\left(1-\frac{\rho}{\rho_{max}}\right)$$
+% 	      which is used to model traffic flow; $u_{max}$ is the given maximal speed of vehicle to be allowed, 
+% 	      $\rho_{max}$ the given maximal density of vehicle; taking the form
+% 	      \begin{equation}
+% 		      \rho_{t} + \left(u_{max}-\frac{2u_{max}}{\rho_{max}}\rho\right)\rho_{x} = 0
+% 	      \end{equation}
+% 	\item (Typical) Buckley-Leverett petroleum equation: \eqref{eq:deri} with flux function
+% 	      $$\displaystyle f(\rho) =  \frac{\rho^2}{\rho^2 + (1-\rho)^2\mu_{\text{water}}/\mu_{\text{oil}}}$$
+% 	      which is a one-dimensional model for a two-phase flow; $\rho$ stands for water saturation
+% 	      and takes the value in the interval $[0,1]$.
+% 	\item \emph{Euler} equations of gas dynamics in 1D
+% 	      %   \begin{align}
+% 	      %       \begin{cases}
+% 	      % 	      \begin{aligned}
+% 	      % 		      \rho_{t}     & + (\rho v)_x & = 0 \\
+% 	      % 		      (\rho v)_{t} & + (\rho v^2 + p)_x & = 0 \\
+% 	      % 		      E_{t}        & + (v(E+p))_x & = 0
+% 	      % 	      \end{aligned}
+% 	      %       \end{cases}
+% 	      %   \end{align}
+% 	      \begin{align}
+% 		      \begin{pmatrix} \rho\\\rho v \\ E \end{pmatrix}_{t}
+% 		      +
+% 		      \begin{pmatrix} \rho v\\\rho v^2 + p \\ v(E+p) \end{pmatrix}_{x}
+% 		      =
+% 		      \begin{pmatrix} 0\\ 0 \\ 0 \end{pmatrix}
+% 	      \end{align}
+% 	      $\rightarrow$ The pressure $p$ should be specified as a given function of 
+% 	      mass density $\rho$, linear momentum $\rho v$ and/or energy $E$ in order to 
+% 	      fulfill the \emph{closure} problem.
+% 	      Such additional equation is called \emph{equation of state} (normally in fluid), or 
+% 	      \emph{constitutive equation} (normally in solid). 
+% 	\item \emph{Euler} equations of gas dynamics in 2D
+% 	      \begin{align}
+% 		      \begin{pmatrix} \rho\\ \rho u\\ \rho v \\ E \end{pmatrix}_{t}
+% 		      +
+% 		      \begin{pmatrix} \rho u\\ \rho u^2 + p \\ \rho uv \\ u(E+p) \end{pmatrix}_{x}
+% 		      + 
+% 		      \begin{pmatrix} \rho v\\ \rho uv \\ \rho v^2 + p \\ v(E+p) \end{pmatrix}_{y}
+% 		      =
+% 		      \begin{pmatrix} 0 \\ 0 \\ 0 \\ 0 \end{pmatrix}
+% 	      \end{align}
+% \end{enumerate}
+% % \begin{recall}
+% % 	Convexity
+% % \end{recall}
+% \begin{definition}
+% 	Cauchy problem and Riemann problem
+% \end{definition}
+% Let $u$ be a conserved unknown quantity to be modelled and defined as follows
+% \begin{align}\label{eq:conservedquantity}
+% 	u:
+% 	\begin{cases}
+% 		\mathbb{R}\times\mathbb{R}^+ \rightarrow \mathbb{R}, \\
+% 		(x,t) \mapsto u(x,t).
+% 	\end{cases}
+% \end{align}
+% \emph{Cauchy's problem} is simply the pure initial value problem (IVP), e.g. 
+% find a function $u$ holding \eqref{eq:conservedquantity} that is a solution of
+% $\eqref{eq:cauchy}_1$ satisfying the initial condition $\eqref{eq:cauchy}_2$:
+% \begin{equation}\label{eq:cauchy}
+% 	\boxed{
+% 		\begin{aligned}
+% 			\partial_{t}u + \partial_{x}f(u) & = 0,        \\
+% 			u(x,0)                           & = u_{0}(x).
+% 		\end{aligned}
+% 	}
+% \end{equation}
+% \emph{Riemann's problem} is simply the conservation law together with particular initial data
+% consisting of two constant states separated by a single discontinuity, e.g.
+% find a function $u$ holding \eqref{eq:conservedquantity} that is a solution of
+% $\eqref{eq:riemann}_1$ satisfying the initial condition $\eqref{eq:riemann}_2$:
+% \begin{equation}\label{eq:riemann}
+% 	\boxed{
+% 		\begin{aligned}
+% 			\partial_{t}u + \partial_{x}f(u) & = 0,        \\
+% 			u(x,0)                           & = u_{0}(x)=
+% 			\begin{cases}
+% 				u_{L}, \quad x<0, \\
+% 				u_{R}, \quad x>0.
+% 			\end{cases}
+% 		\end{aligned}
+% 	}
+% \end{equation}
+% % \begin{definition}
+% % 	Hyperbolic
+% % \end{definition}
+% % Let $\Omega$ be 
+% % \inputfig{floats/comparehyperbolic}{comparehyperbolic}
+% %------------------------------------------------------------------------------
+% \section{Characteristics}
+% Let $f:\mathbb{R}\rightarrow\mathbb{R}$ be a $C^1$ function. We consider the \emph{Cauchy} problem
+% \begin{align}\label{eq:charac}
+% 	\frac{\partial u}{\partial t} + \frac{\partial}{\partial x}f(u) & = 0,        \qquad  x\in\mathbb{R}, t>0, \\
+% 	u(x,0)                                                          & = u_{0}(x), \qquad  x\in\mathbb{R}.
+% \end{align}
+% By setting $a(u) = f'(u)$, and letting $u$ be a classical solution of \eqref{eq:charac},
+% one obtains from \eqref{eq:charac} the \emph{non-conservative} form as follows
+% \begin{equation}
+% 	\frac{\partial u}{\partial t} + a(u)\frac{\partial u}{\partial x} = 0.
+% \end{equation}
+% The characteristic curves associated with \eqref{eq:charac} are defined as the integral curves
+% of the differential equation
+% \begin{equation}
+% 	\frac{dx}{dt} = a(u(x(t),t)).
+% \end{equation}
+% \begin{proposition}
+% 	Assume that u is a smooth solution of the Cauchy problem. The characteristic curves 
+% 	are straight lines along which u is constant.
+% \end{proposition}
+% \begin{proof}
+% 	Consider a characteristic curve passing through the point $(x_{0},0)$, i.e.
+% 	a solution of the ordinary differential system
+% 	\begin{align}
+% 		\begin{cases}\displaystyle
+% 			\frac{dx}{dt} & = a(u(x(t),t)), \\
+% 			x(0)          & = x_{0}.
+% 		\end{cases}
+% 	\end{align}
+% 	It exists at least on a small time interval $[0,t_{0})$. 
+% 	Along such a curve, u is constant since
+% 	\begin{align*}
+% 		\frac{d}{dt}u(x(t),t) 
+% 		 & = \frac{\partial u}{\partial t}(x(t),t)
+% 		+ \frac{\partial u}{\partial x}(x(t),t) \frac{dx}{dt}(t)                                    \\
+% 		 & =\left(\frac{\partial u}{\partial t} + a(u)\frac{\partial u}{\partial x}\right)(x(t),t) 
+% 		= 0.
+% 	\end{align*}
+% 	Therefore, the characteristic curves are straight lines whose constant slopes depend
+% 	on the initial data. As a result, the characteristic straight line passing through
+% 	the point $(x_{0},0)$ is defined by the equation
+% 	\begin{equation}
+% 		\boxed{
+% 			x = x_{0} + ta(u_{0}(x_{0}))
+% 		}
+% 	\end{equation}
+% \end{proof}
+% \begin{example}
+% 	Determine characteristics of the inviscid Burgers' equation with initial conditions given as
+% 	\begin{equation}
+% 		u(x,0) = u_{0}(x) =
+% 		\begin{cases}
+% 			\begin{aligned}
+% 				 & 1,   & x\leq 0,        &                        \\
+% 				 & 1-x, & 0\leq x \leq 1, & \quad x\in \mathbb{R}, \\
+% 				 & 0,   & x\geq 1.        & 
+% 			\end{aligned}
+% 		\end{cases}
+% 	\end{equation}
+% \end{example}
+% By using the method of characteristics, the solution can be solved up to the time when
+% those characteristics first intersect with each other, i.e. so-called breaking time or shock.
+% Since the $f'(u) = u$ in the inviscid Burgers' equation, it yields the characteristics 
+% passing through the point $(x_{0},t)$
+% \begin{equation}
+% 	x = x_{0} + t\,u_{0}(x_{0})
+% \end{equation}
+% which leads to
+% \begin{equation}
+% 	x(x_{0},t) = 
+% 	\begin{cases}
+% 		\begin{aligned}
+% 			 & x_{0}+t,          & x_{0}\leq 0,          \\
+% 			 & x_{0}+t(1-x_{0}), & 0\leq x_{0} \leq 1,   \\
+% 			 & x_{0},            & x_{0}\geq 1.         
+% 		\end{aligned}
+% 	\end{cases}
+% \end{equation}
+% (Sketch)
+% %------------------------------------------------------------------------------
+% % \section{General strategy for solving the first-order PDE}
+% % Supposed 
+% %------------------------------------------------------------------------------
+% % \section{Rankine-Hugoniot (RH) jump condition}
+
+% % Characteristic curves
+% % \begin{equation}
+% % 	\dot{x} = f'(u)\\
+% % \end{equation}
+% % \begin{align*}
+% % 	\frac{d}{dt}u(x(t),t) 
+% % 	= \frac{\partial u}{\partial t}(x(t),t)
+% % 	+ \frac{\partial u}{\partial x}(x(t),t) \frac{dx}{dt}(t)
+% % \end{align*}
+
+
+% % \inputfig{floats/multistructures}{multistructures}
+
+\end{document}
