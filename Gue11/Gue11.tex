@@ -159,12 +159,12 @@ Approach:
 	be arbitrarily chosen with its support in a subset of a ball centered at $O$ with radius $R$, i.e.
 	$\supp(\varphi) \subset B_R(0)$. 
 	This setting leads to the fact
-	\begin{align*}
+	\begin{align}
 		\begin{cases}
 			\varphi(\Bx) \ne 0 \text{ in } B_{R}(0), \\
 			\varphi(\Bx) = 0 \text{ on } \partial B_{R}(0).
 		\end{cases}
-	\end{align*}
+	\end{align}
 	Besides, let another smaller ball centered at $O$ with radius 
 	$\varepsilon \ll 1$ be defined $B_{\varepsilon}(0)$.
 	Then, the domain to be considered is 
@@ -484,14 +484,222 @@ Approach:
 	\end{align}
 	Finally, substitution of \eqref{eq:TermBfinal}, \eqref{eq:TermAfinal} and \eqref{eq:TermCfinal}
 	into \eqref{eq:bigderivation} we obtain
-	\begin{align*}
+	\begin{align}
 		\therefore\quad\boxed{
 			\langle \gamma(\Bx),-\Delta \varphi \rangle
 			= \varphi(0),
 			\quad \forall \varphi \in \mathcal{C}^{\infty}_{0}(\mathbb{R}^2).
 		}
-	\end{align*}
+	\end{align}
 \end{proof}
+
+%------------------------------------------------------------------------------
+\newpage
+\section{Numerics: Jacobi iteration solution}
+\begin{example}
+	Examine the following problem: $Ax = b$ with matrix $A$
+	\begin{align}
+		A =
+		\begin{pmatrix}
+			2 & -1 & 1  \\
+			1 & -4 & -2 \\
+			1 & 2  & 3
+		\end{pmatrix}
+	\end{align}
+	Perform the first step of Jacobi iteration given
+	the initial value for the vector $x^{(0)} = (1, 0, 0)^T$
+	and the RHS vector
+	$b = (3, 5, -1)^T $.
+\end{example}
+Approach: \textbf{Bemerkung 3.12} in the lecture note:\\
+\begin{align}
+	\label{eq:Jacobiformular}
+	\boxed{
+		D x^{(k+1)} = (L+U)x^{(k)} + b.
+	}
+\end{align}
+Note in passing that 
+\begin{align}
+	A = D - L - U
+\end{align}
+where the matrix $A$ is decomposed into 
+\begin{enumerate}
+	\item the diagonal matrix $
+		      D = 
+		      \begin{pmatrix}
+			      2 &    &   \\
+			        & -4 &   \\
+			        &    & 3
+		      \end{pmatrix}
+	      $
+	\item the lower triangular matrix $
+		      L=
+		      \begin{pmatrix}
+			      0  &    &   \\
+			      -1 & 0  &   \\
+			      -1 & -2 & 0
+		      \end{pmatrix}
+	      $ with \textbf{sign changed}.
+	\item the upper triangular matrix $
+		      U =
+		      \begin{pmatrix}
+			      0 & 1 & -1 \\
+			        & 0 & 2  \\
+			        &   & 0
+		      \end{pmatrix}
+	      $ with \textbf{sign changed}.
+\end{enumerate}
+By using \eqref{eq:Jacobiformular}
+the computation of the \textbf{first step} of iternation based on 
+the \textbf{Jacobi} scheme goes as follows
+\begin{align}
+	Dx^{(1)}
+	= \begin{pmatrix}0&1&-1\\-1&0&2\\-1&-2&0\end{pmatrix}
+	\begin{pmatrix}1\\0\\0\end{pmatrix}+\begin{pmatrix}3\\5\\-1\end{pmatrix}
+	=\begin{pmatrix}3\\4\\-2\end{pmatrix},
+\end{align}
+which leads to the solution of the first step of Jacobi iteration
+\begin{align}
+	\therefore\quad\boxed{
+		x^{(1)}=\begin{pmatrix}3/2\\-1\\-2/3\end{pmatrix}.
+	}
+\end{align}
+\newpage
+\begin{remark}
+	The computation of \textbf{Jacobi} iteration requires the inverse of matrix $D$.
+	Since matrix $D$ is a diagonal matrix, its inverse is obtained by 
+	taking the inverse of every single entry on its diagonal, which is
+	\begin{align}
+		D = 
+		\begin{pmatrix}
+			a & 0 & 0  \\
+			0 & b & 0  \\
+			0 & 0 & c 
+		\end{pmatrix},
+	\end{align}
+	and the inverse of $D$ takes the form
+	\begin{align}
+		D^{-1} = 
+		\begin{pmatrix}
+			1/a & 0   & 0    \\
+			0   & 1/b & 0    \\
+			0   & 0   & 1/c 
+		\end{pmatrix},
+	\end{align}
+	where $a,b,c \neq 0.$
+\end{remark}
+
+%------------------------------------------------------------------------------
+\newpage
+\section{Numerics: Gauss-Seidel iteration solution}
+\begin{example}
+	Examine the following problem: $Ax = b$ with matrix $A$
+	\begin{align}
+		A =
+		\begin{pmatrix}
+			2 & -1 & 1  \\
+			1 & -4 & -2 \\
+			1 & 2  & 3
+		\end{pmatrix}.
+	\end{align}
+	Perform the first step of Gauss-Seidel iteration given
+	the initial value for the vector $x^{(0)} = (1, 0, 0)^T$
+	and the RHS vector
+	$b = (3, 5, -1)^T $.
+\end{example}
+Approach: \textbf{Bemerkung 3.17} in the lecture note:\\
+Either using
+\begin{align}
+	\boxed{
+		x^{(k+1)} = (I-(D-L)^{-1}A)x^{(k)} + (D-L)^{-1}b
+	}
+\end{align}
+or, equally, using
+\begin{align}
+	\label{eq:GaussSeidelformular}
+	\boxed{
+		(D-L)x^{(k+1)} = Ux^{(k)} + b
+	}
+\end{align}
+Note in passing that 
+\begin{align}
+	A = D - L - U
+\end{align}
+where the matrix $A$ is decomposed into 
+\begin{enumerate}
+	\item the diagonal matrix $
+		      D = 
+		      \begin{pmatrix}
+			      2 &    &   \\
+			        & -4 &   \\
+			        &    & 3
+		      \end{pmatrix}
+	      $
+	\item the lower triangular matrix $
+		      L=
+		      \begin{pmatrix}
+			      0  &    &   \\
+			      -1 & 0  &   \\
+			      -1 & -2 & 0
+		      \end{pmatrix}
+	      $ with \textbf{sign changed}.
+	\item the upper triangular matrix $
+		      U =
+		      \begin{pmatrix}
+			      0 & 1 & -1 \\
+			        & 0 & 2  \\
+			        &   & 0
+		      \end{pmatrix}
+	      $ with \textbf{sign changed}.
+\end{enumerate}
+By using \eqref{eq:GaussSeidelformular}
+the computation of the \textbf{first step} of iternation based on 
+the \textbf{Gauss-Seidel} scheme goes as follows
+\begin{align}
+	(D-L) x^{(k+1)} = U x^{(k)} + b,
+\end{align}
+which leads to
+\begin{align}
+	(D-L) x^{(1)}=
+	\begin{pmatrix} 0&1&-1\\&0&2\\&&0\end{pmatrix}
+	\begin{pmatrix} 1\\0\\0\end{pmatrix}
+	+ \begin{pmatrix}3\\5\\-1\end{pmatrix}
+	=\begin{pmatrix}3\\5\\-1\end{pmatrix}.
+\end{align}
+Therefore, we obtain the solution after the first step
+\begin{align}
+	\therefore\quad\boxed{
+		x^{(1)}=(D-L)^{-1}
+		\begin{pmatrix}3\\5\\-1\end{pmatrix}
+		= \begin{pmatrix}1/2&&\\1/8&-1/4&\\-1/4&1/6&1/3\end{pmatrix}
+		\begin{pmatrix} 3\\5\\-1\end{pmatrix}
+		= \begin{pmatrix} 3/2\\-7/8\\-1/4\end{pmatrix}.
+	}
+\end{align}
+\newpage
+\begin{remark}
+	The computation of \textbf{Gauss-Seidel} iteration requires the inverse of matrix $D$.
+	Since the matrix $(D-L)$ is a lower triangular matrix with non-zero entries on its diagonal, 
+	the matrix $(D-L)$ has the following form
+	\begin{align}
+		D-L = 
+		\begin{pmatrix}
+			a & 0 & 0  \\
+			b & d & 0  \\
+			c & e & f 
+		\end{pmatrix},
+	\end{align}
+	and the inverse $(D-L)^{-1}$ takes the form
+	\begin{align}
+		(D-L)^{-1} = 
+		\begin{pmatrix}
+			1/a           & 0       & 0    \\
+			-b/(ad)       & 1/d     & 0    \\
+			(be-cd)/(adf) & -e/(df) & 1/f 
+		\end{pmatrix},
+	\end{align}
+	where $a,d,f \neq 0.$
+\end{remark}
 
 % %------------------------------------------------------------------------------
 % \section{Programming exercise 02: Explanation}
