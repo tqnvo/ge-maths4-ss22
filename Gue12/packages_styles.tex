@@ -50,3 +50,14 @@
 
 %For \mathghost \mathleftghost \mathrightghost
 \usepackage{halloweenmath}
+
+%For MATLAB code
+\usepackage[numbered,framed]{matlab-prettifier}
+\let\ph\mlplaceholder % shorter macro
+\lstMakeShortInline"
+\lstset{
+  style              = Matlab-editor,
+  basicstyle         = \mlttfamily,
+  escapechar         = ",
+  mlshowsectionrules = true,
+}

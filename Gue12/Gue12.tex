@@ -43,13 +43,114 @@ Content covered:
 
 %------------------------------------------------------------------------------
 \section{Programming exercise 3: Introduction + Hints}
+\subsection{Task a: 1D problem}
+\subsubsection{Implicit Euler}
+Discretization of the following given PDE
+\begin{align}
+	\partial_{t} u  = \partial_{xx} u
+\end{align}
+by using implicit Euler for time $t$ and second order FDM for space $x$ leads to 
+\begin{align}
+	\frac{u^{n+1}_{j} - u^{n}_{j}}{dt}
+	= \frac{u^{n+1}_{j+1}-2u^{n+1}_{j}+u^{n+1}_{j-1}}{dx^2},
+\end{align}
+which yields the form used for numerical updating as follows
+\begin{align}
+	\label{eq:eulerimpform}
+	\therefore\quad\boxed{
+		u^{n+1}_{j} - \frac{dt}{dx^2} \left( u^{n+1}_{j+1}-2u^{n+1}_{j}+u^{n+1}_{j-1} \right)
+		= u^{n}_{j}.
+	}
+\end{align}
+Note in passing that all entries on the LHS are unknown since they are $u$ based on time $(n+1)$. 
+These unknowns are computed based on the term on the RHS, which is already known, i.e. $u$ at time $n$.
+Then, we obtain the compact form
+\begin{align}
+	M u^{n+1}_{(\cdot)} = u^{n}_{j}
+	\Rightarrow
+	u^{n+1}_{(\cdot)} = M\backslash u^{n}_{j},
+\end{align}
+where matrix $M$ is derived from the RHS of \eqref{eq:eulerimpform}, as follows
+\begin{align}
+	\begin{pmatrix}
+		1+2dt/dx^2 & -dt/dx^2   &            &          &            &            \\
+		-dt/dx^2   & 1+2dt/dx^2 & -dt/dx^2   &          &            &            \\
+		           & -dt/dx^2   & 1+2dt/dx^2 & -dt/dx^2 &            &            \\
+		           &            & \ddots     & \ddots   & \ddots     &            \\
+		           &            &            &          & 1+2dt/dx^2 & -dt/dx^2   \\
+		           &            &            &          & -dt/dx^2   & 1+2dt/dx^2
+	\end{pmatrix}
+\end{align}
+which can be recast in MATLAB code 
+\begin{lstlisting}[caption = {Matrix M.}]
+	e = ones(N,1);
+	M = eye(N)-dt/dx^2*spdiags([e -2*e e],-1:1,N,N);
+\end{lstlisting}
+%------------------------------------------------------------------------------
 \newpage
+\subsubsection{Crank-Nicolson}
+Discretization of the following given PDE
+\begin{align}
+	\partial_{t} u  = \partial_{xx} u
+\end{align}
+by using Crank-Nicolson for time $t$ and second order FDM for space $x$ leads to 
+\begin{align}
+	\frac{u^{n+1}_{j} - u^{n}_{j}}{dt}
+	= \frac{u^{n+1}_{j+1}-2u^{n+1}_{j}+u^{n+1}_{j-1}}{dx^2},
+\end{align}
+which yields the form used for numerical updating as follows
+\begin{align}
+	\label{eq:CrankNicolsonform}
+	\therefore\quad\boxed{
+		u^{n+1}_{j}
+		- \frac{1}{2}\frac{dt}{dx^2} \left( u^{n+1}_{j+1}-2u^{n+1}_{j}+u^{n+1}_{j-1} \right)
+		= u^{n}_{j}
+		+ \frac{1}{2}\frac{dt}{dx^2} \left( u^{n}_{j+1}-2u^{n}_{j}+u^{n}_{j-1} \right).
+	}
+\end{align}
+Note in passing that all entries on the LHS are unknown since they are $u$ based on time $(n+1)$. 
+These unknowns are computed based on the term on the RHS, which is already known, i.e. $u$ at time $n$.
+Then, we obtain the compact form
+\begin{align}
+	M u^{n+1}_{(\cdot)} = K u^{n}_{(\cdot)}
+	\Rightarrow
+	u^{n+1}_{(\cdot)} = M\backslash (Ku^{n}_{(\cdot)}) ,
+\end{align}
+where matrix $M$ is derived from the RHS of \eqref{eq:CrankNicolsonform}, as follows
+\begin{align}
+	\begin{pmatrix}
+		1+dt/dx^2 & -dt/dx^2  &           &          &           &           \\
+		-dt/dx^2  & 1+dt/dx^2 & -dt/dx^2  &          &           &           \\
+		          & -dt/dx^2  & 1+dt/dx^2 & -dt/dx^2 &           &           \\
+		          &           & \ddots    & \ddots   & \ddots    &           \\
+		          &           &           &          & 1+dt/dx^2 & -dt/dx^2  \\
+		          &           &           &          & -dt/dx^2  & 1+dt/dx^2
+	\end{pmatrix}
+\end{align}
+and matrix $K$, whose difference from $M$ is only about the sign, takes the form
+\begin{align}
+	\begin{pmatrix}
+		1+dt/dx^2 & -dt/dx^2  &           &          &           &           \\
+		-dt/dx^2  & 1+dt/dx^2 & -dt/dx^2  &          &           &           \\
+		          & -dt/dx^2  & 1+dt/dx^2 & -dt/dx^2 &           &           \\
+		          &           & \ddots    & \ddots   & \ddots    &           \\
+		          &           &           &          & 1+dt/dx^2 & -dt/dx^2  \\
+		          &           &           &          & -dt/dx^2  & 1+dt/dx^2
+	\end{pmatrix}
+\end{align}
+which can be recast in MATLAB code 
+\begin{lstlisting}[caption = {Matrix M and K.}]
+	e = ones(N,1);
+	M = eye(N)-dt/dx^2*spdiags([e -2*e e],-1:1,N,N);
+	K = eye(N)+dt/dx^2*spdiags([e -2*e e],-1:1,N,N);
+\end{lstlisting}
+%------------------------------------------------------------------------------
+\newpage
+\subsection{Task b: 2D problem $+$ Melting a penny}
 \inputfig{floats/2DPenny}{2DPenny}
-
 %------------------------------------------------------------------------------
 \newpage
 \section{Exam preparation}
-(Doing exercises together on blackboard)
 
 % %------------------------------------------------------------------------------
 % \newpage
